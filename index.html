@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>나의 인생·실천 다이어리 (구글 연동)</title>
+<style>
+  :root{
+    --bg:#f5f6fa;--card:#fff;--ink:#20242e;--muted:#6b7280;--line:#e6e8ef;
+    --brand:#5b53b0;--brand-d:#403a86;--brand-soft:#eeecfa;
+    --accent:#1f9d8f;--accent-soft:#e5f6f3;--gold:#c98a1a;
+    --done:#12a594;--prog:#2f6db3;--hold:#e0a52f;--drop:#9aa3af;--del:#d1495b;
+    --shadow:0 2px 10px rgba(30,25,60,.06),0 10px 30px rgba(30,25,60,.05);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",system-ui,-apple-system,sans-serif;
+    color:var(--ink);background:var(--bg);line-height:1.6;-webkit-font-smoothing:antialiased}
+  /* layout */
+  .app{display:flex;min-height:100vh}
+  .side{width:210px;flex:none;background:linear-gradient(180deg,#403a86,#2c2860);color:#fff;padding:16px 12px;position:sticky;top:0;height:100vh;overflow-y:auto}
+  .side .logo{font-size:16px;font-weight:800;padding:6px 8px 12px;line-height:1.3}
+  .side .logo small{display:block;font-weight:500;opacity:.7;font-size:11px;margin-top:3px}
+  .side .grp{font-size:10.5px;font-weight:700;letter-spacing:1px;opacity:.55;margin:14px 8px 5px}
+  .navi{display:block;width:100%;text-align:left;border:none;background:transparent;color:#e7e5f5;
+    padding:9px 10px;border-radius:9px;font-size:13.5px;font-weight:600;cursor:pointer;font-family:inherit;margin-bottom:2px}
+  .navi:hover{background:rgba(255,255,255,.1)}
+  .navi.on{background:#fff;color:var(--brand-d);font-weight:800}
+  .navi .em{margin-right:8px}
+  .main{flex:1;min-width:0}
+  .topbar{background:#fff;border-bottom:1px solid var(--line);padding:10px 22px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:30;flex-wrap:wrap;gap:8px}
+  .topbar .who{font-size:13px;color:var(--muted)}
+  .topbar .who b{color:var(--ink)}
+  .tools{display:flex;gap:6px;flex-wrap:wrap}
+  .tbtn{background:var(--brand-soft);color:var(--brand-d);border:1px solid #ddd8f5;padding:7px 11px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit}
+  .tbtn:hover{background:#e2ddf7}
+  .save{font-size:11px;color:var(--muted);align-self:center}
+  .wrap{padding:22px 24px 80px;max-width:1000px}
+  @media(max-width:820px){.app{flex-direction:column}.side{width:100%;height:auto;position:static;display:flex;flex-wrap:wrap;gap:4px}
+    .side .logo{width:100%}.side .grp{display:none}.navi{width:auto;margin:0}.wrap{padding:16px 14px 70px}}
+
+  h2.vh{font-size:22px;margin:0 0 4px;font-weight:800}
+  .vsub{color:var(--muted);font-size:14px;margin:0 0 18px}
+  .step-badge{display:inline-block;font-size:11px;font-weight:800;color:#fff;background:var(--brand);border-radius:6px;padding:2px 9px;margin-bottom:8px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:15px;padding:20px 22px;box-shadow:var(--shadow);margin-bottom:16px}
+  .card h3{margin:0 0 12px;font-size:16px;font-weight:800}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+  @media(max-width:720px){.grid2,.grid3{grid-template-columns:1fr}}
+  label.fld{display:block;margin-bottom:12px}
+  label.fld .lb{display:block;font-size:12.5px;font-weight:700;color:var(--brand-d);margin-bottom:4px}
+  .hint{font-weight:500;color:var(--muted);font-size:11.5px}
+  input[type=text],input[type=number],input[type=time],input[type=date],input[type=datetime-local],input[type=month],input[type=week],textarea,select{
+    width:100%;border:1px solid var(--line);border-radius:9px;padding:9px 11px;font-size:14px;font-family:inherit;color:var(--ink);background:#fdfdff}
+  input:focus,textarea:focus,select:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px rgba(91,83,176,.13)}
+  textarea{resize:vertical;min-height:60px}
+  .btn{background:var(--brand);color:#fff;border:none;padding:9px 15px;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit}
+  .btn:hover{background:var(--brand-d)}
+  .btn.ghost{background:var(--brand-soft);color:var(--brand-d);border:1px solid #ddd8f5}
+  .btn.sm{padding:6px 10px;font-size:12px}
+  .btn.acc{background:var(--accent)} .btn.acc:hover{filter:brightness(.92)}
+  .row-item{display:flex;gap:8px;align-items:flex-start;margin-bottom:8px}
+  .row-item input,.row-item select,.row-item textarea{flex:1}
+  .del-x{border:none;background:transparent;color:#c2c7d6;cursor:pointer;font-size:15px;font-weight:800;padding:2px 4px}
+  .del-x:hover{color:var(--del)}
+  .callout{border-radius:12px;padding:14px 16px;font-size:13.5px;border:1px solid;margin:0 0 16px}
+  .co-brand{background:var(--brand-soft);border-color:#ddd8f5}
+  .co-acc{background:var(--accent-soft);border-color:#c4e8e2}
+  .co-gold{background:#fbf3e2;border-color:#f0e0b8}
+  .tag{display:inline-block;font-size:10.5px;font-weight:800;color:#fff;background:var(--brand);border-radius:5px;padding:2px 8px;margin-bottom:6px}
+  .co-acc .tag{background:var(--accent)} .co-gold .tag{background:var(--gold)}
+  .chips{display:flex;flex-wrap:wrap;gap:7px}
+  .chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 12px;font-size:12.5px;font-weight:600;cursor:pointer;user-select:none}
+  .chip.on{background:var(--brand);color:#fff;border-color:var(--brand)}
+  .mini{font-size:11.5px;font-weight:800;color:var(--brand);letter-spacing:.4px;text-transform:uppercase;margin-bottom:6px}
+  .foot-nav{display:flex;justify-content:space-between;margin-top:18px;gap:10px}
+
+  /* quote */
+  .quote{background:linear-gradient(135deg,var(--brand-soft),var(--accent-soft));border:1px solid var(--line);border-radius:14px;padding:16px 18px}
+  .quote .qk{font-size:10.5px;font-weight:800;color:var(--brand);letter-spacing:.5px}
+  .quote .qen{font-size:16px;font-weight:700;font-style:italic;color:var(--brand-d);margin-top:5px;line-height:1.5}
+  .quote .qko{font-size:14px;margin-top:6px}
+  .quote .qby{font-size:12px;color:var(--muted);margin-top:5px}
+  .quote .qword{font-size:12.5px;color:var(--brand-d);background:rgba(255,255,255,.6);border-radius:6px;padding:5px 9px;margin-top:8px;font-weight:600}
+  .quote .qbtns{margin-top:9px}
+
+  /* tasks */
+  .task{display:flex;gap:8px;align-items:flex-start;padding:8px 9px;border-radius:9px;border:1px solid transparent;margin-bottom:4px}
+  .task.s-todo{border-bottom:1px dashed var(--line);border-radius:0}
+  .task.s-done{background:#e6f6ee;border-color:#bfe6d4}
+  .task.s-prog{background:#e9f1fb;border-color:#cfe0f2}
+  .task.s-hold{background:#fdf6e3;border-color:#f0dfa8}
+  .task.s-deleg{background:#f1f0fb;border-color:#d8d4f2}
+  .task.s-drop{background:#f3f4f6;border-color:#e2e5ea}
+  .task .pri{flex:none;width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px;color:#fff}
+  .pri.A{background:#d1495b} .pri.B{background:#e0a52f} .pri.C{background:#7c8798}
+  .task .txt{flex:1;font-size:13.5px}
+  .task .txt .role{font-size:10px;color:#fff;background:var(--brand);border-radius:4px;padding:1px 6px;margin-right:5px;font-weight:700}
+  .task.s-done .txt,.task.s-drop .txt{color:var(--muted);text-decoration:line-through}
+  .stsel{flex:none;width:auto;font-size:11px;padding:3px 5px;border-radius:6px;border:1px solid var(--line);background:#fff}
+  .addrow{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+  .addrow input{flex:1;min-width:120px}
+
+  table.cal{width:100%;border-collapse:collapse;table-layout:fixed}
+  table.cal th{font-size:11.5px;color:var(--muted);padding:5px;font-weight:700}
+  table.cal td{border:1px solid var(--line);height:74px;vertical-align:top;padding:4px 5px;cursor:pointer;border-radius:6px}
+  table.cal td:hover{background:var(--brand-soft)}
+  table.cal td.oth{background:#fafafe;color:#c2c7d6}
+  table.cal td.today{outline:2px solid var(--brand);outline-offset:-2px}
+  table.cal .dn{font-size:12px;font-weight:700}
+  table.cal .dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--accent);margin:1px}
+  table.cal .mini-goal{font-size:10px;color:var(--muted);margin-top:2px;overflow:hidden;max-height:28px}
+
+  .habgrid{overflow-x:auto}
+  table.hab{border-collapse:collapse;font-size:11px;min-width:100%}
+  table.hab th,table.hab td{border:1px solid var(--line);padding:3px;text-align:center;min-width:22px}
+  table.hab td.name{text-align:left;font-weight:700;white-space:nowrap;padding:4px 8px;position:sticky;left:0;background:#fff}
+  table.hab .hc{cursor:pointer}
+  table.hab .hc.on{background:var(--accent);color:#fff}
+
+  .sched{display:grid;grid-template-columns:52px 1fr;gap:0;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  .sched .h{border-top:1px solid var(--line);padding:6px 8px;font-size:11.5px;color:var(--muted);font-weight:700;background:#fafafe}
+  .sched .c{border-top:1px solid var(--line);padding:0}
+  .sched .c input{border:none;border-radius:0;background:transparent;font-size:12.5px;padding:6px 8px}
+  .sched>div:nth-child(1),.sched>div:nth-child(2){border-top:none}
+
+  .stat{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px}
+  .stat .s{background:#fff;border:1px solid var(--line);border-radius:13px;padding:15px 16px;box-shadow:var(--shadow)}
+  .stat .s .n{font-size:26px;font-weight:800;color:var(--brand)}
+  .stat .s .l{font-size:12px;color:var(--muted);margin-top:2px}
+  .bar{height:14px;background:#eceef3;border-radius:99px;overflow:hidden}
+  .bar>i{display:block;height:100%;background:linear-gradient(90deg,var(--brand),var(--accent));border-radius:99px}
+
+  .list-item{border:1px solid var(--line);border-radius:11px;padding:12px 14px;margin-bottom:10px;background:#fff}
+  .list-item .li-h{display:flex;justify-content:space-between;gap:8px}
+  .list-item .li-t{font-weight:800;font-size:14px}
+  .list-item .li-m{font-size:11.5px;color:var(--muted)}
+  .stars{color:var(--gold);font-size:13px}
+
+  /* timer */
+  .disc{position:relative;width:250px;height:250px;margin:2px auto 10px}
+  .disc .center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none}
+  .disc .time{font-size:44px;font-weight:800;font-variant-numeric:tabular-nums}
+  .disc .pl{font-size:13px;font-weight:800;margin-top:2px}
+  .modeseg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-bottom:12px}
+  .modeseg button{border:none;background:#fff;padding:8px 15px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit;color:var(--muted)}
+  .modeseg button.on{background:var(--brand);color:#fff}
+  .tmc{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:4px}
+  .presets{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-top:10px}
+  .presets button{border:1px solid var(--line);background:#fff;border-radius:8px;padding:6px 11px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;color:var(--brand-d)}
+
+  #toast{position:fixed;right:18px;bottom:18px;z-index:100;display:flex;flex-direction:column;gap:8px}
+  #toast .t{background:#20242e;color:#fff;padding:11px 15px;border-radius:10px;font-size:13px;box-shadow:0 6px 20px rgba(0,0,0,.25);max-width:300px}
+
+  @media print{
+    .side,.topbar,.foot-nav,.addrow,.no-print,.del-x{display:none!important}
+    .app{display:block}.wrap{max-width:none;padding:0}
+    .card{box-shadow:none;break-inside:avoid}
+    body{background:#fff}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <nav class="side" id="side"></nav>
+  <div class="main">
+    <div class="topbar">
+      <div class="who" id="who">이름을 설정하세요</div>
+      <div class="tools">
+        <span class="save" id="save"></span>
+        <button class="tbtn" onclick="exportJSON()">💾 백업</button>
+        <button class="tbtn" onclick="document.getElementById('imp').click()">📂 복원</button>
+        <button class="tbtn" onclick="window.print()">🖨 인쇄/PDF</button>
+        <input type="file" id="imp" accept="application/json" style="display:none" onchange="importJSON(event)">
+      </div>
+    </div>
+    <div class="wrap"><div id="view"></div></div>
+  </div>
+</div>
+<div id="toast"></div>
+
+<script>
+/* ============ QUOTES (영/한/단어/듣기) ============ */
+const QUOTES=[
+ {en:"The secret of getting ahead is getting started.",ko:"앞서 나가는 비결은 일단 시작하는 것이다.",by:"Mark Twain",k:"get ahead 앞서가다"},
+ {en:"We are what we repeatedly do. Excellence, then, is not an act, but a habit.",ko:"우리는 반복하는 행동의 결과다. 탁월함은 행위가 아니라 습관이다.",by:"Will Durant",k:"excellence 탁월함"},
+ {en:"The best way to predict the future is to create it.",ko:"미래를 예측하는 가장 좋은 방법은 미래를 만드는 것이다.",by:"Peter Drucker",k:"predict 예측하다"},
+ {en:"What lies behind us and before us are tiny matters compared to what lies within us.",ko:"우리 뒤와 앞의 것은 우리 안의 것에 비하면 사소하다.",by:"R. W. Emerson",k:"lie within 내면에 있다"},
+ {en:"Begin with the end in mind.",ko:"끝을 생각하며 시작하라.",by:"Stephen Covey",k:"in mind 마음에 두고"},
+ {en:"The main thing is to keep the main thing the main thing.",ko:"가장 중요한 것은, 가장 중요한 것을 가장 중요하게 두는 것이다.",by:"Stephen Covey",k:"main thing 핵심"},
+ {en:"Discipline is the bridge between goals and accomplishment.",ko:"자기 절제는 목표와 성취를 잇는 다리다.",by:"Jim Rohn",k:"accomplishment 성취"},
+ {en:"Motivation is what gets you started. Habit is what keeps you going.",ko:"동기는 시작하게 하고, 습관은 계속하게 한다.",by:"Jim Ryun",k:"habit 습관"},
+ {en:"Small disciplines repeated with consistency lead to great achievements.",ko:"일관된 작은 절제가 큰 성취로 이어진다.",by:"John C. Maxwell",k:"consistency 일관성"},
+ {en:"Well done is better than well said.",ko:"말을 잘하는 것보다 실천을 잘하는 것이 낫다.",by:"Benjamin Franklin",k:"well done 잘 해낸"},
+ {en:"By failing to prepare, you are preparing to fail.",ko:"준비에 실패하는 것은 곧 실패를 준비하는 것이다.",by:"Benjamin Franklin",k:"prepare 준비하다"},
+ {en:"The mind is not a vessel to be filled but a fire to be kindled.",ko:"마음은 채워야 할 그릇이 아니라 지펴야 할 불꽃이다.",by:"Plutarch",k:"kindle 불붙이다"},
+ {en:"Education is the most powerful weapon which you can use to change the world.",ko:"교육은 세상을 바꿀 수 있는 가장 강력한 무기다.",by:"Nelson Mandela",k:"weapon 무기"},
+ {en:"It always seems impossible until it's done.",ko:"무엇이든 이루기 전까지는 늘 불가능해 보인다.",by:"Nelson Mandela",k:"impossible 불가능한"},
+ {en:"Perseverance is not a long race; it is many short races one after another.",ko:"끈기란 하나의 긴 경주가 아니라, 이어지는 여러 짧은 경주다.",by:"Walter Elliot",k:"perseverance 끈기"},
+ {en:"Our greatest glory is not in never falling, but in rising every time we fall.",ko:"가장 큰 영광은 넘어지지 않음이 아니라, 넘어질 때마다 일어섬에 있다.",by:"Confucius",k:"glory 영광"},
+ {en:"It does not matter how slowly you go as long as you do not stop.",ko:"멈추지 않는 한, 아무리 천천히 가도 괜찮다.",by:"Confucius",k:"as long as ~하는 한"},
+ {en:"The journey of a thousand miles begins with a single step.",ko:"천 리 길도 한 걸음부터 시작된다.",by:"Lao Tzu",k:"journey 여정"},
+ {en:"Setting goals is the first step in turning the invisible into the visible.",ko:"목표를 세우는 것은 보이지 않는 것을 보이게 하는 첫걸음이다.",by:"Tony Robbins",k:"invisible 보이지 않는"},
+ {en:"You miss 100% of the shots you don't take.",ko:"시도하지 않은 기회는 100퍼센트 놓친다.",by:"Wayne Gretzky",k:"miss 놓치다"},
+ {en:"Fortune favors the prepared mind.",ko:"행운은 준비된 사람에게 미소 짓는다.",by:"Louis Pasteur",k:"favor 호의를 베풀다"},
+ {en:"Strive not to be a success, but rather to be of value.",ko:"성공하려 애쓰기보다, 가치 있는 사람이 되려 애써라.",by:"Albert Einstein",k:"strive 애쓰다"},
+ {en:"Continuous improvement is better than delayed perfection.",ko:"미뤄진 완벽보다 꾸준한 개선이 낫다.",by:"Mark Twain",k:"continuous 지속적인"},
+ {en:"Live as if you were to die tomorrow. Learn as if you were to live forever.",ko:"내일 죽을 것처럼 살고, 영원히 살 것처럼 배워라.",by:"Mahatma Gandhi",k:"forever 영원히"},
+ {en:"The future depends on what you do today.",ko:"미래는 오늘 당신이 하는 일에 달려 있다.",by:"Mahatma Gandhi",k:"depend on ~에 달려 있다"},
+ {en:"Quality is not an act, it is a habit.",ko:"탁월함은 한 번의 행동이 아니라 습관이다.",by:"Aristotle",k:"quality 질, 우수함"},
+ {en:"Knowing yourself is the beginning of all wisdom.",ko:"자신을 아는 것이 모든 지혜의 시작이다.",by:"Aristotle",k:"wisdom 지혜"},
+ {en:"What we learn with pleasure we never forget.",ko:"즐겁게 배운 것은 결코 잊지 않는다.",by:"Alfred Mercier",k:"pleasure 즐거움"},
+ {en:"He who has a why to live can bear almost any how.",ko:"살아야 할 이유가 있는 사람은 거의 어떤 방식도 견딘다.",by:"Friedrich Nietzsche",k:"bear 견디다"},
+ {en:"Do not wait to strike till the iron is hot; but make it hot by striking.",ko:"쇠가 뜨거워질 때까지 기다리지 말고, 두드려서 뜨겁게 만들어라.",by:"W. B. Yeats",k:"strike 치다"},
+ {en:"A goal without a plan is just a wish.",ko:"계획 없는 목표는 그저 소원일 뿐이다.",by:"Antoine de Saint-Exupery",k:"goal 목표"},
+ {en:"The two most powerful warriors are patience and time.",ko:"가장 강력한 두 전사는 인내와 시간이다.",by:"Leo Tolstoy",k:"patience 인내"},
+ {en:"Concentrate all your thoughts upon the work at hand.",ko:"눈앞의 일에 모든 생각을 집중하라.",by:"Alexander Graham Bell",k:"concentrate 집중하다"},
+ {en:"Great things are done by a series of small things brought together.",ko:"위대한 일은 함께 모인 작은 일들의 연속으로 이루어진다.",by:"Vincent van Gogh",k:"a series of 일련의"},
+ {en:"You are never too old to set another goal or to dream a new dream.",ko:"또 다른 목표를 세우거나 새 꿈을 꾸기에 너무 늦은 때란 없다.",by:"C. S. Lewis",k:"goal 목표"},
+ {en:"The best preparation for tomorrow is doing your best today.",ko:"내일을 위한 최고의 준비는 오늘 최선을 다하는 것이다.",by:"H. Jackson Brown Jr.",k:"preparation 준비"},
+ {en:"Act as if what you do makes a difference. It does.",ko:"당신이 하는 일이 변화를 만든다고 여기고 행동하라. 실제로 그렇다.",by:"William James",k:"make a difference 변화를 만들다"},
+ {en:"Happiness is not something ready made. It comes from your own actions.",ko:"행복은 이미 만들어진 것이 아니라, 당신의 행동에서 온다.",by:"Dalai Lama",k:"ready made 기성의"},
+ {en:"To teach is to learn twice over.",ko:"가르치는 것은 두 번 배우는 것이다.",by:"Joseph Joubert",k:"twice over 두 번"},
+ {en:"Little by little, one travels far.",ko:"조금씩 나아가다 보면 멀리까지 간다.",by:"Proverb",k:"little by little 조금씩"}
+];
+function quoteFor(dateStr){ const d=parseD(dateStr); const idx=Math.floor((d-new Date(d.getFullYear(),0,0))/864e5); return QUOTES[((idx%QUOTES.length)+QUOTES.length)%QUOTES.length]; }
+function quoteCard(dateStr){ const q=quoteFor(dateStr);
+  return `<div class="quote"><div class="qk">오늘의 명언 · QUOTE OF THE DAY</div>
+   <div class="qen">"${q.en}"</div><div class="qko">"${q.ko}"</div><div class="qby">— ${q.by}</div>
+   <div class="qword">🔑 오늘의 표현 · <b>${q.k}</b></div>
+   <div class="qbtns"><button class="btn ghost sm" onclick="speak('${dateStr}')">🔊 영어 듣기</button></div></div>`; }
+function speak(dateStr){ try{ const q=quoteFor(dateStr); if(!('speechSynthesis'in window))return; const u=new SpeechSynthesisUtterance(q.en); u.lang='en-US'; u.rate=0.92; speechSynthesis.cancel(); speechSynthesis.speak(u);}catch(e){} }
+
+/* ============ STATE ============ */
+const KEY="life_diary_v1";
+let S=blank();
+function blank(){return{
+  meta:{savedAt:""},
+  profile:{name:"",roles:[
+    {id:uid(),name:"교사·수업(물리)"},{id:uid(),name:"학습공동체·연구"},
+    {id:uid(),name:"가족·관계"},{id:uid(),name:"자기계발·독서"},{id:uid(),name:"건강·자기돌봄"}]},
+  mission:{values:["도덕적 목적","성장","사랑·감사·존중","연민·용서·수용","사회적 책임"],
+    affirmation:"나는 유쾌하고 유연하며 유능하다. 사랑·감사·존중, 연민·용서·수용의 마음으로 하루를 산다.",
+    statement:"도덕적 목적 실천의 교육 변화를 통해, 나와 우리가 다함께 행복한 아름다운 세상을 만든다.",
+    principles:"작게·쉽게·빠르게 시작한다 · 중요한 일 먼저 · 단계적으로 · 성취를 시각화한다"},
+  lifemap:{areas:{}, rolemodels:"", dreams:[]},
+  vision:{horizon:"3년",text:{}},
+  annual:{year:new Date().getFullYear(), goals:[], word:""},
+  months:{}, weeks:{}, days:{},
+  habits:[
+    {id:uid(),name:"미라클모닝(기상)",principle:"쉽게"},
+    {id:uid(),name:"운동·스트레칭",principle:"작게"},
+    {id:uid(),name:"독서 15분",principle:"작게"},
+    {id:uid(),name:"감사 3줄",principle:"빠르게"}],
+  reading:[], ideas:[],
+  reminders:[],
+  focusLog:{},
+  settings:{gClientId:"",gcalId:"primary"},
+  view:"dash", ui:{month:"", week:"", day:""}
+};}
+function save(){ try{ S.meta.savedAt=new Date().toLocaleString('ko-KR'); localStorage.setItem(KEY,JSON.stringify(S)); setSave("자동저장됨 "+S.meta.savedAt);}catch(e){ setSave("자동저장 불가 — 백업을 사용하세요"); } }
+function load(){ try{ const r=localStorage.getItem(KEY); if(r){ S=Object.assign(blank(),JSON.parse(r)); return true;} }catch(e){} return false; }
+function setSave(t){ const el=document.getElementById('save'); if(el)el.textContent=t; }
+function uid(){ return 'x'+Math.abs(Math.floor((performance.now()*1000)%1e9))+(uid._c=(uid._c||0)+1); }
+
+/* ============ DATE HELPERS ============ */
+function fmt(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function parseD(s){return new Date(s+'T00:00:00');}
+function today(){return fmt(new Date());}
+function addDays(s,n){const d=parseD(s);d.setDate(d.getDate()+n);return fmt(d);}
+function wd(s){return ['일','월','화','수','목','금','토'][parseD(s).getDay()];}
+function monthKey(s){return s.slice(0,7);}
+function weekStart(s){const d=parseD(s);const g=(d.getDay()+6)%7;d.setDate(d.getDate()-g);return fmt(d);} // Monday
+function esc(s){return (s==null?'':String(s)).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function toast(msg){const w=document.getElementById('toast');const t=document.createElement('div');t.className='t';t.textContent=msg;w.appendChild(t);setTimeout(()=>t.remove(),4000);}
+
+/* ============ NAV ============ */
+const NAV=[
+ {g:"오늘"},
+ {id:"dash",t:"대시보드",e:"🏠"},
+ {id:"day",t:"일간 계획",e:"📆"},
+ {g:"설계 (Foundation)"},
+ {id:"life",t:"1 인생 설계",e:"🧭"},
+ {id:"mission",t:"2 사명서·가치",e:"🎯"},
+ {id:"vision",t:"3 비전",e:"🌄"},
+ {g:"실행 (Plan·Do·See)"},
+ {id:"annual",t:"4 연간 계획",e:"🗓️"},
+ {id:"month",t:"5 월간",e:"📅"},
+ {id:"week",t:"6 주간",e:"🧩"},
+ {g:"기록 (Record)"},
+ {id:"journal",t:"일상 기록",e:"📝"},
+ {id:"reading",t:"독서 기록",e:"📚"},
+ {id:"ideas",t:"구상 기록",e:"💡"},
+ {g:"도구 (Tools)"},
+ {id:"habits",t:"습관 관리",e:"🌱"},
+ {id:"timer",t:"집중 타이머",e:"⏱"},
+ {id:"quotes",t:"오늘의 명언",e:"🗣️"},
+ {id:"remind",t:"일정 알림",e:"🔔"},
+ {id:"gsync",t:"구글 연동",e:"🔗"},
+ {id:"stats",t:"성찰·통계",e:"📊"},
+];
+function renderNav(){
+  document.getElementById('side').innerHTML=
+   `<div class="logo">나의 인생·실천 다이어리<small>계획 · 실천 · 성찰</small></div>`+
+   NAV.map(n=> n.g? `<div class="grp">${n.g}</div>` :
+     `<button class="navi ${S.view===n.id?'on':''}" onclick="go('${n.id}')"><span class="em">${n.e}</span>${n.t}</button>`).join('');
+}
+function go(v){ S.view=v; save(); renderNav(); render(); window.scrollTo(0,0); }
+function refreshWho(){ document.getElementById('who').innerHTML = S.profile.name? `<b>${esc(S.profile.name)}</b> 님의 다이어리` : '이름을 설정하세요 (인생 설계 →)'; }
+
+/* ============ RENDER DISPATCH ============ */
+function render(){
+  const v=document.getElementById('view');
+  ({dash:vDash,day:vDay,life:vLife,mission:vMission,vision:vVision,annual:vAnnual,month:vMonth,week:vWeek,
+    journal:vJournal,reading:vReading,ideas:vIdeas,habits:vHabits,timer:vTimer,quotes:vQuotes,remind:vRemind,gsync:vGSync,stats:vStats}[S.view]||vDash)(v);
+}
+function setV(path,val){const p=path.split('.');let o=S;for(let i=0;i<p.length-1;i++)o=o[p[i]];o[p[p.length-1]]=val;save();}
+function roleName(id){const r=S.profile.roles.find(x=>x.id===id);return r?r.name:'';}
+function roleOptions(sel){return '<option value="">역할</option>'+S.profile.roles.map(r=>`<option value="${r.id}" ${sel===r.id?'selected':''}>${esc(r.name)}</option>`).join('');}
+
+/* ============ DASHBOARD ============ */
+function vDash(v){
+  const d=today(); ensureDay(d);
+  const day=S.days[d];
+  const tasks=day.tasks;
+  const doneN=tasks.filter(t=>t.status==='done').length;
+  const upNext=(S.reminders||[]).filter(r=>!r.done).sort((a,b)=>a.dt.localeCompare(b.dt)).slice(0,4);
+  const hpct=habitDayPct(d);
+  v.innerHTML=`
+   <h2 class="vh">🏠 오늘 · ${d} (${wd(d)})</h2>
+   <p class="vsub">${esc(S.mission.statement||'사명을 설정해 보세요')}</p>
+   ${quoteCard(d)}
+   <div class="grid2" style="margin-top:16px">
+     <div class="card"><h3>오늘의 핵심 과제</h3>
+       ${tasks.length? tasks.slice(0,6).map((t,i)=>taskRow(d,i,t)).join('') : '<p class="hint">아직 계획이 없습니다. ‘일간 계획’에서 오늘 할 일을 정해보세요.</p>'}
+       <div style="margin-top:8px"><button class="btn sm" onclick="go('day')">일간 계획 열기 →</button>
+         <span class="hint" style="margin-left:8px">완료 ${doneN}/${tasks.length}</span></div>
+     </div>
+     <div>
+       <div class="card"><h3>오늘의 습관 <span class="hint">(${hpct}%)</span></h3>
+         <div class="chips">${S.habits.map(h=>`<span class="chip ${day.habits.includes(h.id)?'on':''}" onclick="toggleHabit('${d}','${h.id}')">${esc(h.name)}</span>`).join('')||'<span class="hint">습관을 등록하세요</span>'}</div>
+       </div>
+       <div class="card"><h3>다가오는 알림</h3>
+         ${upNext.length? upNext.map(r=>`<div style="font-size:13px;margin:4px 0">🔔 <b>${r.dt.replace('T',' ')}</b> · ${esc(r.text)}</div>`).join('') : '<p class="hint">예정된 알림이 없습니다.</p>'}
+         <div style="margin-top:8px"><button class="btn ghost sm" onclick="go('remind')">알림 관리 →</button></div>
+       </div>
+     </div>
+   </div>
+   <div class="card"><h3>오늘의 성찰 (칭찬·감사·성찰)</h3>
+     <div class="grid3">
+       <label class="fld"><span class="lb">👏 칭찬 (오늘 잘한 것)</span><textarea oninput="setDay('${d}','praise',this.value)">${esc(day.praise)}</textarea></label>
+       <label class="fld"><span class="lb">🙏 감사 (감사한 것)</span><textarea oninput="setDay('${d}','gratitude',this.value)">${esc(day.gratitude)}</textarea></label>
+       <label class="fld"><span class="lb">🔎 성찰 (배움·다짐)</span><textarea oninput="setDay('${d}','reflect',this.value)">${esc(day.reflect)}</textarea></label>
+     </div>
+   </div>`;
+}
+
+/* ============ FOUNDATION 1: 인생 설계 ============ */
+const LIFE_AREAS=["신앙·영성/가치","가족·관계","일·소명(교사)","배움·성장","건강·체력","재정","사회·기여","여가·취미"];
+function vLife(v){
+  const lm=S.lifemap;
+  v.innerHTML=`
+   <span class="step-badge">1단계 · 설계</span>
+   <h2 class="vh">🧭 인생 설계 (인생지도)</h2>
+   <p class="vsub">삶의 영역을 균형 있게 바라보고, 나의 역할과 꿈을 그립니다. 사명서의 재료가 됩니다.</p>
+   <div class="card"><h3>나의 정보</h3>
+     <div class="grid2">
+       <label class="fld"><span class="lb">이름</span><input type="text" value="${esc(S.profile.name)}" oninput="setV('profile.name',this.value);refreshWho()"></label>
+       <label class="fld"><span class="lb">한 줄 소개 / 좌우명</span><input type="text" value="${esc(lm.rolemodels)}" oninput="setV('lifemap.rolemodels',this.value)" placeholder="롤모델, 닮고 싶은 삶..."></label>
+     </div>
+   </div>
+   <div class="card"><h3>삶의 역할</h3>
+     <p class="hint" style="margin-top:-6px">주간·일간 계획에서 이 역할로 균형을 잡습니다. (프랭클린 ‘역할’)</p>
+     <div id="roles"></div>
+     <button class="btn ghost sm" onclick="addRole()">+ 역할 추가</button>
+   </div>
+   <div class="card"><h3>삶의 8영역 — 지금 나의 만족도와 소망</h3>
+     <div id="areas"></div>
+   </div>
+   <div class="card"><h3>꿈 리스트 (버킷리스트)</h3>
+     <div id="dreams"></div>
+     <div class="addrow"><input type="text" id="newdream" placeholder="이루고 싶은 꿈을 적어보세요" onkeydown="if(event.key==='Enter')addDream()"><button class="btn sm" onclick="addDream()">추가</button></div>
+   </div>
+   <div class="foot-nav"><span></span><button class="btn" onclick="go('mission')">다음: 사명서 →</button></div>`;
+  renderRoles(); renderAreas(); renderDreams();
+}
+function renderRoles(){const el=document.getElementById('roles');if(!el)return;
+  el.innerHTML=S.profile.roles.map((r,i)=>`<div class="row-item">
+    <input type="text" value="${esc(r.name)}" oninput="S.profile.roles[${i}].name=this.value;save()">
+    <button class="del-x" onclick="S.profile.roles.splice(${i},1);save();renderRoles()">✕</button></div>`).join('');}
+function addRole(){S.profile.roles.push({id:uid(),name:""});save();renderRoles();}
+function renderAreas(){const el=document.getElementById('areas');if(!el)return;
+  el.innerHTML=LIFE_AREAS.map(a=>{const cur=S.lifemap.areas[a]||{score:'',wish:''};
+    return `<div class="row-item"><div style="flex:none;width:150px;font-weight:700;font-size:13px;padding-top:8px">${a}</div>
+    <select style="max-width:110px" onchange="setArea('${a}','score',this.value)">${[' ','1','2','3','4','5','6','7','8','9','10'].map(n=>`<option ${String(cur.score)===n.trim()?'selected':''} value="${n.trim()}">${n.trim()?n+'점':'만족도'}</option>`).join('')}</select>
+    <input type="text" value="${esc(cur.wish)}" placeholder="이 영역에서 바라는 모습" oninput="setArea('${a}','wish',this.value)"></div>`;}).join('');}
+function setArea(a,k,val){if(!S.lifemap.areas[a])S.lifemap.areas[a]={score:'',wish:''};S.lifemap.areas[a][k]=val;save();}
+function renderDreams(){const el=document.getElementById('dreams');if(!el)return;
+  el.innerHTML=(S.lifemap.dreams||[]).map((dr,i)=>`<div class="row-item">
+    <input type="checkbox" style="width:auto;margin-top:9px" ${dr.done?'checked':''} onchange="S.lifemap.dreams[${i}].done=this.checked;save();renderDreams()">
+    <input type="text" value="${esc(dr.text)}" oninput="S.lifemap.dreams[${i}].text=this.value;save()" style="${dr.done?'text-decoration:line-through;color:#9aa3af':''}">
+    <button class="del-x" onclick="S.lifemap.dreams.splice(${i},1);save();renderDreams()">✕</button></div>`).join('');}
+function addDream(){const i=document.getElementById('newdream');const v=i.value.trim();if(!v)return;S.lifemap.dreams.push({text:v,done:false});save();renderDreams();i.value='';}
+
+/* ============ FOUNDATION 2: 사명서·가치 ============ */
+const VALUE_BANK=["도덕적 목적","성장","배움","사랑","감사","존중","정직","책임","용기","성실","연민","용서","수용","기여","건강","가족","자유","창의","협력","균형","열정","지혜"];
+function vMission(v){
+  const m=S.mission;
+  v.innerHTML=`
+   <span class="step-badge">2단계 · 설계</span>
+   <h2 class="vh">🎯 사명서 · 핵심 가치 · 자기선언</h2>
+   <p class="vsub">내 삶의 나침반입니다. 흔들릴 때 여기로 돌아옵니다. (3P 사명서 · 이룸 자기선언)</p>
+   <div class="card"><h3>핵심 가치 선택 <span class="hint">(클릭해서 고르기)</span></h3>
+     <div class="chips" id="vbank"></div>
+     <label class="fld" style="margin-top:12px"><span class="lb">나의 핵심 가치 (직접 편집 가능, 쉼표로 구분)</span>
+       <input type="text" value="${esc((m.values||[]).join(', '))}" oninput="S.mission.values=this.value.split(',').map(x=>x.trim()).filter(Boolean);save()"></label>
+   </div>
+   <div class="card co-gold" style="border-radius:15px"><div class="tag">자기선언 · AFFIRMATION</div>
+     <textarea oninput="setV('mission.affirmation',this.value)" style="font-size:15px;min-height:70px">${esc(m.affirmation)}</textarea>
+     <p class="hint" style="margin:6px 0 0">매일 아침 소리 내어 읽으면 좋습니다.</p></div>
+   <div class="card co-brand" style="border-radius:15px"><div class="tag">나의 사명 · MISSION</div>
+     <textarea oninput="setV('mission.statement',this.value)" style="font-size:16px;font-weight:600;min-height:70px">${esc(m.statement)}</textarea>
+     <p class="hint" style="margin:6px 0 0">"나는 왜 사는가? 무엇에 기여하는가?"를 한두 문장으로.</p></div>
+   <div class="card"><h3>실천 원칙</h3>
+     <textarea oninput="setV('mission.principles',this.value)">${esc(m.principles)}</textarea></div>
+   <div class="foot-nav"><button class="btn ghost" onclick="go('life')">← 인생 설계</button><button class="btn" onclick="go('vision')">다음: 비전 →</button></div>`;
+  const vb=document.getElementById('vbank');
+  vb.innerHTML=VALUE_BANK.map(x=>`<span class="chip ${(m.values||[]).includes(x)?'on':''}" onclick="toggleValue('${x}')">${x}</span>`).join('');
+}
+function toggleValue(x){const a=S.mission.values||(S.mission.values=[]);const i=a.indexOf(x);if(i>=0)a.splice(i,1);else a.push(x);save();vMission(document.getElementById('view'));}
+
+/* ============ FOUNDATION 3: 비전 ============ */
+function vVision(v){
+  v.innerHTML=`
+   <span class="step-badge">3단계 · 설계</span>
+   <h2 class="vh">🌄 비전 — ${esc(S.vision.horizon)} 후의 나</h2>
+   <p class="vsub">사명을 미래의 모습으로 구체화합니다. 생생하게 그릴수록 실천이 당겨집니다. (성취 시각화)</p>
+   <div class="card"><label class="fld"><span class="lb">비전 기간</span>
+     <select onchange="setV('vision.horizon',this.value);vVision(document.getElementById('view'))" style="max-width:160px">
+       ${["1년","3년","5년","10년"].map(h=>`<option ${S.vision.horizon===h?'selected':''}>${h}</option>`).join('')}</select></label></div>
+   <div class="grid2">
+     ${S.profile.roles.map(r=>`<div class="card"><div class="mini">${esc(r.name)}</div>
+       <textarea placeholder="이 역할에서 ${esc(S.vision.horizon)} 후 나는..." oninput="setVision('${r.id}',this.value)">${esc((S.vision.text||{})[r.id]||'')}</textarea></div>`).join('')}
+   </div>
+   <div class="card co-acc"><div class="tag">성취 시각화</div>
+     <textarea placeholder="비전이 이루어진 어느 하루를 생생하게 묘사해 보세요 (장면·감정·성취)" oninput="setV('vision.scene',this.value)">${esc(S.vision.scene||'')}</textarea></div>
+   <div class="foot-nav"><button class="btn ghost" onclick="go('mission')">← 사명서</button><button class="btn" onclick="go('annual')">다음: 연간 계획 →</button></div>`;
+}
+function setVision(rid,val){if(!S.vision.text)S.vision.text={};S.vision.text[rid]=val;save();}
+
+/* ============ 4: 연간 ============ */
+function vAnnual(v){
+  const a=S.annual;
+  v.innerHTML=`
+   <span class="step-badge">4단계 · 실행</span>
+   <h2 class="vh">🗓️ 연간 계획</h2>
+   <p class="vsub">비전을 올해의 목표로 내려받습니다. 역할별로, 측정 가능하게.</p>
+   <div class="card"><div class="grid2">
+     <label class="fld"><span class="lb">연도</span><input type="number" value="${a.year}" oninput="setV('annual.year',parseInt(this.value)||${a.year})"></label>
+     <label class="fld"><span class="lb">올해의 단어 / 주제</span><input type="text" value="${esc(a.word)}" oninput="setV('annual.word',this.value)" placeholder="예: 실천, 균형, 도약"></label>
+   </div></div>
+   <div class="card"><h3>${a.year} 목표 <span class="hint">(역할별 · 측정 가능하게)</span></h3>
+     <div id="agoals"></div>
+     <div class="addrow"><input type="text" id="newgoal" placeholder="올해 이루고 싶은 목표" onkeydown="if(event.key==='Enter')addGoal()"><button class="btn sm" onclick="addGoal()">추가</button></div>
+   </div>
+   <div class="foot-nav"><button class="btn ghost" onclick="go('vision')">← 비전</button><button class="btn" onclick="go('month')">다음: 월간 →</button></div>`;
+  renderGoals();
+}
+function renderGoals(){const el=document.getElementById('agoals');if(!el)return;
+  if(!S.annual.goals.length){el.innerHTML='<p class="hint">목표를 추가하세요.</p>';return;}
+  el.innerHTML=S.annual.goals.map((g,i)=>`<div class="row-item">
+    <input type="checkbox" style="width:auto;margin-top:9px" ${g.done?'checked':''} onchange="S.annual.goals[${i}].done=this.checked;save();renderGoals()">
+    <select style="max-width:150px" onchange="S.annual.goals[${i}].role=this.value;save()">${roleOptions(g.role)}</select>
+    <input type="text" value="${esc(g.text)}" oninput="S.annual.goals[${i}].text=this.value;save()" style="${g.done?'text-decoration:line-through;color:#9aa3af':''}">
+    <button class="del-x" onclick="S.annual.goals.splice(${i},1);save();renderGoals()">✕</button></div>`).join('');}
+function addGoal(){const i=document.getElementById('newgoal');const v=i.value.trim();if(!v)return;S.annual.goals.push({id:uid(),role:'',text:v,done:false});save();renderGoals();i.value='';}
+
+/* ============ 5: 월간 ============ */
+function vMonth(v){
+  if(!S.ui.month)S.ui.month=monthKey(today());
+  const mk=S.ui.month; const m=ensureMonth(mk);
+  const [Y,M]=mk.split('-').map(Number);
+  const first=new Date(Y,M-1,1); const startPad=(first.getDay()+6)%7; // Monday-based
+  const dim=new Date(Y,M,0).getDate();
+  let cells='';
+  for(let i=0;i<startPad;i++)cells+=`<td class="oth"></td>`;
+  for(let d=1;d<=dim;d++){ const ds=`${mk}-${String(d).padStart(2,'0')}`; const day=S.days[ds];
+    const hasTask=day&&day.tasks&&day.tasks.length; const goal=day&&day.tasks&&day.tasks.find(t=>t.priority==='A');
+    cells+=`<td class="${ds===today()?'today':''}" onclick="openDay('${ds}')"><div class="dn">${d} <span class="hint">${wd(ds)}</span></div>
+      ${hasTask?'<span class="dot"></span>'.repeat(Math.min(3,day.tasks.length)):''}
+      ${goal?`<div class="mini-goal">${esc(goal.text)}</div>`:''}</td>`;
+    if((startPad+d)%7===0)cells+='</tr><tr>';
+  }
+  v.innerHTML=`
+   <span class="step-badge">5단계 · 실행</span>
+   <h2 class="vh">📅 월간 계획</h2>
+   <div class="card"><div style="display:flex;gap:10px;align-items:center;margin-bottom:12px">
+     <button class="btn ghost sm" onclick="shiftMonth(-1)">‹ 이전달</button>
+     <input type="month" value="${mk}" onchange="S.ui.month=this.value;save();vMonth(document.getElementById('view'))" style="max-width:170px">
+     <button class="btn ghost sm" onclick="shiftMonth(1)">다음달 ›</button></div>
+     <table class="cal"><thead><tr>${['월','화','수','목','금','토','일'].map(x=>`<th>${x}</th>`).join('')}</tr></thead>
+       <tbody><tr>${cells}</tr></tbody></table>
+     <p class="hint" style="margin-top:8px">날짜를 클릭하면 그날의 일간 계획으로 이동합니다.</p>
+   </div>
+   <div class="grid2">
+     <div class="card"><h3>이 달의 중점 3</h3>
+       <textarea oninput="setMonth('${mk}','focus',this.value)" placeholder="이 달 가장 중요한 3가지">${esc(m.focus)}</textarea></div>
+     <div class="card"><h3>월 성찰</h3>
+       <label class="fld"><span class="lb">잘된 점</span><textarea oninput="setMonth('${mk}','good',this.value)">${esc(m.good)}</textarea></label>
+       <label class="fld"><span class="lb">아쉬운 점 · 다음 달 조정</span><textarea oninput="setMonth('${mk}','next',this.value)">${esc(m.next)}</textarea></label></div>
+   </div>
+   <div class="card"><h3>이 달 습관 트래커</h3><div class="habgrid" id="habmonth"></div></div>
+   <div class="foot-nav"><button class="btn ghost" onclick="go('annual')">← 연간</button><button class="btn" onclick="go('week')">다음: 주간 →</button></div>`;
+  renderHabMonth(mk,dim);
+}
+function shiftMonth(n){const [Y,M]=S.ui.month.split('-').map(Number);const d=new Date(Y,M-1+n,1);S.ui.month=fmt(d).slice(0,7);save();vMonth(document.getElementById('view'));}
+function renderHabMonth(mk,dim){const el=document.getElementById('habmonth');if(!el)return;
+  let head='<tr><th class="name">습관</th>';for(let d=1;d<=dim;d++)head+=`<th>${d}</th>`;head+='</tr>';
+  let body=S.habits.map(h=>{let row=`<tr><td class="name">${esc(h.name)}</td>`;
+    for(let d=1;d<=dim;d++){const ds=`${mk}-${String(d).padStart(2,'0')}`;const on=S.days[ds]&&S.days[ds].habits&&S.days[ds].habits.includes(h.id);
+      row+=`<td class="hc ${on?'on':''}" onclick="toggleHabit('${ds}','${h.id}',true)">${on?'●':''}</td>`;}
+    return row+'</tr>';}).join('');
+  el.innerHTML=`<table class="hab">${head}${body}</table>`;
+}
+
+/* ============ 6: 주간 ============ */
+function vWeek(v){
+  if(!S.ui.week)S.ui.week=weekStart(today());
+  const ws=S.ui.week; const wk=ensureWeek(ws);
+  const days=[]; for(let i=0;i<7;i++)days.push(addDays(ws,i));
+  v.innerHTML=`
+   <span class="step-badge">6단계 · 실행</span>
+   <h2 class="vh">🧩 주간 계획 (주간 나침반)</h2>
+   <p class="vsub">각 역할의 ‘큰 바위’ 1~2개를 먼저 놓습니다. 급한 일보다 중요한 일 먼저. (프랭클린)</p>
+   <div class="card"><div style="display:flex;gap:10px;align-items:center">
+     <button class="btn ghost sm" onclick="shiftWeek(-7)">‹ 지난주</button>
+     <b>${ws} ~ ${addDays(ws,6)}</b>
+     <button class="btn ghost sm" onclick="shiftWeek(7)">다음주 ›</button></div></div>
+   <div class="card"><h3>역할별 큰 바위 (이번 주 꼭 할 중요한 일)</h3>
+     ${S.profile.roles.map(r=>`<div class="row-item"><div style="flex:none;width:150px;font-weight:700;font-size:12.5px;padding-top:8px">${esc(r.name)}</div>
+       <input type="text" value="${esc((wk.rocks||{})[r.id]||'')}" placeholder="이번 주 이 역할의 큰 바위" oninput="setRock('${ws}','${r.id}',this.value)"></div>`).join('')}
+   </div>
+   <div class="card"><h3>주간 개요</h3>
+     <div class="grid3">${days.map(ds=>{const day=S.days[ds];const n=day&&day.tasks?day.tasks.length:0;const dn=day&&day.tasks?day.tasks.filter(t=>t.status==='done').length:0;
+       return `<div class="list-item" style="cursor:pointer" onclick="openDay('${ds}')"><div class="li-h"><span class="li-t">${ds.slice(5)} (${wd(ds)})</span><span class="li-m">${dn}/${n}</span></div>
+         <div class="li-m">${day&&day.tasks&&day.tasks[0]?esc(day.tasks[0].text):'계획 없음'}</div></div>`;}).join('')}</div>
+   </div>
+   <div class="card"><h3>주 성찰</h3>
+     <label class="fld"><span class="lb">이번 주 잘된 점 · 배움</span><textarea oninput="setWeek('${ws}','good',this.value)">${esc(wk.good)}</textarea></label>
+     <label class="fld"><span class="lb">다음 주 조정</span><textarea oninput="setWeek('${ws}','next',this.value)">${esc(wk.next)}</textarea></label></div>
+   <div class="foot-nav"><button class="btn ghost" onclick="go('month')">← 월간</button><button class="btn" onclick="go('day')">다음: 일간 →</button></div>`;
+}
+function shiftWeek(n){S.ui.week=addDays(S.ui.week,n);save();vWeek(document.getElementById('view'));}
+function setRock(ws,rid,val){const wk=ensureWeek(ws);if(!wk.rocks)wk.rocks={};wk.rocks[rid]=val;save();}
+
+/* ============ 일간 ============ */
+function vDay(v){
+  if(!S.ui.day)S.ui.day=today();
+  const d=S.ui.day; ensureDay(d); const day=S.days[d];
+  v.innerHTML=`
+   <h2 class="vh">📆 일간 계획 · 실천</h2>
+   <div class="card"><div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+     <button class="btn ghost sm" onclick="shiftDay(-1)">‹ 어제</button>
+     <input type="date" value="${d}" onchange="S.ui.day=this.value;save();vDay(document.getElementById('view'))" style="max-width:170px">
+     <button class="btn ghost sm" onclick="shiftDay(1)">내일 ›</button>
+     <b>${wd(d)}요일</b> ${d===today()?'<span class="tag" style="background:var(--accent)">오늘</span>':''}</div></div>
+   ${quoteCard(d)}
+   <div class="grid2" style="margin-top:16px">
+     <div class="card"><h3>우선순위 과제 <span class="hint">(A 반드시 · B 하면좋음 · C 여유되면)</span></h3>
+       <div id="tasks"></div>
+       <div class="addrow">
+         <select id="ntpri" style="max-width:70px"><option value="A">A</option><option value="B" selected>B</option><option value="C">C</option></select>
+         <select id="ntrole" style="max-width:130px">${roleOptions('')}</select>
+         <input type="text" id="nttext" placeholder="할 일" onkeydown="if(event.key==='Enter')addTask()">
+         <button class="btn sm" onclick="addTask()">추가</button></div>
+       <p class="hint" style="margin-top:6px">미완료 과제는 ‘이월’로 다음 날에 넘길 수 있어요.</p>
+       <button class="btn ghost sm no-print" onclick="carryOver('${d}')">↪ 미완료 과제 내일로 이월</button>
+     </div>
+     <div>
+       <div class="card"><h3>오늘의 습관</h3>
+         <div class="chips">${S.habits.map(h=>`<span class="chip ${day.habits.includes(h.id)?'on':''}" onclick="toggleHabit('${d}','${h.id}')">${esc(h.name)}</span>`).join('')||'<span class="hint">습관 관리에서 등록</span>'}</div>
+       </div>
+       <div class="card"><h3>미라클모닝 시간표</h3><div class="sched" id="sched"></div></div>
+     </div>
+   </div>
+   <div class="card"><h3>오늘의 성찰</h3>
+     <div class="grid3">
+       <label class="fld"><span class="lb">👏 칭찬</span><textarea oninput="setDay('${d}','praise',this.value)">${esc(day.praise)}</textarea></label>
+       <label class="fld"><span class="lb">🙏 감사</span><textarea oninput="setDay('${d}','gratitude',this.value)">${esc(day.gratitude)}</textarea></label>
+       <label class="fld"><span class="lb">🔎 성찰·다짐</span><textarea oninput="setDay('${d}','reflect',this.value)">${esc(day.reflect)}</textarea></label>
+     </div>
+     <label class="fld"><span class="lb">📝 오늘의 일상 기록</span><textarea oninput="setDay('${d}','journal',this.value)" placeholder="오늘 하루를 자유롭게 기록">${esc(day.journal)}</textarea></label>
+   </div>`;
+  renderTasks(d); renderSched(d);
+}
+function shiftDay(n){S.ui.day=addDays(S.ui.day,n);save();vDay(document.getElementById('view'));}
+function openDay(ds){S.ui.day=ds;S.view='day';save();renderNav();render();window.scrollTo(0,0);}
+const STATUSES=[["todo","○ 예정"],["prog","→ 진행"],["done","✓ 완료"],["hold","‖ 연기"],["deleg","» 위임"],["drop","✗ 취소"]];
+function taskRow(d,i,t){
+  return `<div class="task s-${t.status}">
+    <div class="pri ${t.priority}">${t.priority}</div>
+    <div class="txt">${t.role?`<span class="role">${esc(roleName(t.role))}</span>`:''}${esc(t.text)}</div>
+    <select class="stsel no-print" onchange="setTaskStatus('${d}',${i},this.value)">${STATUSES.map(s=>`<option value="${s[0]}" ${t.status===s[0]?'selected':''}>${s[1]}</option>`).join('')}</select>
+    <button class="del-x no-print" onclick="delTask('${d}',${i})">✕</button></div>`;
+}
+function renderTasks(d){const el=document.getElementById('tasks');if(!el)return;const day=S.days[d];
+  if(!day.tasks.length){el.innerHTML='<p class="hint">할 일을 추가하세요. 가장 중요한 일부터 A로.</p>';return;}
+  const order={A:0,B:1,C:2};
+  day.tasks.sort((a,b)=>(order[a.priority]-order[b.priority]));
+  el.innerHTML=day.tasks.map((t,i)=>taskRow(d,i,t)).join('');
+}
+function addTask(){const d=S.ui.day;const txt=document.getElementById('nttext').value.trim();if(!txt)return;
+  S.days[d].tasks.push({text:txt,priority:document.getElementById('ntpri').value,role:document.getElementById('ntrole').value,status:'todo'});
+  save();document.getElementById('nttext').value='';renderTasks(d);}
+function setTaskStatus(d,i,st){S.days[d].tasks[i].status=st;save();renderTasks(d);}
+function delTask(d,i){S.days[d].tasks.splice(i,1);save();renderTasks(d);}
+function carryOver(d){const nd=addDays(d,1);ensureDay(nd);let moved=0;
+  S.days[d].tasks.forEach(t=>{if(t.status!=='done'&&t.status!=='drop'){S.days[nd].tasks.push({...t,status:'todo'});moved++;}});
+  save();toast(moved+'개 과제를 '+nd+'로 이월했습니다');}
+function renderSched(d){const el=document.getElementById('sched');if(!el)return;const day=S.days[d];let h='';
+  for(let hr=5;hr<=23;hr++){const key=String(hr).padStart(2,'0');
+    h+=`<div class="h">${key}:00</div><div class="c"><input type="text" value="${esc(day.sched[key]||'')}" oninput="setSched('${d}','${key}',this.value)"></div>`;}
+  el.innerHTML=h;}
+function setSched(d,k,val){S.days[d].sched[k]=val;save();}
+
+/* ============ 기록: 일상/독서/구상 ============ */
+function vJournal(v){
+  const entries=Object.keys(S.days).filter(d=>S.days[d].journal||S.days[d].reflect).sort().reverse();
+  v.innerHTML=`
+   <h2 class="vh">📝 일상 기록</h2>
+   <p class="vsub">날짜별 일상·성찰 기록 모음입니다. (일간 계획에서 작성한 내용이 모입니다)</p>
+   <div class="card"><button class="btn sm" onclick="openDay(today())">오늘 기록 쓰기 →</button></div>
+   ${entries.length? entries.map(d=>{const day=S.days[d];return `<div class="list-item"><div class="li-h"><span class="li-t">${d} (${wd(d)})</span><span class="li-m no-print"><button class="btn ghost sm" onclick="openDay('${d}')">열기</button></span></div>
+     ${day.journal?`<div style="font-size:13px;margin-top:6px;white-space:pre-wrap">${esc(day.journal)}</div>`:''}
+     ${day.reflect?`<div class="li-m" style="margin-top:6px">🔎 ${esc(day.reflect)}</div>`:''}
+     ${day.gratitude?`<div class="li-m">🙏 ${esc(day.gratitude)}</div>`:''}</div>`;}).join('') : '<p class="hint">아직 기록이 없습니다.</p>'}`;
+}
+function vReading(v){
+  v.innerHTML=`
+   <h2 class="vh">📚 독서 기록</h2>
+   <p class="vsub">읽은 책과 '생긴 질문·적용'을 남깁니다. 배움이 실천으로 이어지도록.</p>
+   <div class="card"><h3>새 독서 기록</h3>
+     <div class="grid2">
+       <label class="fld"><span class="lb">제목</span><input type="text" id="rt"></label>
+       <label class="fld"><span class="lb">저자</span><input type="text" id="ra"></label>
+     </div>
+     <label class="fld"><span class="lb">핵심 문장 · 깨달음</span><textarea id="rn"></textarea></label>
+     <label class="fld"><span class="lb">나의 적용 (무엇을 실천할까)</span><textarea id="rp"></textarea></label>
+     <label class="fld"><span class="lb">별점</span><select id="rr">${[5,4,3,2,1].map(n=>`<option value="${n}">${'★'.repeat(n)}</option>`).join('')}</select></label>
+     <button class="btn" onclick="addReading()">기록 추가</button>
+   </div>
+   <div id="rlist"></div>`;
+  renderReading();
+}
+function addReading(){const t=document.getElementById('rt').value.trim();if(!t){toast('제목을 입력하세요');return;}
+  S.reading.unshift({id:uid(),date:today(),title:t,author:document.getElementById('ra').value,note:document.getElementById('rn').value,apply:document.getElementById('rp').value,rating:parseInt(document.getElementById('rr').value)});
+  save();vReading(document.getElementById('view'));toast('독서 기록을 추가했습니다');}
+function renderReading(){const el=document.getElementById('rlist');if(!el)return;
+  el.innerHTML=S.reading.length? S.reading.map((b,i)=>`<div class="list-item"><div class="li-h"><span class="li-t">${esc(b.title)} <span class="stars">${'★'.repeat(b.rating||0)}</span></span><span class="li-m no-print"><button class="del-x" onclick="S.reading.splice(${i},1);save();renderReading()">✕</button></span></div>
+    <div class="li-m">${esc(b.author||'')} · ${b.date}</div>
+    ${b.note?`<div style="font-size:13px;margin-top:6px">“${esc(b.note)}”</div>`:''}
+    ${b.apply?`<div class="li-m" style="margin-top:4px">➡ 적용: ${esc(b.apply)}</div>`:''}</div>`).join('') : '<p class="hint">아직 독서 기록이 없습니다.</p>';}
+function vIdeas(v){
+  v.innerHTML=`
+   <h2 class="vh">💡 구상 기록</h2>
+   <p class="vsub">떠오른 아이디어·수업 구상·기획을 빠르게 붙잡아 둡니다.</p>
+   <div class="card"><div class="addrow">
+     <input type="text" id="itag" placeholder="분류(예: 수업, 연구, 개인)" style="max-width:150px">
+     <input type="text" id="ititle" placeholder="아이디어 한 줄" onkeydown="if(event.key==='Enter')addIdea()">
+     <button class="btn sm" onclick="addIdea()">추가</button></div>
+     <textarea id="ibody" placeholder="자세한 구상 내용 (선택)"></textarea>
+   </div>
+   <div id="ilist"></div>`;
+  renderIdeas();
+}
+function addIdea(){const t=document.getElementById('ititle').value.trim();if(!t)return;
+  S.ideas.unshift({id:uid(),date:today(),tag:document.getElementById('itag').value,title:t,text:document.getElementById('ibody').value});
+  save();vIdeas(document.getElementById('view'));toast('구상을 기록했습니다');}
+function renderIdeas(){const el=document.getElementById('ilist');if(!el)return;
+  el.innerHTML=S.ideas.length? S.ideas.map((it,i)=>`<div class="list-item"><div class="li-h"><span class="li-t">${it.tag?`<span class="tag">${esc(it.tag)}</span> `:''}${esc(it.title)}</span><span class="li-m no-print"><button class="del-x" onclick="S.ideas.splice(${i},1);save();renderIdeas()">✕</button></span></div>
+    <div class="li-m">${it.date}</div>${it.text?`<div style="font-size:13px;margin-top:5px;white-space:pre-wrap">${esc(it.text)}</div>`:''}</div>`).join('') : '<p class="hint">아직 구상 기록이 없습니다.</p>';}
+
+/* ============ 습관 ============ */
+function vHabits(v){
+  v.innerHTML=`
+   <h2 class="vh">🌱 습관 관리</h2>
+   <p class="vsub">작게·쉽게·빠르게 시작합니다. 성공할 수밖에 없을 만큼 작게. (Tiny Habits)</p>
+   <div class="card"><h3>나의 습관</h3><div id="hlist"></div>
+     <div class="addrow"><select id="hpr" style="max-width:110px"><option>작게</option><option>쉽게</option><option>빠르게</option></select>
+       <input type="text" id="hn" placeholder="예: 물리 논문 1쪽 읽기" onkeydown="if(event.key==='Enter')addHabit()">
+       <button class="btn sm" onclick="addHabit()">추가</button></div>
+   </div>
+   <div class="card co-acc"><div class="tag">습관 설계 팁</div>
+     ‘언제-어디서’를 정하면 실천율이 오릅니다. 예: <b>“아침에 커피를 내린 뒤(신호) → 감사 3줄을 쓴다(습관)”</b> (습관 쌓기)</div>`;
+  renderHList();
+}
+function renderHList(){const el=document.getElementById('hlist');if(!el)return;
+  el.innerHTML=S.habits.map((h,i)=>`<div class="row-item">
+    <select style="max-width:90px" onchange="S.habits[${i}].principle=this.value;save()">${['작게','쉽게','빠르게'].map(p=>`<option ${h.principle===p?'selected':''}>${p}</option>`).join('')}</select>
+    <input type="text" value="${esc(h.name)}" oninput="S.habits[${i}].name=this.value;save()">
+    <span class="li-m" style="padding-top:8px;white-space:nowrap">🔥 ${habitStreak(h.id)}일</span>
+    <button class="del-x" onclick="S.habits.splice(${i},1);save();renderHList()">✕</button></div>`).join('');}
+function addHabit(){const n=document.getElementById('hn').value.trim();if(!n)return;S.habits.push({id:uid(),name:n,principle:document.getElementById('hpr').value});save();renderHList();document.getElementById('hn').value='';}
+function toggleHabit(d,hid,stay){ensureDay(d);const a=S.days[d].habits;const i=a.indexOf(hid);if(i>=0)a.splice(i,1);else a.push(hid);save();render();}
+function habitDayPct(d){if(!S.habits.length)return 0;const day=S.days[d];return Math.round((day.habits.length/S.habits.length)*100);}
+function habitStreak(hid){let s=0;let d=today();for(let i=0;i<400;i++){const day=S.days[d];if(day&&day.habits&&day.habits.includes(hid))s++;else break;d=addDays(d,-1);}return s;}
+
+/* ============ TIMER (뽀모도로 + 비주얼) ============ */
+let TM={mode:'pomo',phase:'focus',running:false,remaining:1500,total:1500,endAt:0,cycle:0,auto:true,cfg:{focus:25,short:5,long:15,longEvery:4},free:15};
+let tmInt=null,AC=null;
+function fmtT(s){s=Math.max(0,Math.round(s));return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');}
+function phInfo(){if(TM.mode==='free')return{l:'집중',c:'#e0554f'};if(TM.phase==='focus')return{l:'집중 '+(TM.cycle+1),c:'#e0554f'};if(TM.phase==='long')return{l:'긴 휴식',c:'#2fa36b'};return{l:'휴식',c:'#2fa36b'};}
+function ensureAudio(){try{if(!AC)AC=new(window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume();}catch(e){}}
+function beep(){try{if(!AC)return;const n=AC.currentTime;[880,1174,880].forEach((f,i)=>{const o=AC.createOscillator(),g=AC.createGain();o.frequency.value=f;o.connect(g);g.connect(AC.destination);const t=n+i*.25;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.34,t+.02);g.gain.exponentialRampToValueAtTime(.0001,t+.23);o.start(t);o.stop(t+.24);});}catch(e){}}
+function tmSetMode(m){tmPause();TM.mode=m;if(m==='pomo'){TM.phase='focus';TM.cycle=0;TM.total=TM.cfg.focus*60;}else TM.total=TM.free*60;TM.remaining=TM.total;if(S.view==='timer')vTimer(document.getElementById('view'));}
+function tmSetFree(min){tmPause();TM.mode='free';TM.free=min;TM.total=min*60;TM.remaining=min*60;tmDraw();tmRead();}
+function tmToggle(){TM.running?tmPause():tmStart();}
+function tmStart(){if(TM.running)return;ensureAudio();TM.running=true;TM.endAt=Date.now()+TM.remaining*1000;tmInt=setInterval(tmTick,200);tmBtn();}
+function tmPause(){if(!TM.running)return;TM.running=false;TM.remaining=Math.max(0,(TM.endAt-Date.now())/1000);if(tmInt){clearInterval(tmInt);tmInt=null;}document.title='나의 인생·실천 다이어리';tmBtn();}
+function tmReset(){tmPause();TM.remaining=TM.total;tmDraw();tmRead();}
+function tmTick(){const r=(TM.endAt-Date.now())/1000;TM.remaining=r;if(r<=0){TM.remaining=0;tmDraw();tmRead();tmDone();return;}tmDraw();tmRead();document.title='⏱ '+fmtT(r)+' · '+phInfo().l;}
+function tmDone(){if(tmInt){clearInterval(tmInt);tmInt=null;}TM.running=false;document.title='나의 인생·실천 다이어리';beep();let msg='';
+  if(TM.mode==='pomo'){if(TM.phase==='focus'){addFocus(TM.cfg.focus);TM.cycle++;if(TM.cycle%TM.cfg.longEvery===0){TM.phase='long';TM.total=TM.cfg.long*60;msg='긴 휴식!';}else{TM.phase='short';TM.total=TM.cfg.short*60;msg='집중 완료! 휴식하세요.';}}else{TM.phase='focus';TM.total=TM.cfg.focus*60;msg='다시 집중!';}}
+  else{addFocus(Math.round(TM.total/60));msg='집중 완료! 잘했어요.';}
+  TM.remaining=TM.total;if(S.view==='timer')vTimer(document.getElementById('view'));toast('⏱ '+msg);if(TM.auto&&TM.mode==='pomo')tmStart();}
+function addFocus(min){const d=today();S.focusLog[d]=(S.focusLog[d]||0)+min;save();}
+function tmDraw(){const p=document.getElementById('discFill');if(!p)return;const f=TM.total?Math.max(0,Math.min(1,TM.remaining/TM.total)):0;const cx=125,cy=125,r=108;
+  if(f>=.9999)p.setAttribute('d',`M ${cx} ${cy-r} A ${r} ${r} 0 1 1 ${cx-0.01} ${cy-r} Z`);else if(f<=0)p.setAttribute('d','');
+  else{const th=f*2*Math.PI,ex=cx+r*Math.sin(th),ey=cy-r*Math.cos(th),la=f>.5?1:0;p.setAttribute('d',`M ${cx} ${cy} L ${cx} ${cy-r} A ${r} ${r} 0 ${la} 1 ${ex.toFixed(2)} ${ey.toFixed(2)} Z`);}
+  p.setAttribute('fill',phInfo().c);}
+function tmRead(){const t=document.getElementById('discTime');if(t)t.textContent=fmtT(TM.remaining);const l=document.getElementById('discPl');if(l){const pi=phInfo();l.textContent=pi.l;l.style.color=pi.c;}}
+function tmBtn(){const b=document.getElementById('tmToggle');if(b)b.textContent=TM.running?'⏸ 일시정지':'▶ 시작';}
+function ticks(){let s='';const cx=125,cy=125;for(let i=0;i<60;i++){const a=i/60*2*Math.PI,mj=i%5===0,r1=108,r2=mj?96:102,x1=cx+r1*Math.sin(a),y1=cy-r1*Math.cos(a),x2=cx+r2*Math.sin(a),y2=cy-r2*Math.cos(a);s+=`<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="${mj?'#9fb0c0':'#d6dee6'}" stroke-width="${mj?2:1}"/>`;}return s;}
+function vTimer(v){
+  const ft=S.focusLog[today()]||0;
+  v.innerHTML=`
+   <h2 class="vh">⏱ 집중 타이머</h2>
+   <p class="vsub">시간이 줄면 원판이 함께 줄어드는 비주얼 타이머입니다. 오늘 집중: <b>${ft}분</b></p>
+   <div class="card" style="text-align:center;max-width:420px">
+     <div class="modeseg">
+       <button class="${TM.mode==='pomo'?'on':''}" onclick="tmSetMode('pomo')">뽀모도로 25+5</button>
+       <button class="${TM.mode==='free'?'on':''}" onclick="tmSetMode('free')">비주얼 타이머</button></div>
+     <div class="disc"><svg viewBox="0 0 250 250" width="250" height="250">
+       <circle cx="125" cy="125" r="108" fill="#f1f4f8"/><path id="discFill" d="" fill="#e0554f"/>${ticks()}
+       <circle cx="125" cy="125" r="108" fill="none" stroke="#c8d3dd" stroke-width="2"/><circle cx="125" cy="125" r="4" fill="#8496a6"/></svg>
+       <div class="center"><div class="time" id="discTime">25:00</div><div class="pl" id="discPl">집중</div></div></div>
+     <div class="tmc"><button class="btn" id="tmToggle" onclick="tmToggle()">▶ 시작</button><button class="btn ghost" onclick="tmReset()">↺ 리셋</button></div>
+     ${TM.mode==='free'?`<div class="presets">${[5,10,15,25,50].map(m=>`<button onclick="tmSetFree(${m})">${m}분</button>`).join('')}</div>`:
+       `<div style="margin-top:12px"><label style="font-size:13px;font-weight:600"><input type="checkbox" ${TM.auto?'checked':''} onchange="TM.auto=this.checked" style="width:auto"> 다음 단계 자동 시작</label></div>`}
+   </div>
+   <div class="callout co-acc" style="max-width:420px">타이머를 켠 동안은 <b>딱 한 가지</b>만 하세요. 폰은 화면 밖에.</div>`;
+  tmDraw();tmRead();tmBtn();
+}
+
+/* ============ 명언 페이지 ============ */
+function vQuotes(v){
+  const d=today();
+  v.innerHTML=`<h2 class="vh">🗣️ 오늘의 명언</h2><p class="vsub">매일 한 문장 · 영어와 한글, 핵심 표현과 듣기로 하루를 엽니다.</p>
+   ${quoteCard(d)}
+   <div class="card" style="margin-top:16px"><h3>이번 주 명언 미리보기</h3>
+     ${[0,1,2,3,4,5,6].map(i=>{const ds=addDays(weekStart(d),i);const q=quoteFor(ds);return `<div style="padding:8px 0;border-bottom:1px solid var(--line)"><b style="font-size:12px;color:var(--muted)">${ds.slice(5)} (${wd(ds)})</b><br><span style="font-style:italic">"${esc(q.en)}"</span><br><span class="li-m">${esc(q.ko)}</span></div>`;}).join('')}</div>`;
+}
+
+/* ============ 알림 ============ */
+function vRemind(v){
+  const perm=(('Notification'in window)?Notification.permission:'unsupported');
+  v.innerHTML=`
+   <h2 class="vh">🔔 일정 알림</h2>
+   <p class="vsub">웹 다이어리를 열어둔 동안 정해진 시각에 알림을 띄웁니다. 구글 캘린더로 내보내면 휴대폰에서도 울려요.</p>
+   <div class="card"><div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+     <button class="btn ${perm==='granted'?'ghost':''}" onclick="askNoti()">${perm==='granted'?'✓ 브라우저 알림 켜짐':'브라우저 알림 켜기'}</button>
+     <button class="btn ghost" onclick="exportICS()">📅 전체 일정 .ics 내보내기</button>
+     <span class="hint">${perm==='denied'?'브라우저 설정에서 알림이 차단되어 있습니다.':''}</span>
+   </div></div>
+   <div class="card"><h3>새 알림</h3>
+     <div class="addrow"><input type="datetime-local" id="rmdt" style="max-width:220px"><input type="text" id="rmtx" placeholder="알림 내용" onkeydown="if(event.key==='Enter')addRemind()"><button class="btn sm" onclick="addRemind()">추가</button></div>
+   </div>
+   <div id="rmlist"></div>`;
+  renderRemind();
+}
+function askNoti(){if(!('Notification'in window)){toast('이 브라우저는 알림을 지원하지 않습니다');return;}Notification.requestPermission().then(p=>{toast(p==='granted'?'알림이 켜졌습니다':'알림 권한이 거부되었습니다');vRemind(document.getElementById('view'));});}
+function addRemind(){const dt=document.getElementById('rmdt').value;const tx=document.getElementById('rmtx').value.trim();if(!dt||!tx){toast('시각과 내용을 입력하세요');return;}
+  S.reminders.push({id:uid(),dt:dt,text:tx,done:false,notified:false});save();vRemind(document.getElementById('view'));toast('알림을 추가했습니다');}
+function renderRemind(){const el=document.getElementById('rmlist');if(!el)return;const list=[...S.reminders].sort((a,b)=>a.dt.localeCompare(b.dt));
+  el.innerHTML=list.length? list.map(r=>{const i=S.reminders.indexOf(r);return `<div class="list-item"><div class="li-h">
+    <span class="li-t" style="${r.done?'text-decoration:line-through;color:#9aa3af':''}">${r.dt.replace('T',' ')} · ${esc(r.text)}</span>
+    <span class="no-print" style="display:flex;gap:6px">
+      ${r.gEventId?'<span class="li-m" style="color:var(--accent);align-self:center">✓ 구글 등록됨</span>':(gTokenValid()?`<button class="btn ghost sm" onclick="pushReminder(${i})">구글 등록</button>`:`<a class="btn ghost sm" target="_blank" href="${gcalLink(r)}">캘린더 추가</a>`)}
+      <button class="btn ghost sm" onclick="S.reminders[${i}].done=!S.reminders[${i}].done;save();renderRemind()">${r.done?'되돌리기':'완료'}</button>
+      <button class="del-x" onclick="S.reminders.splice(${i},1);save();renderRemind()">✕</button></span></div></div>`;}).join('') : '<p class="hint">등록된 알림이 없습니다.</p>';}
+function gcalLink(r){const s=r.dt.replace(/[-:]/g,'').slice(0,15);const dt=s.length===13?s+'00':s;const start=dt.replace('T','T');
+  // build start/end (1h)
+  const d=new Date(r.dt);const e=new Date(d.getTime()+3600000);
+  const f=x=>x.getFullYear()+String(x.getMonth()+1).padStart(2,'0')+String(x.getDate()).padStart(2,'0')+'T'+String(x.getHours()).padStart(2,'0')+String(x.getMinutes()).padStart(2,'0')+'00';
+  return 'https://calendar.google.com/calendar/render?action=TEMPLATE&text='+encodeURIComponent(r.text)+'&dates='+f(d)+'/'+f(e);}
+function exportICS(){let lines=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//life-diary//KO'];
+  S.reminders.forEach(r=>{const d=new Date(r.dt);const e=new Date(d.getTime()+3600000);
+    const f=x=>x.getFullYear()+String(x.getMonth()+1).padStart(2,'0')+String(x.getDate()).padStart(2,'0')+'T'+String(x.getHours()).padStart(2,'0')+String(x.getMinutes()).padStart(2,'0')+'00';
+    lines.push('BEGIN:VEVENT','UID:'+r.id+'@lifediary','DTSTART:'+f(d),'DTEND:'+f(e),'SUMMARY:'+r.text.replace(/\n/g,' '),'END:VEVENT');});
+  lines.push('END:VCALENDAR');const blob=new Blob([lines.join('\r\n')],{type:'text/calendar'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='diary_events.ics';a.click();toast('.ics 파일을 내려받았습니다 (구글 캘린더에서 가져오기)');}
+function checkReminders(){if(!('Notification'in window)||Notification.permission!=='granted')return;const now=new Date();
+  (S.reminders||[]).forEach(r=>{if(r.done||r.notified)return;if(new Date(r.dt)<=now){try{new Notification('다이어리 알림',{body:r.text});}catch(e){}toast('🔔 '+r.text);r.notified=true;save();}});}
+
+/* ============ 통계 ============ */
+function vStats(v){
+  const days=Object.keys(S.days);
+  let tTot=0,tDone=0;days.forEach(d=>{(S.days[d].tasks||[]).forEach(t=>{tTot++;if(t.status==='done')tDone++;});});
+  const focusTot=Object.values(S.focusLog||{}).reduce((a,b)=>a+b,0);
+  const wk=weekStart(today());const wdays=[0,1,2,3,4,5,6].map(i=>addDays(wk,i));
+  const habRows=S.habits.map(h=>{const done=wdays.filter(d=>S.days[d]&&S.days[d].habits&&S.days[d].habits.includes(h.id)).length;return {name:h.name,done,streak:habitStreak(h.id)};});
+  v.innerHTML=`
+   <h2 class="vh">📊 성찰 · 통계</h2>
+   <p class="vsub">숫자는 채찍이 아니라 거울입니다. 낮으면 계획을 더 현실적으로 조정하면 됩니다.</p>
+   <div class="stat">
+     <div class="s"><div class="n">${tTot?Math.round(tDone/tTot*100):0}%</div><div class="l">과제 완료율(전체)</div></div>
+     <div class="s"><div class="n">${tDone}</div><div class="l">완료한 과제</div></div>
+     <div class="s"><div class="n">${Math.round(focusTot/6)/10}h</div><div class="l">누적 집중 시간</div></div>
+     <div class="s"><div class="n">${S.reading.length}</div><div class="l">독서 기록</div></div>
+     <div class="s"><div class="n">${S.ideas.length}</div><div class="l">구상 기록</div></div>
+   </div>
+   <div class="card" style="margin-top:16px"><h3>이번 주 습관 실천 (7일 중)</h3>
+     ${habRows.length? habRows.map(h=>`<div style="margin:8px 0"><div style="display:flex;justify-content:space-between;font-size:13px"><span>${esc(h.name)}</span><span class="li-m">${h.done}/7 · 🔥${h.streak}일</span></div><div class="bar"><i style="width:${Math.round(h.done/7*100)}%"></i></div></div>`).join('') : '<p class="hint">습관을 등록하세요.</p>'}
+   </div>
+   <div class="card"><h3>데이터</h3>
+     <p class="hint" style="margin-top:-4px">모든 기록은 이 브라우저에 저장됩니다. 정기적으로 <b>백업</b>하고, 기기 이동 시 <b>복원</b>하세요.</p>
+     <button class="btn" onclick="exportJSON()">💾 전체 백업(JSON)</button>
+     <button class="btn ghost" onclick="document.getElementById('imp').click()">📂 복원</button>
+     <button class="btn ghost" onclick="window.print()">🖨 인쇄 / PDF 저장</button>
+   </div>`;
+}
+
+/* ============ ensure helpers ============ */
+function ensureDay(d){if(!S.days[d])S.days[d]={tasks:[],sched:{},habits:[],praise:"",gratitude:"",reflect:"",journal:""};
+  const x=S.days[d];x.tasks=x.tasks||[];x.sched=x.sched||{};x.habits=x.habits||[];if(x.praise==null)x.praise="";if(x.gratitude==null)x.gratitude="";if(x.reflect==null)x.reflect="";if(x.journal==null)x.journal="";return x;}
+function ensureMonth(mk){if(!S.months[mk])S.months[mk]={focus:"",good:"",next:""};return S.months[mk];}
+function ensureWeek(ws){if(!S.weeks[ws])S.weeks[ws]={rocks:{},good:"",next:""};return S.weeks[ws];}
+function setDay(d,k,val){ensureDay(d);S.days[d][k]=val;save();}
+function setMonth(mk,k,val){ensureMonth(mk)[k]=val;save();}
+function setWeek(ws,k,val){ensureWeek(ws)[k]=val;save();}
+
+/* ============ DATA ============ */
+function exportJSON(){const blob=new Blob([JSON.stringify(S,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='나의다이어리_백업_'+today()+'.json';a.click();toast('백업 파일을 내려받았습니다');}
+function importJSON(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{S=Object.assign(blank(),JSON.parse(r.result));save();renderNav();render();refreshWho();toast('복원 완료');}catch(err){alert('복원 실패: 올바른 백업 파일이 아닙니다.');}};r.readAsText(f);e.target.value='';}
+
+/* ============ GOOGLE CALENDAR (OAuth) ============ */
+const GCAL={token:null,exp:0,tc:null};
+function tzName(){try{return Intl.DateTimeFormat().resolvedOptions().timeZone||'Asia/Seoul';}catch(e){return 'Asia/Seoul';}}
+function gTokenValid(){return GCAL.token&&Date.now()<GCAL.exp-10000;}
+function loadGIS(cb){
+  if(window.google&&google.accounts&&google.accounts.oauth2){cb&&cb();return;}
+  if(document.getElementById('gis-src')){let n=0;const iv=setInterval(()=>{n++;if(window.google&&google.accounts&&google.accounts.oauth2){clearInterval(iv);cb&&cb();}else if(n>40){clearInterval(iv);toast('구글 라이브러리 로드 지연 — 다시 시도하세요');}},200);return;}
+  const s=document.createElement('script');s.id='gis-src';s.src='https://accounts.google.com/gsi/client';s.async=true;s.defer=true;
+  s.onload=()=>cb&&cb();s.onerror=()=>toast('구글 라이브러리 로드 실패 — 인터넷 연결/차단을 확인하세요');
+  document.head.appendChild(s);
+}
+function gInit(cb){
+  const id=((S.settings&&S.settings.gClientId)||'').trim();
+  if(!id){toast('먼저 클라이언트 ID를 저장하세요');return;}
+  loadGIS(()=>{try{
+    if(!GCAL.tc){
+      GCAL.tc=google.accounts.oauth2.initTokenClient({
+        client_id:id, scope:'https://www.googleapis.com/auth/calendar.events',
+        callback:(resp)=>{ if(resp&&resp.access_token){GCAL.token=resp.access_token;GCAL.exp=Date.now()+((resp.expires_in||3600)*1000);toast('구글 로그인 완료');if(S.view==='gsync')vGSync(document.getElementById('view'));} else {toast('로그인 취소/실패');} }
+      });
+    }
+    if(cb)cb();
+  }catch(e){toast('구글 초기화 오류: '+e.message);} });
+}
+function gSignIn(){ gInit(()=>{ if(GCAL.tc)GCAL.tc.requestAccessToken({prompt:gTokenValid()?'':'consent'}); }); }
+function gSignOut(){ try{ if(GCAL.token&&window.google&&google.accounts&&google.accounts.oauth2)google.accounts.oauth2.revoke(GCAL.token,()=>{}); }catch(e){} GCAL.token=null;GCAL.exp=0;toast('구글 로그아웃');if(S.view==='gsync')vGSync(document.getElementById('view')); }
+async function gFetch(url,opt){opt=opt||{};opt.headers=Object.assign({'Authorization':'Bearer '+GCAL.token,'Content-Type':'application/json'},opt.headers||{});
+  const r=await fetch(url,opt);if(!r.ok){const t=await r.text();throw new Error(r.status+' '+t.slice(0,140));}return r.json();}
+function isoLocal(x){const p=n=>String(n).padStart(2,'0');return x.getFullYear()+'-'+p(x.getMonth()+1)+'-'+p(x.getDate())+'T'+p(x.getHours())+':'+p(x.getMinutes())+':00';}
+async function gcalInsert(summary,dtLocal,mins){ if(!gTokenValid())throw new Error('로그인 필요');
+  const start=dtLocal.length===16?dtLocal+':00':dtLocal;const s=new Date(start);const e=new Date(s.getTime()+(mins||60)*60000);
+  const cal=encodeURIComponent(S.settings.gcalId||'primary');
+  const body={summary:summary,start:{dateTime:isoLocal(s),timeZone:tzName()},end:{dateTime:isoLocal(e),timeZone:tzName()},reminders:{useDefault:false,overrides:[{method:'popup',minutes:10}]}};
+  return gFetch('https://www.googleapis.com/calendar/v3/calendars/'+cal+'/events',{method:'POST',body:JSON.stringify(body)});}
+async function gcalList(dateStr){ if(!gTokenValid())throw new Error('로그인 필요');
+  const cal=encodeURIComponent(S.settings.gcalId||'primary');
+  const tMin=new Date(dateStr+'T00:00:00').toISOString(),tMax=new Date(dateStr+'T23:59:59').toISOString();
+  const url='https://www.googleapis.com/calendar/v3/calendars/'+cal+'/events?singleEvents=true&orderBy=startTime&timeMin='+encodeURIComponent(tMin)+'&timeMax='+encodeURIComponent(tMax);
+  const res=await gFetch(url);return res.items||[];}
+async function pushReminder(i){const r=S.reminders[i];if(!r)return;try{const ev=await gcalInsert(r.text,r.dt,60);if(ev&&ev.id){r.gEventId=ev.id;save();toast('구글 캘린더에 등록되었습니다');renderRemind();}}catch(e){toast('등록 실패: '+e.message);}}
+async function pushAllReminders(){if(!gTokenValid()){toast('구글 로그인이 필요합니다');return;}let n=0;for(let i=0;i<S.reminders.length;i++){const r=S.reminders[i];if(r.done||r.gEventId)continue;try{const ev=await gcalInsert(r.text,r.dt,60);if(ev&&ev.id){r.gEventId=ev.id;n++;}}catch(e){}}save();renderRemind&&renderRemind();toast(n+'개 알림을 구글 캘린더에 등록했습니다');}
+async function loadTodayG(){const box=document.getElementById('gevents');if(!box)return;box.innerHTML='<p class="hint">불러오는 중…</p>';
+  try{const items=await gcalList(today());box.innerHTML=items.length?items.map(ev=>{const t=ev.start&&ev.start.dateTime?ev.start.dateTime.slice(11,16):'종일';return `<div style="font-size:13px;margin:5px 0">🗓️ <b>${t}</b> · ${esc(ev.summary||'(제목 없음)')}</div>`;}).join(''):'<p class="hint">오늘 구글 캘린더 일정이 없습니다.</p>';}
+  catch(e){box.innerHTML='<p class="hint" style="color:var(--del)">불러오기 실패: '+esc(e.message)+'</p>';}}
+
+function vGSync(v){
+  const on=gTokenValid(); const cid=(S.settings.gClientId||'');
+  v.innerHTML=`
+   <h2 class="vh">🔗 구글 계정 연동 (캘린더)</h2>
+   <p class="vsub">구글 로그인(OAuth)으로 다이어리의 알림·일정을 <b>내 구글 캘린더에 직접 등록</b>하고, 오늘 일정을 불러옵니다. 휴대폰 구글 캘린더 앱에서도 알림이 울립니다.</p>
+   <div class="card"><h3>연결 설정</h3>
+     <label class="fld"><span class="lb">OAuth 클라이언트 ID <span class="hint">(구글 클라우드에서 발급 — 아래 안내 참고)</span></span>
+       <input type="text" value="${esc(cid)}" oninput="setV('settings.gClientId',this.value)" placeholder="000000-xxxx.apps.googleusercontent.com"></label>
+     <label class="fld"><span class="lb">캘린더 ID <span class="hint">(기본: primary / 특정 캘린더는 그 캘린더 설정의 '캘린더 ID')</span></span>
+       <input type="text" value="${esc(S.settings.gcalId||'primary')}" oninput="setV('settings.gcalId',this.value)" placeholder="primary"></label>
+     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px">
+       ${on?`<button class="btn ghost" onclick="gSignOut()">로그아웃</button><span class="tag" style="background:var(--accent);align-self:center">● 연결됨</span>`
+            :`<button class="btn" onclick="gSignIn()">구글 계정으로 로그인</button>`}
+     </div>
+   </div>
+   ${on?`<div class="card"><h3>오늘 구글 일정</h3><div id="gevents"><p class="hint">아래 버튼으로 불러오세요.</p></div>
+     <div style="margin-top:8px"><button class="btn ghost sm" onclick="loadTodayG()">오늘 일정 불러오기</button>
+       <button class="btn ghost sm" onclick="pushAllReminders()">미등록 알림 모두 캘린더에 등록</button></div></div>`:''}
+   <div class="card"><h3>설정 방법 (처음 1회, 약 5분)</h3>
+     <ol style="font-size:13px;line-height:1.9;padding-left:20px;margin:4px 0">
+       <li><b>console.cloud.google.com</b> 접속 → 프로젝트 만들기(아무 이름).</li>
+       <li>왼쪽 <b>API 및 서비스 → 라이브러리</b>에서 <b>Google Calendar API</b> 검색 → <b>사용 설정</b>.</li>
+       <li><b>OAuth 동의 화면</b> 구성: User Type <b>외부</b>, 앱 이름/이메일 입력, 저장. 테스트 사용자에 <b>본인 지메일</b> 추가.</li>
+       <li><b>사용자 인증 정보 → 사용자 인증 정보 만들기 → OAuth 클라이언트 ID</b> → 유형 <b>웹 애플리케이션</b>.</li>
+       <li><b>승인된 자바스크립트 원본</b>에 이 다이어리를 여는 주소를 추가:
+         <div class="url" style="background:#0f172a;color:#e2e8f0;border-radius:8px;padding:8px 10px;font-family:ui-monospace,monospace;font-size:12.5px;margin:4px 0;word-break:break-all">https://parkhyunggoon.github.io</div>
+         (GitHub Pages에 올려 쓸 경우. 다른 곳에 올리면 그 주소를 넣으세요. 파일을 그냥 더블클릭한 <b>file:// 방식은 구글 로그인이 안 됩니다</b> — 반드시 https 주소 필요.)</li>
+       <li>생성된 <b>클라이언트 ID</b>(…apps.googleusercontent.com)를 위 칸에 붙여넣고, <b>구글 계정으로 로그인</b>을 누르세요.</li>
+     </ol>
+     <div class="callout co-brand" style="margin-top:6px">로그인 정보(액세스 토큰)는 <b>이 브라우저 메모리에만</b> 잠깐 보관되고 저장되지 않습니다. 클라이언트 ID는 공개돼도 안전한 값입니다.</div>
+   </div>`;
+}
+
+/* ============ INIT ============ */
+(function init(){const had=load();if(!S.view)S.view='dash';renderNav();render();refreshWho();setSave(had?'불러옴 · '+(S.meta.savedAt||''):'자동저장 켜짐');
+  checkReminders();setInterval(checkReminders,30000);})();
+</script>
+</body>
+</html>
