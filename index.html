@@ -126,17 +126,76 @@
   .gcal .lines{position:absolute;inset:0}
   .gcal .hr{height:40px;border-top:1px solid #eef1f5;position:relative}
   .gcal .hr:first-child{border-top:none}
+  .gcal .hr::after{content:"";position:absolute;left:0;right:0;top:20px;border-top:1px dashed #f4f6f9}
   .gcal .hrlab{position:absolute;left:4px;top:-1px;font-size:10px;color:#9aa3af}
   .gcal .lane{position:absolute;left:46px;right:6px;top:0;bottom:0}
-  .gcal .ev{position:absolute;border-radius:6px;padding:2px 16px 2px 6px;font-size:11px;color:#fff;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.18);line-height:1.25}
+  .gcal .ev{position:absolute;border-radius:6px;padding:2px 16px 2px 5px;font-size:11px;color:#fff;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.18);line-height:1.2;box-sizing:border-box}
   .gcal .ev .tm{font-size:9.5px;opacity:.92;display:block;padding-right:2px}
-  .gcal .ev.g{background:#e8eaed;color:#3c4043;border:1px dashed #9aa3af}
+  .gcal .ev.g{background:#e8eaed;color:#3c4043;border:none;padding:2px 6px}
+  .gcal .ev .ttl{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600;font-size:11px;line-height:1.25}
   .gcal .ev.rec{box-shadow:inset 3px 0 0 rgba(255,255,255,.75),0 1px 3px rgba(0,0,0,.18)}
   .gcal .ev.tk{border:1px dashed rgba(255,255,255,.9)}
   .task .ttime{display:inline-block;margin-left:6px;font-size:10.5px;color:#fff;background:#8792a3;border-radius:5px;padding:1px 6px;font-weight:700;white-space:nowrap}
   .gcal .ev .evx{position:absolute;z-index:3;top:0;right:0;background:rgba(0,0,0,.14);border:none;border-radius:0 5px 0 6px;color:#fff;cursor:pointer;font-size:12px;font-weight:800;padding:1px 5px;line-height:1.1}
   .gcal .ev .evx:hover{background:rgba(0,0,0,.3)}
+  .gcal .ev.one{box-shadow:0 0 0 2px #b8860b,0 1px 4px rgba(0,0,0,.22)}
+  .gcal .ev.grab{cursor:grab}
   .synchint{font-size:11.5px;color:var(--muted)}
+  .dropline{position:absolute;left:0;right:0;height:0;border-top:2px dashed #6a4fbb;z-index:6;pointer-events:none}
+  .dropline span{position:absolute;left:0;top:-9px;background:#6a4fbb;color:#fff;font-size:9.5px;padding:1px 6px;border-radius:5px;font-weight:800;white-space:nowrap}
+
+  /* ── The ONE Thing (선두 도미노) ── */
+  .onecard{border:2px solid #cfa227;background:linear-gradient(180deg,#fffdf3,#fff)}
+  .onehd{font-size:14.5px;font-weight:800;color:#8a6512;margin-bottom:9px;display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+  .onehd .hint{color:#b09148}
+  .onebody{display:flex;gap:11px;align-items:center;flex-wrap:wrap}
+  .onechk{flex:none;width:36px;height:36px;border-radius:11px;border:2px solid #cfa227;background:#fff;color:#cfa227;font-size:17px;font-weight:800;cursor:pointer;line-height:1}
+  .onebody.done .onechk{background:var(--done,#2fa36b);border-color:#2fa36b;color:#fff}
+  .onetxt{flex:1;min-width:170px;font-size:19px;font-weight:800;line-height:1.35;color:#2a2f3a}
+  .onebody.done .onetxt{text-decoration:line-through;color:var(--muted)}
+  .onemeta{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+  .pchip{flex:none;width:24px;height:24px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px;color:#fff}
+  .impbig{font-size:11px;color:#8a6512;background:#fdf3d8;border-radius:6px;padding:3px 8px;font-weight:800;letter-spacing:1px}
+  .oneempty{font-size:13px;color:#6b7280;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .oneq{margin-top:10px;font-size:12.5px;color:#8a6512;font-style:italic;border-top:1px dashed #ecdcae;padding-top:8px}
+
+  /* ── 역할별 우선순위 과제 그리드 ── */
+  .onegrid{display:grid;gap:0;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#fff}
+  .rgrp{display:flex;min-height:0;border-top:1px solid var(--line)}
+  .rgrp:first-child{border-top:none}
+  .rlab{flex:none;width:24px;color:#fff;font-size:10.5px;font-weight:800;writing-mode:vertical-rl;text-orientation:upright;letter-spacing:-1.5px;display:flex;align-items:center;justify-content:center;text-align:center;padding:3px 0;overflow:hidden}
+  .rrows{flex:1;min-width:0;display:flex;flex-direction:column;overflow:auto}
+  .rrows::-webkit-scrollbar{width:5px}.rrows::-webkit-scrollbar-thumb{background:#dfe3ec;border-radius:3px}
+  .trow{flex:1 1 0;min-height:29px;max-height:42px;display:flex;align-items:center;gap:4px;padding:0 5px;border-bottom:1px dotted #e9ecf3}
+  .trow:last-child{border-bottom:none}
+  .trow.done{background:#f0faf5}
+  .trow.one{background:#fffbe9;box-shadow:inset 3px 0 0 #cfa227}
+  .trow.dover{background:#f1eefc}
+  .grip{flex:none;width:11px;color:#c6cbd8;cursor:grab;font-size:11px;line-height:1;user-select:none;text-align:center}
+  .grip:active{cursor:grabbing}
+  .prisel{flex:none;width:36px;font-size:10.5px;padding:2px 1px;border-radius:5px;border:1px solid var(--line);font-weight:800;text-align:center;background:#fff}
+  .prisel.pA{background:#fdeaed;color:#d1495b;border-color:#f3c6ce}
+  .prisel.pB{background:#fdf5e2;color:#b07f11;border-color:#f0e0b0}
+  .prisel.pC{background:#eaf7f0;color:#2fa36b;border-color:#c4e8d5}
+  .tin{flex:1 1 60px;min-width:0;border:none;background:transparent;font-size:12.5px;padding:3px 2px;outline:none;font-family:inherit;color:inherit}
+  .tin::placeholder{color:#c8ccd8;font-weight:400}
+  .tin:focus{background:#f4f6fb;border-radius:5px}
+  .trow.done .tin{text-decoration:line-through;color:var(--muted)}
+  .imp{flex:none;display:flex;gap:2px;cursor:pointer;padding:2px 0}
+  .imp i{width:5px;height:13px;border-radius:2px;background:#e5e8f0;display:block}
+  .imp i.on{background:#6a4fbb}
+  .imp i:hover{outline:1px solid #6a4fbb}
+  input[type=time].tmin{flex:0 0 auto;width:54px;min-width:54px;max-width:54px;font-size:10.5px;padding:2px 2px;border:1px solid var(--line);border-radius:5px;color:#66707f;background:#fff;text-align:center}
+  input[type=time].tmin::-webkit-calendar-picker-indicator{display:none}
+  input[type=time].tmin::-webkit-datetime-edit{padding:0}
+  input.tin{width:auto;border:none;background:transparent;border-radius:0;padding:2px 2px}
+  .onebtn{flex:none;border:none;background:transparent;color:#d3d7e2;font-size:14px;cursor:pointer;padding:0 1px;line-height:1}
+  .onebtn:hover{color:#cfa227}
+  .onebtn.on{color:#cfa227;text-shadow:0 0 6px rgba(207,162,39,.5)}
+  .tdone{flex:none;width:19px;height:19px;border-radius:6px;border:1px solid var(--line);background:#fff;color:#b9bfcc;font-size:11px;cursor:pointer;padding:0;line-height:1}
+  .tdone.on{background:#2fa36b;border-color:#2fa36b;color:#fff}
+  @media(max-width:720px){input[type=time].tmin{width:50px;min-width:50px;max-width:50px;font-size:10px}
+    .trow{gap:3px;padding:0 3px}.imp i{width:4px}}
 
   .stat{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px}
   .stat .s{background:#fff;border:1px solid var(--line);border-radius:13px;padding:15px 16px;box-shadow:var(--shadow)}
@@ -587,25 +646,20 @@ function vDay(v){
      <button class="btn ghost sm" onclick="shiftDay(1)">내일 ›</button>
      <b>${wd(d)}요일</b> ${d===today()?'<span class="tag" style="background:var(--accent)">오늘</span>':''}</div></div>
    ${quoteCard(d)}
+   <div id="oneslot" style="margin-top:16px"></div>
    <div class="grid2" style="margin-top:16px">
-     <div class="card"><h3>우선순위 과제 <span class="hint">(A 반드시 · B 하면좋음 · C 여유되면)</span></h3>
-       <div id="tasks"></div>
-       <div class="addrow">
-         <select id="ntpri" style="max-width:64px"><option value="A">A</option><option value="B" selected>B</option><option value="C">C</option></select>
-         <select id="ntrole" style="max-width:120px">${roleOptions('')}</select>
-         <input type="text" id="nttext" placeholder="할 일" onkeydown="if(event.key==='Enter')addTask()">
-         <input type="time" id="ntstart" style="max-width:100px" title="시작 시간(선택)">
-         <input type="time" id="ntend" style="max-width:100px" title="종료 시간(선택)">
-         <button class="btn sm" onclick="addTask()">추가</button></div>
-       <p class="hint" style="margin-top:2px">시간을 넣으면 시간표(구글 캘린더 시간 일정)에, 비워두면 목록·종일 일정으로 처리됩니다.</p>
-       <p class="hint" style="margin-top:6px">미완료 과제는 ‘이월’로 다음 날에 넘길 수 있어요.</p>
-       <button class="btn ghost sm no-print" onclick="carryOver('${d}')">↪ 미완료 과제 내일로 이월</button>
-       <button class="btn ghost sm no-print" onclick="pushDayTasks('${d}')">☁ 오늘 과제 캘린더에(종일)</button>
+     <div class="card"><h3>우선순위 과제 <span class="hint">(A 반드시 · B 하면좋음 · C 여유되면 · 막대=영향도)</span></h3>
+       <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px">
+         <button class="btn ghost sm no-print" onclick="recommendOne('${d}')">🁢 영향도로 원씽 추천</button>
+         <button class="btn ghost sm no-print" onclick="carryOver('${d}')">↪ 미완료 이월</button>
+         <button class="btn ghost sm no-print" onclick="pushDayTasks('${d}')">☁ 캘린더에(종일)</button>
+       </div>
+       <div class="synchint" style="margin-bottom:6px">⠿ 를 잡아 오른쪽 시간표로 <b>드래그</b>하면 그 시각에 배치됩니다 (5분 단위) · 막대 클릭 = 영향도(1~5) · 🁢 = 오늘의 선두 도미노</div>
+       <div id="taskspacer" style="height:0"></div>
+       <div id="tasks" class="onegrid"></div>
+       <div class="synchint" style="margin-top:6px">빈 줄에 바로 입력하면 그 역할의 과제가 추가됩니다. 휴대폰에서는 드래그 대신 각 줄의 <b>시간칸</b>을 쓰세요.</div>
      </div>
      <div>
-       <div class="card"><h3>오늘의 습관</h3>
-         <div class="chips">${S.habits.map(h=>`<span class="chip ${day.habits.includes(h.id)?'on':''}" onclick="toggleHabit('${d}','${h.id}')">${esc(h.name)}</span>`).join('')||'<span class="hint">습관 관리에서 등록</span>'}</div>
-       </div>
        <div class="card"><h3>시간표 <span class="hint">(구글 캘린더 연동)</span></h3>
          <div class="addrow" style="margin-bottom:6px">
            <input type="time" id="evs" value="06:00" style="max-width:104px">
@@ -620,6 +674,9 @@ function vDay(v){
        </div>
      </div>
    </div>
+   <div class="card"><h3>오늘의 습관</h3>
+     <div class="chips">${S.habits.map(h=>`<span class="chip ${day.habits.includes(h.id)?'on':''}" onclick="toggleHabit('${d}','${h.id}')">${esc(h.name)}</span>`).join('')||'<span class="hint">습관 관리에서 등록</span>'}</div>
+   </div>
    <div class="card"><h3>오늘의 성찰</h3>
      <div class="grid3">
        <label class="fld"><span class="lb">👏 칭찬</span><textarea oninput="setDay('${d}','praise',this.value)">${esc(day.praise)}</textarea></label>
@@ -628,33 +685,103 @@ function vDay(v){
      </div>
      <label class="fld"><span class="lb">📝 오늘의 일상 기록</span><textarea oninput="setDay('${d}','journal',this.value)" placeholder="오늘 하루를 자유롭게 기록">${esc(day.journal)}</textarea></label>
    </div>`;
-  renderTasks(d); renderSchedule(d);
+  renderOne(d); renderTasks(d); renderSchedule(d);
 }
 function shiftDay(n){S.ui.day=addDays(S.ui.day,n);save();vDay(document.getElementById('view'));}
 function openDay(ds){S.ui.day=ds;S.view='day';save();renderNav();render();window.scrollTo(0,0);}
 const STATUSES=[["todo","○ 예정"],["prog","→ 진행"],["done","✓ 완료"],["hold","‖ 연기"],["deleg","» 위임"],["drop","✗ 취소"]];
-function taskRow(d,i,t){
+/* ── 대시보드용 요약 행 ── */
+function taskRow(d,i,t){const isOne=(S.days[d]&&S.days[d].one===t.id);
   return `<div class="task s-${t.status}">
     <div class="pri ${t.priority}">${t.priority}</div>
-    <div class="txt">${t.role?`<span class="role" style="background:${roleColor(t.role)}">${esc(roleName(t.role))}</span>`:''}${esc(t.text)}${t.start?`<span class="ttime">🕘 ${t.start}${t.end?'–'+t.end:''}</span>`:''}</div>
-    <button class="btn sm no-print" onclick="toggleTaskDone('${d}',${i})" title="완료" style="flex:none;padding:4px 9px;background:${t.status==='done'?'var(--done)':'#eef0f6'};color:${t.status==='done'?'#fff':'#66707f'}">✓</button>
-    <select class="stsel no-print" onchange="setTaskStatus('${d}',${i},this.value)">${STATUSES.map(s=>`<option value="${s[0]}" ${t.status===s[0]?'selected':''}>${s[1]}</option>`).join('')}</select>
-    <button class="del-x no-print" onclick="delTask('${d}',${i})">✕</button></div>`;
+    <div class="txt">${isOne?'<b title="오늘의 The ONE Thing">🁢 </b>':''}${t.role?`<span class="role" style="background:${roleColor(t.role)}">${esc(roleName(t.role))}</span>`:''}${esc(t.text)}${t.start?`<span class="ttime">🕘 ${t.start}${t.end?'–'+t.end:''}</span>`:''}</div>
+    <button class="btn sm no-print" onclick="toggleTaskDoneId('${t.id}','${d}')" title="완료" style="flex:none;padding:4px 9px;background:${t.status==='done'?'var(--done)':'#eef0f6'};color:${t.status==='done'?'#fff':'#66707f'}">✓</button>
+    <select class="stsel no-print" onchange="setTaskStatusId('${t.id}',this.value,'${d}')">${STATUSES.map(s=>`<option value="${s[0]}" ${t.status===s[0]?'selected':''}>${s[1]}</option>`).join('')}</select>
+    <button class="del-x no-print" onclick="delTaskId('${t.id}','${d}')">✕</button></div>`;
 }
-function renderTasks(d){const el=document.getElementById('tasks');if(!el)return;const day=S.days[d];
-  if(!day.tasks.length){el.innerHTML='<p class="hint">할 일을 추가하세요. 가장 중요한 일부터 A로.</p>';return;}
-  const order={A:0,B:1,C:2};
-  day.tasks.sort((a,b)=>(order[a.priority]-order[b.priority]));
-  el.innerHTML=day.tasks.map((t,i)=>taskRow(d,i,t)).join('');
+/* ── 과제 조회·수정 (id 기반) ── */
+function findTask(d,id){if(!id)return null;ensureDay(d);return (S.days[d].tasks||[]).find(t=>t.id===id)||null;}
+function setTaskText(d,id,val){const t=findTask(d,id);if(!t)return;const v=val.trim();
+  if(!v){if(!confirm('내용을 비우면 이 과제가 삭제됩니다. 삭제할까요?')){renderTasks(d);return;} return delTaskId(id,d);}
+  t.text=v;save();renderTasks(d);renderOne(d);renderSchedule(d);}
+function setTaskPri(d,id,p){const t=findTask(d,id);if(!t)return;t.priority=p;save();renderTasks(d);renderOne(d);renderSchedule(d);}
+function setImpact(d,id,k){const t=findTask(d,id);if(!t)return;t.impact=(t.impact===k?Math.max(1,k-1):k);save();renderTasks(d);renderOne(d);}
+function setTaskStatusId(id,st,d){d=d||S.ui.day;const t=findTask(d,id);if(!t)return;t.status=st;save();renderTasks(d);renderOne(d);renderSchedule(d);if(S.view==='dash')render();}
+function toggleTaskDoneId(id,d){d=d||S.ui.day;const t=findTask(d,id);if(!t)return;t.status=(t.status==='done')?'todo':'done';save();
+  if(S.view==='dash'){render();return;} renderTasks(d);renderOne(d);renderSchedule(d);}
+function delTaskId(id,d){d=d||S.ui.day;const day=S.days[d];if(!day)return;
+  day.tasks=day.tasks.filter(t=>t.id!==id); if(day.one===id)day.one='';
+  save(); if(S.view==='dash'){render();return;} renderTasks(d);renderOne(d);renderSchedule(d);}
+function setTaskTimeStr(d,id,v){const t=findTask(d,id);if(!t)return;
+  if(!v){delete t.start;delete t.end;} else {const dur=(t.start&&t.end)?Math.max(5,toMin(t.end)-toMin(t.start)):60;t.start=v;t.end=addMinStr(v,dur);}
+  save();renderTasks(d);renderOne(d);renderSchedule(d);}
+function newTaskIn(d,role,inp){const v=(inp.value||'').trim();if(!v)return;
+  ensureDay(d);S.days[d].tasks.push({id:uid(),text:v,priority:'B',role:role,impact:3,status:'todo'});
+  inp.value='';save();renderTasks(d);renderOne(d);
+  const el=document.getElementById('tasks');if(el){const bl=el.querySelectorAll('.tin.blank');for(const b of bl){if(b.dataset.role===role){b.focus();break;}}}}
+/* ── The ONE Thing (선두 도미노) ── */
+function setOneThing(d,id){ensureDay(d);S.days[d].one=(S.days[d].one===id?'':id);save();renderOne(d);renderTasks(d);renderSchedule(d);}
+function clearOne(d){ensureDay(d);S.days[d].one='';save();renderOne(d);renderTasks(d);renderSchedule(d);}
+function oneScore(t){const pw={A:3,B:2,C:1}[t.priority]||1;return (t.impact||3)*2+pw;}
+function oneCandidate(d){const ts=(S.days[d].tasks||[]).filter(t=>t.status!=='done'&&t.status!=='drop'&&t.text);
+  if(!ts.length)return null;return ts.slice().sort((a,b)=>oneScore(b)-oneScore(a))[0];}
+function recommendOne(d){const c=oneCandidate(d);
+  if(!c){toast('먼저 할 일을 적어주세요');return;}
+  S.days[d].one=c.id;save();renderOne(d);renderTasks(d);renderSchedule(d);
+  toast('🁢 영향도 기준 선두 도미노: '+c.text);}
+function sendOneToSchedule(d,id){const t=findTask(d,id);if(!t)return;
+  const now=new Date();let m=(d===today())?snap5(now.getHours()*60+now.getMinutes()+5):9*60;
+  m=Math.max(SC_START*60,Math.min(m,SC_END*60-60));placeTaskAt(d,id,m);}
+function renderOne(d){const el=document.getElementById('oneslot');if(!el)return;ensureDay(d);
+  const t=findTask(d,S.days[d].one);const rec=t?null:oneCandidate(d);const imp=t?(t.impact||3):0;
+  el.innerHTML=`<div class="card onecard">
+   <div class="onehd">🁢 오늘의 The ONE Thing <span class="hint">선두 도미노 — 이것부터 넘어뜨리면 나머지가 쉬워진다</span></div>
+   ${t?`<div class="onebody${t.status==='done'?' done':''}">
+     <button class="onechk" onclick="toggleTaskDoneId('${t.id}','${d}')" title="완료">${t.status==='done'?'✓':'○'}</button>
+     <div class="onetxt">${esc(t.text)}</div>
+     <div class="onemeta">
+       <span class="pchip" style="background:${priColor(t.priority)}">${t.priority}</span>
+       ${t.role?`<span class="pchip" style="width:auto;padding:0 8px;font-size:10.5px;background:${roleColor(t.role)}">${esc(roleName(t.role))}</span>`:''}
+       <span class="impbig" title="영향도 — 다른 일을 움직이는 정도">영향도 ${'●'.repeat(imp)}${'○'.repeat(5-imp)}</span>
+       ${t.start?`<span class="ttime">🕘 ${t.start}${t.end?'–'+t.end:''}</span>`:`<button class="btn sm no-print" onclick="sendOneToSchedule('${d}','${t.id}')">🕘 시간표에 넣기</button>`}
+       <button class="btn ghost sm no-print" onclick="clearOne('${d}')">해제</button>
+     </div></div>`
+   :`<div class="oneempty">아직 정하지 않았습니다. 오늘 할 일을 모두 적은 뒤, 각 과제의 <b>영향도</b>를 매기고 <b>🁢</b>로 <b>단 하나</b>를 고르세요.
+      ${rec?`<button class="btn sm no-print" onclick="setOneThing('${d}','${rec.id}')">🁢 영향도로 추천: ${esc(rec.text)}</button>`:''}</div>`}
+   <div class="oneq">“이 하나를 끝내면 나머지 일들은 더 쉬워질까?” — 감이 아니라 <b>영향도</b>로 고른다.</div>
+  </div>`;}
+/* ── 역할별 과제 그리드 ── */
+const PRIS=['A','B','C'];
+function impHtml(d,t){return `<span class="imp" title="영향도(선두 도미노 후보) — 이 일을 끝내면 다른 일이 얼마나 쉬워지는가">${[1,2,3,4,5].map(k=>`<i class="${k<=(t.impact||3)?'on':''}" onclick="setImpact('${d}','${t.id}',${k})"></i>`).join('')}</span>`;}
+function taskRowG(d,t){const done=t.status==='done';const isOne=S.days[d].one===t.id;
+  return `<div class="trow${done?' done':''}${isOne?' one':''}" data-tid="${t.id}">
+    <span class="grip" draggable="true" ondragstart="taskDrag(event,'${t.id}')" title="시간표로 끌어놓기">⠿</span>
+    <select class="prisel p${t.priority}" onchange="setTaskPri('${d}','${t.id}',this.value)" title="중요도">${PRIS.map(p=>`<option ${t.priority===p?'selected':''}>${p}</option>`).join('')}</select>
+    <input class="tin" value="${esc(t.text)}" onchange="setTaskText('${d}','${t.id}',this.value)" onkeydown="if(event.key==='Enter')this.blur()">
+    ${impHtml(d,t)}
+    <input type="time" class="tmin no-print" value="${t.start||''}" onchange="setTaskTimeStr('${d}','${t.id}',this.value)" title="시작 시간">
+    <button class="onebtn${isOne?' on':''}" onclick="setOneThing('${d}','${t.id}')" title="오늘의 The ONE Thing으로 지정">🁢</button>
+    <button class="tdone${done?' on':''}" onclick="toggleTaskDoneId('${t.id}','${d}')" title="완료">✓</button>
+    <button class="del-x no-print" onclick="delTaskId('${t.id}','${d}')" title="삭제">✕</button>
+  </div>`;}
+function blankRow(d,role){return `<div class="trow"><span class="grip" style="opacity:.25">⠿</span>
+    <input class="tin blank" data-role="${role}" placeholder="＋ 할 일" onchange="newTaskIn('${d}','${role}',this)" onkeydown="if(event.key==='Enter')this.blur()"></div>`;}
+function renderTasks(d){const el=document.getElementById('tasks');if(!el)return;ensureDay(d);const day=S.days[d];
+  const roles=(S.profile.roles||[]);
+  const groups=roles.map(r=>({id:r.id,name:r.name,color:r.color||'#5b53b0',ts:day.tasks.filter(t=>t.role===r.id)}));
+  const orphan=day.tasks.filter(t=>!t.role||!roles.some(r=>r.id===t.role));
+  if(orphan.length)groups.push({id:'',name:'기타',color:'#8792a3',ts:orphan});
+  const ord={A:0,B:1,C:2};
+  groups.forEach(g=>g.ts.sort((a,b)=>(ord[a.priority]-ord[b.priority])||((b.impact||3)-(a.impact||3))));
+  el.style.height=((SC_END-SC_START)*SC_H)+'px';
+  el.style.gridTemplateRows=`repeat(${groups.length||1},1fr)`;
+  el.innerHTML=groups.map(g=>{
+    const blanks=Math.max(1,3-g.ts.length);
+    return `<div class="rgrp"><div class="rlab" style="background:${g.color}" title="${esc(g.name)}">${esc(g.name)}</div>
+      <div class="rrows">${g.ts.map(t=>taskRowG(d,t)).join('')}${Array.from({length:blanks},()=>blankRow(d,g.id)).join('')}</div></div>`;}).join('');
 }
-function addTask(){const d=S.ui.day;const txt=document.getElementById('nttext').value.trim();if(!txt)return;
-  const st=document.getElementById('ntstart').value, en=document.getElementById('ntend').value;
-  const t={text:txt,priority:document.getElementById('ntpri').value,role:document.getElementById('ntrole').value,status:'todo'};
-  if(st){t.start=st;t.end=(en&&toMin(en)>toMin(st))?en:addMinStr(st,60);}
-  S.days[d].tasks.push(t);
-  save();document.getElementById('nttext').value='';document.getElementById('ntstart').value='';document.getElementById('ntend').value='';renderTasks(d);renderSchedule(d);}
-function setTaskStatus(d,i,st){S.days[d].tasks[i].status=st;save();renderTasks(d);}
-function delTask(d,i){S.days[d].tasks.splice(i,1);save();renderTasks(d);}
+function setTaskStatus(d,i,st){const t=S.days[d].tasks[i];if(t)setTaskStatusId(t.id,st,d);}
+function delTask(d,i){const t=S.days[d].tasks[i];if(t)delTaskId(t.id,d);}
 function carryOver(d){const nd=addDays(d,1);ensureDay(nd);let moved=0;
   S.days[d].tasks.forEach(t=>{if(t.status!=='done'&&t.status!=='drop'){S.days[nd].tasks.push({...t,status:'todo'});moved++;}});
   save();toast(moved+'개 과제를 '+nd+'로 이월했습니다');}
@@ -670,6 +797,9 @@ const ROLE_PALETTE=["#2f6db3","#6a4fbb","#d1495b","#2fa36b","#e0552e","#3aa76d",
 function hexRGB(h){h=(h||'').replace('#','');if(h.length===3)h=h.split('').map(c=>c+c).join('');if(h.length<6)return[91,83,176];return[parseInt(h.slice(0,2),16),parseInt(h.slice(2,4),16),parseInt(h.slice(4,6),16)];}
 function roleColor(rid){const r=(S.profile.roles||[]).find(x=>x.id===rid);return (r&&r.color)||'#5b53b0';}
 function blockColors(base,done){const c=hexRGB(base);return done?{bg:base,fg:'#fff'}:{bg:`rgba(${c[0]},${c[1]},${c[2]},0.16)`,fg:base};}
+const GCOLORS={'1':'#7986cb','2':'#33b679','3':'#8e24aa','4':'#e67c73','5':'#f6bf26','6':'#f4511e','7':'#039be5','8':'#616161','9':'#3f51b5','10':'#0b8043','11':'#d50000'};
+function gColor(id){return GCOLORS[id]||'#039be5';}
+function contrastText(hex){const c=hexRGB(hex);return (0.299*c[0]+0.587*c[1]+0.114*c[2])>150?'#20242e':'#fff';}
 function toMinISO(iso){return toMin(iso.slice(11,16));}
 function addEvent(d){const s=document.getElementById('evs').value,e=document.getElementById('eve').value,t=document.getElementById('evt').value.trim();
   const rep=(document.getElementById('evrep')||{}).value||'none';
@@ -685,35 +815,99 @@ function toggleTaskDone(d,i){const t=S.days[d].tasks[i];if(!t)return;t.status=(t
 function toggleEventDone(d,id){const ev=dayEvents(d).find(x=>x.id===id);if(!ev)return;ev.done=!ev.done;save();renderSchedule(d);}
 function toggleRecDone(d,id){ensureDay(d);const a=S.days[d].recDone||(S.days[d].recDone=[]);const k=a.indexOf(id);if(k>=0)a.splice(k,1);else a.push(id);save();renderSchedule(d);}
 function recForDay(d){const wn=parseD(d).getDay();return (S.recurring||[]).filter(r=> r.rule==='daily' || (r.rule==='weekday'&&wn>=1&&wn<=5) || (r.rule==='weekly'&&r.byday===wn));}
-function blockStyle(sm,em,side){const top=Math.max(0,(sm-SC_START*60)/60*SC_H);const h=Math.max(15,(em-sm)/60*SC_H-2);
-  const lr=side==='g'?'left:56%;right:1%':(side==='me'?'left:1%;right:45%':'left:1%;right:1%');return `top:${top}px;height:${h}px;${lr}`;}
+function snap5(m){return Math.round(m/5)*5;}
+function blockStyle(sm,em,col,cols){const ss=snap5(sm),ee=Math.max(snap5(em),ss+5);
+  const top=Math.max(0,(ss-SC_START*60)/60*SC_H);const h=Math.max(14,(ee-ss)/60*SC_H-2);
+  const w=100/(cols||1),left=(col||0)*w;
+  return `top:${top}px;height:${h}px;left:calc(${left}% + 1px);width:calc(${w}% - 2px)`;}
+function layoutBlocks(bs){const arr=bs.slice().sort((a,b)=>a.sm-b.sm||a.em-b.em);let i=0;
+  while(i<arr.length){let clusterEnd=arr[i].em;const cluster=[arr[i]];let j=i+1;
+    while(j<arr.length&&arr[j].sm<clusterEnd){cluster.push(arr[j]);clusterEnd=Math.max(clusterEnd,arr[j].em);j++;}
+    const colEnds=[];cluster.forEach(b=>{let placed=false;
+      for(let c=0;c<colEnds.length;c++){if(b.sm>=colEnds[c]){b.col=c;colEnds[c]=b.em;placed=true;break;}}
+      if(!placed){b.col=colEnds.length;colEnds.push(b.em);}});
+    const cols=colEnds.length;cluster.forEach(b=>b.cols=cols);i=j;}
+  return arr;}
+
+/* ===== 드래그 앤 드롭: 과제/일정 → 시간표 ===== */
+let DRAG=null;
+function m2s(m){m=Math.max(0,Math.min(24*60-5,Math.round(m)));const h=Math.floor(m/60),mi=m%60;return String(h).padStart(2,'0')+':'+String(mi).padStart(2,'0');}
+function taskDrag(e,id){DRAG={kind:'task',id:id,grab:0};
+  try{e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain',id);}catch(_){}}
+function blockDrag(e,id,kind){const lane=document.querySelector('#gcal .lane');let grab=0;
+  if(lane){const r=e.currentTarget.getBoundingClientRect();grab=(e.clientY-r.top)/SC_H*60;}
+  DRAG={kind:kind||'task',id:id,grab:grab};
+  try{e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain',id);}catch(_){}}
+function laneMin(e){const lane=document.querySelector('#gcal .lane');if(!lane)return SC_START*60;
+  const r=lane.getBoundingClientRect();
+  let m=SC_START*60+((e.clientY-r.top)/SC_H*60)-(DRAG?DRAG.grab:0);
+  m=snap5(m);return Math.max(SC_START*60,Math.min(SC_END*60-5,m));}
+function showDropLine(m){const dl=document.getElementById('dropline');if(!dl)return;
+  dl.style.display='block';dl.style.top=((m-SC_START*60)/60*SC_H)+'px';
+  const s=dl.querySelector('span');if(s)s.textContent='⏱ '+m2s(m)+' 에 놓기';}
+function hideDropLine(){const dl=document.getElementById('dropline');if(dl)dl.style.display='none';}
+function laneOver(e){if(!DRAG)return;e.preventDefault();try{e.dataTransfer.dropEffect='move';}catch(_){}showDropLine(laneMin(e));}
+function laneLeave(e){const lane=document.querySelector('#gcal .lane');
+  if(lane&&e.relatedTarget&&lane.contains(e.relatedTarget))return;hideDropLine();}
+function laneDrop(e){if(!DRAG)return;e.preventDefault();const m=laneMin(e);const dr=DRAG;DRAG=null;hideDropLine();
+  placeTaskAt(S.ui.day,dr.id,m,dr.kind);}
+function placeTaskAt(d,id,sm,kind){ensureDay(d);
+  sm=Math.max(SC_START*60,Math.min(SC_END*60-5,snap5(sm)));
+  let obj=null,isEv=false;
+  if(kind==='event'){obj=dayEvents(d).find(x=>x.id===id);isEv=true;}
+  if(!obj){obj=findTask(d,id);}
+  if(!obj){obj=dayEvents(d).find(x=>x.id===id);isEv=!!obj;}
+  if(!obj){toast('옮길 항목을 찾지 못했습니다');return;}
+  let dur=60;
+  if(obj.start&&obj.end){dur=Math.max(5,toMin(obj.end)-toMin(obj.start));}
+  else if(obj.start){dur=60;}
+  if(sm+dur>SC_END*60)sm=Math.max(SC_START*60,SC_END*60-dur);
+  obj.start=m2s(sm);obj.end=m2s(sm+dur);
+  save();renderTasks(d);renderOne(d);renderSchedule(d);
+  toast((isEv?'일정':'과제')+' → '+obj.start+'–'+obj.end+' 배치');}
 function renderSchedule(d){const el=document.getElementById('gcal');if(!el)return;
-  const gev=gDayCache[d]||[];const hasG=gev.length>0;const side=hasG?'me':'full';
+  const gev=gDayCache[d]||[];
   const items=dayEvents(d).map(ev=>({o:ev,rec:false})).concat(recForDay(d).map(r=>({o:r,rec:true})));
   const tks=(S.days[d].tasks||[]).map((t,i)=>({t,i})).filter(x=>x.t.start);
-  const recDone=S.days[d].recDone||[];
+  const recDone=S.days[d].recDone||[];const oneId=S.days[d].one||'';
   let lines='';for(let hr=SC_START;hr<SC_END;hr++)lines+=`<div class="hr"><span class="hrlab">${String(hr).padStart(2,'0')}:00</span></div>`;
-  const mine=items.map(it=>{const ev=it.o;const isRec=it.rec;
+  // 내 계획 + 반복 + 과제 + 구글 일정을 하나의 블록 목록으로 통합
+  const blocks=[];
+  items.forEach(it=>{const ev=it.o;const isRec=it.rec;
     const base=ev.role?roleColor(ev.role):(ev.color||'#5b53b0');
-    const done=isRec?recDone.includes(ev.id):!!ev.done; const c=blockColors(base,done);
+    const done=isRec?recDone.includes(ev.id):!!ev.done;const c=blockColors(base,done);
     const tog=isRec?`toggleRecDone('${d}','${ev.id}')`:`toggleEventDone('${d}','${ev.id}')`;
     const del=isRec?`delRecur('${ev.id}')`:`delEvent('${d}','${ev.id}')`;
-    return `<div class="ev${isRec?' rec':''}" style="${blockStyle(toMin(ev.start),toMin(ev.end),side)};background:${c.bg};color:${c.fg};border:2px solid ${base}">
+    const dg=isRec?'':` draggable="true" ondragstart="blockDrag(event,'${ev.id}','event')" ondragend="hideDropLine()"`;
+    blocks.push({sm:toMin(ev.start),em:toMin(ev.end),build:st=>`<div class="ev${isRec?' rec':' grab'}"${dg} style="${st};background:${c.bg};color:${c.fg};border:2px solid ${base}">
       <button class="evx" style="color:${c.fg};right:19px" onclick="${tog}" title="완료">${done?'↺':'✓'}</button>
       <button class="evx" style="color:${c.fg}" onclick="${del}" title="삭제">✕</button>
-      <span class="tm" style="color:${c.fg}">${ev.start}–${ev.end}${isRec?' ↻':''}${ev.gEventId?' ✓구글':''}</span><span style="${done?'text-decoration:line-through':''}">${esc(ev.title)}</span></div>`;}).join('');
-  const tblocks=tks.map(({t,i})=>{const done=t.status==='done';const c=blockColors(roleColor(t.role),done);
-    return `<div class="ev tk" style="${blockStyle(toMin(t.start),toMin(t.end||addMinStr(t.start,60)),side)};background:${c.bg};color:${c.fg};border:3px solid ${priColor(t.priority)}">
-      <button class="evx" style="color:${c.fg}" onclick="toggleTaskDone('${d}',${i})" title="완료">${done?'↺':'✓'}</button>
-      <span class="tm" style="color:${c.fg}">${t.start}–${t.end||''} · ${t.priority} 과제${t.gEventId?' ✓구글':''}</span><span style="${done?'text-decoration:line-through':''}">${esc(t.text)}</span></div>`;}).join('');
-  const gg=gev.map(g=>`<div class="ev g" style="${blockStyle(g.sm,g.em,'g')}"><span class="tm">${g.t} · G</span>${esc(g.title)}</div>`).join('');
+      <span class="tm" style="color:${c.fg}">${ev.start}–${ev.end}${isRec?' ↻':''}${ev.gEventId?' ✓구글':''}</span><span class="ttl" style="${done?'text-decoration:line-through':''}">${esc(ev.title)}</span></div>`});});
+  tks.forEach(({t,i})=>{const done=t.status==='done';const c=blockColors(roleColor(t.role),done);const isOne=oneId===t.id;
+    blocks.push({sm:toMin(t.start),em:toMin(t.end||addMinStr(t.start,60)),build:st=>`<div class="ev tk grab${isOne?' one':''}" draggable="true" ondragstart="blockDrag(event,'${t.id}','task')" ondragend="hideDropLine()" style="${st};background:${c.bg};color:${c.fg};border:3px solid ${priColor(t.priority)}">
+      <button class="evx" style="color:${c.fg}" onclick="toggleTaskDoneId('${t.id}','${d}')" title="완료">${done?'↺':'✓'}</button>
+      <span class="tm" style="color:${c.fg}">${t.start}–${t.end||''} · ${t.priority} 과제${t.gEventId?' ✓구글':''}</span><span class="ttl" style="${done?'text-decoration:line-through':''}">${isOne?'🁢 ':''}${esc(t.text)}</span></div>`});});
+  gev.forEach(g=>{const bg=gColor(g.colorId);const fg=contrastText(bg);const dur=g.em-g.sm;const tip=g.start+'–'+g.end+' · '+g.title;
+    blocks.push({sm:g.sm,em:g.em,build:st=>`<div class="ev g" title="${esc(tip)}" style="${st};background:${bg};color:${fg}">${dur>=45?`<span class="tm" style="color:${fg}">${g.start}</span>`:''}<span class="ttl">${esc(g.title)}</span></div>`});});
+  layoutBlocks(blocks);
+  const laneHtml=blocks.map(b=>b.build(blockStyle(b.sm,b.em,b.col,b.cols))).join('');
   el.style.height=((SC_END-SC_START)*SC_H)+'px';
-  el.innerHTML=`<div class="lines">${lines}</div><div class="lane">${mine}${tblocks}</div>${hasG?`<div class="lane">${gg}</div>`:''}`;
+  el.innerHTML=`<div class="lines">${lines}</div><div class="lane" ondragover="laneOver(event)" ondrop="laneDrop(event)" ondragleave="laneLeave(event)">${laneHtml}<div class="dropline" id="dropline" style="display:none"><span></span></div></div>`;
   const sr=document.getElementById('syncrow');
   if(sr){const hasRec=(S.recurring||[]).some(r=>!r.gEventId);
     sr.innerHTML=gTokenValid()
-    ? `<button class="btn ghost sm" onclick="pullDay('${d}')">↧ 구글 일정 불러오기</button> <button class="btn ghost sm" onclick="pushDay('${d}')">↥ 이 날 시간표 등록</button> ${(S.recurring||[]).length?`<button class="btn ghost sm" onclick="pushRecurring()">↻ 반복 일정 구글 등록</button>`:''} <span class="synchint">↻=반복 · 왼쪽=내 계획 · 오른쪽=구글</span>`
+    ? `<button class="btn ghost sm" onclick="pullDay('${d}')">↧ 구글 일정 불러오기</button> <button class="btn ghost sm" onclick="pushDay('${d}')">↥ 이 날 시간표 등록</button> ${(S.recurring||[]).length?`<button class="btn ghost sm" onclick="pushRecurring()">↻ 반복 일정 구글 등록</button>`:''} <span class="synchint">↻=반복 · 내 계획·과제·구글 일정을 5분 단위로 함께 표시(겹치면 나란히) · 블록을 끌어 시간 이동</span>`
     : `<span class="synchint">구글과 주고받으려면 ‘🔗 구글 연동’ 탭에서 로그인하세요. (로그인 전에도 작성·저장·반복 설정은 됩니다)</span>`;}
+  alignPanels();
+}
+/* 왼쪽 과제표와 오른쪽 시간표의 첫 줄 높이를 맞춘다 */
+function alignPanels(){const t=document.getElementById('tasks'),g=document.getElementById('gcal'),sp=document.getElementById('taskspacer');
+  if(!t||!g||!sp)return;
+  sp.style.height='0px';
+  const a=t.getBoundingClientRect(),b=g.getBoundingClientRect();
+  if(Math.abs(a.left-b.left)<60){sp.style.height='0px';return;}   // 좁은 화면: 위아래로 쌓임
+  const diff=Math.round(b.top-a.top);
+  sp.style.height=(diff>0?diff:0)+'px';
 }
 
 /* ============ 기록: 일상/독서/구상 ============ */
@@ -925,7 +1119,11 @@ function vStats(v){
 
 /* ============ ensure helpers ============ */
 function ensureDay(d){if(!S.days[d])S.days[d]={tasks:[],sched:{},events:[],habits:[],praise:"",gratitude:"",reflect:"",journal:""};
-  const x=S.days[d];x.tasks=x.tasks||[];x.sched=x.sched||{};x.events=x.events||[];x.recDone=x.recDone||[];x.habits=x.habits||[];if(x.praise==null)x.praise="";if(x.gratitude==null)x.gratitude="";if(x.reflect==null)x.reflect="";if(x.journal==null)x.journal="";return x;}
+  const x=S.days[d];x.tasks=x.tasks||[];x.sched=x.sched||{};x.events=x.events||[];x.recDone=x.recDone||[];x.habits=x.habits||[];if(x.praise==null)x.praise="";if(x.gratitude==null)x.gratitude="";if(x.reflect==null)x.reflect="";if(x.journal==null)x.journal="";
+  x.tasks.forEach(t=>{if(!t.id)t.id=uid();if(t.impact==null)t.impact=3;if(!t.priority)t.priority='B';if(!t.status)t.status='todo';});
+  if(x.one==null)x.one="";
+  if(x.one&&!x.tasks.some(t=>t.id===x.one))x.one="";
+  return x;}
 function ensureMonth(mk){if(!S.months[mk])S.months[mk]={focus:"",good:"",next:""};return S.months[mk];}
 function ensureWeek(ws){if(!S.weeks[ws])S.weeks[ws]={rocks:{},good:"",next:""};return S.weeks[ws];}
 function setDay(d,k,val){ensureDay(d);S.days[d][k]=val;save();}
@@ -984,7 +1182,7 @@ async function pushDay(d){ if(!gTokenValid()){toast('구글 로그인이 필요�
   for(const ev of dayEvents(d)){ if(ev.gEventId)continue; try{const r=await gcalInsertRange(ev.title,d,ev.start,ev.end); if(r&&r.id){ev.gEventId=r.id;n++;}}catch(e){toast('등록 실패: '+e.message);} }
   save();renderSchedule(d);toast(n+'개 일정을 구글 캘린더에 등록했습니다');}
 async function pullDay(d){ if(!gTokenValid()){toast('구글 로그인이 필요합니다');return;}
-  try{const items=await gcalList(d); gDayCache[d]=items.filter(ev=>ev.start&&ev.start.dateTime).map(ev=>{const s=ev.start.dateTime,e=(ev.end&&ev.end.dateTime)||s;return {sm:toMinISO(s),em:toMinISO(e),t:s.slice(11,16)+'–'+e.slice(11,16),title:ev.summary||'(제목 없음)'};});
+  try{const items=await gcalList(d); gDayCache[d]=items.filter(ev=>ev.start&&ev.start.dateTime).map(ev=>{const s=ev.start.dateTime,e=(ev.end&&ev.end.dateTime)||s;return {sm:toMinISO(s),em:toMinISO(e),start:s.slice(11,16),end:e.slice(11,16),title:ev.summary||'(제목 없음)',colorId:ev.colorId};});
     renderSchedule(d);toast((gDayCache[d].length)+'개 구글 일정을 불러왔습니다');}catch(e){toast('불러오기 실패: '+e.message);} }
 const DAYCODE=['SU','MO','TU','WE','TH','FR','SA'];
 function nextMatch(rule,byday){let d=today();for(let i=0;i<7;i++){const wn=parseD(d).getDay();
@@ -1102,7 +1300,8 @@ function vGSync(v){
 (function init(){const had=load();if(!S.view)S.view='dash';
   (S.profile.roles||[]).forEach((r,i)=>{if(!r.color)r.color=ROLE_COLOR_MAP[r.name]||ROLE_PALETTE[i%ROLE_PALETTE.length];});
   renderNav();render();refreshWho();setSave(had?'불러옴 · '+(S.meta.savedAt||''):'자동저장 켜짐');
-  checkReminders();setInterval(checkReminders,30000);})();
+  checkReminders();setInterval(checkReminders,30000);
+  let rz=null;window.addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(alignPanels,120);});})();
 </script>
 </body>
 </html>
