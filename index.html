@@ -197,6 +197,76 @@
   @media(max-width:720px){input[type=time].tmin{width:50px;min-width:50px;max-width:50px;font-size:10px}
     .trow{gap:3px;padding:0 3px}.imp i{width:4px}}
 
+  /* ── AI 독서 여정 ── */
+  .rshelf{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:12px}
+  .bchip{border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:6px 13px;font-size:12.5px;cursor:pointer;font-family:inherit;color:var(--ink)}
+  .bchip:hover{border-color:var(--brand)}
+  .bchip.on{background:var(--brand-d);color:#fff;border-color:var(--brand-d)}
+  .bchip.new{border-style:dashed;color:var(--brand-d);font-weight:800}
+  .rrail{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:14px}
+  .rstep{flex:1 1 0;min-width:92px;border:none;background:#fff;border-radius:10px;padding:9px 8px;cursor:pointer;font-family:inherit;text-align:left;border-bottom:3px solid var(--line)}
+  .rstep .n{display:block;font-size:10.5px;color:var(--muted);font-weight:800;letter-spacing:.06em}
+  .rstep .t{display:block;font-size:13px;font-weight:800;color:var(--ink)}
+  .rstep.on{border-bottom-color:var(--brand)}
+  .rstep.ok .n::after{content:' ✓';color:#2fa36b}
+  .aiout{background:#eef7f2;border:1px solid #cbe7da;border-radius:10px;padding:12px 14px;margin-top:10px;font-size:13.5px;white-space:pre-wrap;line-height:1.65}
+  .aiout .tg{display:block;font-size:10.5px;font-weight:800;color:#1c7a58;letter-spacing:.09em;margin-bottom:5px}
+  .myzone{background:#fdf1ec;border:1px solid #f3d2c6;border-radius:10px;padding:12px 14px;margin-top:10px}
+  .myzone .tg{display:block;font-size:10.5px;font-weight:800;color:#c3552f;letter-spacing:.09em;margin-bottom:5px}
+  .lockn{font-size:12px;color:#c3552f;font-weight:700}
+  .aibtn{background:#1f9268;color:#fff}
+  .aibtn:hover{background:#146a4b}
+  .aibtn:disabled{background:#c3c8d2;cursor:not-allowed}
+  .chcard{border:1px solid var(--line);border-radius:11px;padding:13px 15px;margin-bottom:11px;background:#fcfcfe}
+  .chhd{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:2px}
+  .chhd .nm{font-weight:800;font-size:14px}
+  .chhd .st{font-size:11.5px;color:var(--muted)}
+  .chhd .st.ok{color:#2fa36b;font-weight:800}
+  .dbate{margin-top:9px;border:1px solid var(--line);border-radius:10px;background:#fcfcfe;padding:10px 12px}
+  .dmsg{margin-bottom:9px;font-size:13.5px;white-space:pre-wrap;line-height:1.6}
+  .dmsg .who{display:block;font-size:10.5px;font-weight:800;letter-spacing:.07em;margin-bottom:2px}
+  .dmsg.au{background:#eef7f2;border-radius:8px;padding:8px 11px}
+  .dmsg.au .who{color:#1c7a58}
+  .dmsg.me .who{color:#c3552f}
+  .cnt{font-size:11.5px;color:var(--muted);text-align:right;margin-top:3px}
+  .cnt.ok{color:#1c7a58;font-weight:800}
+  .mapi{display:flex;gap:12px;padding:10px 0;border-bottom:1px dashed var(--line)}
+  .mapi .no{font-weight:800;color:var(--brand-d);min-width:30px;font-size:14px}
+  .mapi .bd{white-space:pre-wrap;font-size:13.5px;line-height:1.6}
+  .aiset{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .aiset select{max-width:280px}
+  .aiset input{max-width:210px}
+  .ovl{position:fixed;inset:0;background:rgba(18,20,28,.55);z-index:200;display:flex;align-items:center;justify-content:center;padding:18px}
+  .ovlbox{background:#fff;border-radius:14px;max-width:680px;width:100%;max-height:88vh;overflow:auto;padding:20px}
+  .ovlbox h3{margin-bottom:6px}
+  .ovlpre{background:#f6f7fb;border:1px solid var(--line);border-radius:9px;padding:11px 13px;font-size:12px;white-space:pre-wrap;max-height:190px;overflow:auto;line-height:1.6}
+  .spin{display:inline-block;width:13px;height:13px;border:2.5px solid rgba(255,255,255,.45);border-top-color:#fff;border-radius:50%;animation:spn .7s linear infinite;vertical-align:-2px}
+  @keyframes spn{to{transform:rotate(360deg)}}
+  .rstep .w{display:block;font-size:9.5px;color:var(--muted);margin-top:3px;font-weight:600}
+  .obadge{display:inline-block;font-size:10.5px;font-weight:800;letter-spacing:.05em;color:#1c7a58;background:#eef7f2;border:1px solid #cbe7da;border-radius:999px;padding:3px 10px;margin-left:6px}
+  .chain{font-size:12px;color:var(--muted);text-align:center;margin:-2px 0 12px}
+  .whyb{border-left:3px solid #1f9268;background:#f4faf7;border-radius:0 10px 10px 0;padding:11px 14px;margin:0 0 12px;font-size:12.8px;line-height:1.8;color:#2b4a40}
+  .whyb b{color:#155e44}
+  .whyb .wt{display:block;font-size:10.5px;font-weight:800;letter-spacing:.08em;color:#1f9268;margin-bottom:5px}
+  .exb{border:1px dashed var(--line);border-radius:10px;margin:10px 0;background:#fcfcfe}
+  .exb>summary{cursor:pointer;padding:9px 13px;font-size:12.5px;font-weight:700;color:var(--muted);list-style:none}
+  .exb>summary::-webkit-details-marker{display:none}
+  .exb>summary::before{content:"▸ ";color:#1f9268}
+  .exb[open]>summary::before{content:"▾ "}
+  .exbd{padding:0 14px 13px;font-size:12.7px;line-height:1.85;color:#3b4252}
+  .exbd .q{color:#155e44}
+  .dorow{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .dolist{border-radius:11px;padding:12px 15px;font-size:13px;line-height:1.75}
+  .dolist.ok{background:#eef7f2;border:1px solid #cbe7da}
+  .dolist.no{background:#fdf1ec;border:1px solid #f3d2c6}
+  .dolist b{display:block;font-size:11.5px;letter-spacing:.08em;margin-bottom:5px}
+  .dolist.ok b{color:#1c7a58}.dolist.no b{color:#c3552f}
+  .secblk{border:1px solid var(--line);border-radius:11px;padding:11px 13px;margin-bottom:9px;background:#fcfcfe}
+  .secblk .hd{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px}
+  .secblk .sec{font-weight:800;font-size:13px}
+  .secblk .tt{font-size:11px;color:var(--muted)}
+  @media(max-width:720px){.dorow{grid-template-columns:1fr}}
+
   .stat{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px}
   .stat .s{background:#fff;border:1px solid var(--line);border-radius:13px;padding:15px 16px;box-shadow:var(--shadow)}
   .stat .s .n{font-size:26px;font-weight:800;color:var(--brand)}
@@ -333,8 +403,8 @@ function blank(){return{
   recurring:[],
   reminders:[],
   focusLog:{},
-  settings:{gClientId:"",gcalId:"primary",autoCloud:false,cloudSyncedAt:""},
-  view:"dash", ui:{month:"", week:"", day:""}
+  settings:{gClientId:"",gcalId:"primary",autoCloud:false,cloudSyncedAt:"",ai:{prov:"copy",key:"",model:""}},
+  view:"dash", ui:{month:"", week:"", day:"", book:""}
 };}
 function save(){ try{ S.meta.savedAt=new Date().toLocaleString('ko-KR'); localStorage.setItem(KEY,JSON.stringify(S)); setSave("자동저장됨 "+S.meta.savedAt);}catch(e){ setSave("자동저장 불가 — 백업을 사용하세요"); } try{scheduleCloud();}catch(e){} }
 function load(){ try{ const r=localStorage.getItem(KEY); if(r){ S=Object.assign(blank(),JSON.parse(r)); return true;} }catch(e){} return false; }
@@ -922,31 +992,635 @@ function vJournal(v){
      ${day.reflect?`<div class="li-m" style="margin-top:6px">🔎 ${esc(day.reflect)}</div>`:''}
      ${day.gratitude?`<div class="li-m">🙏 ${esc(day.gratitude)}</div>`:''}</div>`;}).join('') : '<p class="hint">아직 기록이 없습니다.</p>'}`;
 }
-function vReading(v){
-  v.innerHTML=`
-   <h2 class="vh">📚 독서 기록</h2>
-   <p class="vsub">읽은 책과 '생긴 질문·적용'을 남깁니다. 배움이 실천으로 이어지도록.</p>
-   <div class="card"><h3>새 독서 기록</h3>
-     <div class="grid2">
-       <label class="fld"><span class="lb">제목</span><input type="text" id="rt"></label>
-       <label class="fld"><span class="lb">저자</span><input type="text" id="ra"></label>
-     </div>
-     <label class="fld"><span class="lb">핵심 문장 · 깨달음</span><textarea id="rn"></textarea></label>
-     <label class="fld"><span class="lb">나의 적용 (무엇을 실천할까)</span><textarea id="rp"></textarea></label>
-     <label class="fld"><span class="lb">별점</span><select id="rr">${[5,4,3,2,1].map(n=>`<option value="${n}">${'★'.repeat(n)}</option>`).join('')}</select></label>
-     <button class="btn" onclick="addReading()">기록 추가</button>
-   </div>
-   <div id="rlist"></div>`;
-  renderReading();
+/* ================= 📚 AI 독서법 — 읽고 · 남기고 · 말하기 =================
+   6단계 · 산출물 중심. 기간은 자유 — 4주에 나눠도, 하루에 몰아 해도 된다.
+   규칙은 하나 — 내 생각을 먼저 쓰면, AI가 열린다.
+   ① 내 생각 먼저 → ② AI로 보강 → ③ 다시 내 언어로 출력
+      · 생성 효과(Generation Effect)  : 내가 만든 답이 오래 남는다 → "내 한 줄 먼저"
+      · 인출 연습(Retrieval Practice) : 책을 덮고 떠올릴 때 기억이 된다 → "책 덮고 쓰기"
+      · 설명 효과(Protégé Effect)     : 남에게 말할 수 있어야 안다 → 마지막은 1분 말하기   */
+const RSTEPS=[
+  ["setup","1단계","책 세팅",     "권장 10분",     "AI에 이 책의 논리 구조를 심는다"],
+  ["l1",   "2단계","장별 3줄 요약","장당 5~10분",  "산출물 — 책의 뼈대 · 지식 지도"],
+  ["l2",   "3단계","나만의 독서카드","권장 30분",  "산출물 — 꺼내 쓰는 독서카드 1장"],
+  ["l3",   "4단계","독서감상록",   "권장 60~90분", "산출물 — A4 2쪽 · 2,000~3,000자"],
+  ["l4",   "5단계","1분 말하기",   "권장 20분",    "산출물 — 60초 스피치 스크립트"],
+  ["rec",  "6단계","마무리 · 기록","권장 10분",    "산출물 — 기록 저장 · 내보내기"]];
+
+/* ---------- 활용 목적별 개인화 ----------
+   [key, 이름, 목표, 경험칸 안내, 我칸 안내, 말하기 상대, 기록의 가치, 我 칸이 재료가 되는 곳] */
+const PURP=[
+ ['life','삶 · 자기성장','내 선택과 습관이 바뀌는 것',
+  '이 주장이 내 삶의 어느 순간과 만났는가 — 장면 하나로',
+  '동의 · 이견 · 내 삶과의 연결',
+  '가까운 사람에게 이야기하듯',
+  '이 기록이 쌓이면 <b>나만의 생각 이력</b>이 됩니다 — 내가 무엇을 읽고 어떻게 달라졌는지 남는 유일한 자료입니다.',
+  '대화 · 결정 · 다음 글'],
+ ['work','업무 · 직무','회의·기획·의사결정에서 바로 꺼내 쓰는 것',
+  '이 주장이 내 업무의 어느 장면과 만났는가 — 실제 사례 하나로',
+  '동의 · 이견 · 내 일과의 연결',
+  '동료 앞에서 보고하듯',
+  '이 기록이 쌓이면 <b>나만의 직무 지식 자산</b>이 됩니다 — 남의 요약이 아니라 내 판단이 붙은 자료라서 바로 인용할 수 있습니다.',
+  '기획서 · 보고 · 회의 발언'],
+ ['study','연구 · 학문','내 연구 질문과 연결해 인용 가능한 형태로 남기는 것',
+  '이 주장이 내 연구·현장 관찰의 어느 지점과 만났는가',
+  '동의 · 이견 · 내 연구 질문과의 연결',
+  '세미나에서 요약 발제하듯',
+  '이 기록이 쌓이면 <b>인용 가능한 독서 노트</b>가 됩니다 — 출처·비평·내 판단이 한 장에 있어 논문·발제에 바로 씁니다.',
+  '논문 · 발제 · 연구노트'],
+ ['teach','교육 · 수업','수업·강의·상담에서 꺼내 쓰는 것',
+  '이 주장이 내 교실·상담의 어느 장면과 만났는가',
+  '동의 · 이견 · 내 수업과의 연결',
+  '학생·동료 교사 앞에서 말하듯',
+  '이 기록이 쌓이면 <b>내 수업의 재료 창고</b>가 됩니다 — 발문·사례·예화가 출처와 함께 남습니다.',
+  '수업 발문 · 강의 · 상담'],
+ ['write','창작 · 글쓰기','내 글의 재료로 쓰는 것',
+  '이 주장이 내 경험의 어느 장면과 겹치는가 — 감정까지',
+  '동의 · 이견 · 내 이야기와의 연결',
+  '독자에게 낭독하듯',
+  '이 기록이 쌓이면 <b>나만의 소재 노트</b>가 됩니다 — 인용구가 아니라 내 감정이 붙은 장면이 남습니다.',
+  '칼럼 · 에세이 · 이야기'],
+ ['learn','학습 · 진로','과제·발표·진로 탐색에 쓰는 것',
+  '이 주장이 내 공부·진로 고민의 어느 순간과 만났는가',
+  '동의 · 이견 · 내 공부·진로와의 연결',
+  '친구·모둠 앞에서 발표하듯',
+  '이 기록이 쌓이면 <b>나만의 생각 이야기</b>가 됩니다 — 我 칸과 토론 로그가 있으면 “남들과 똑같은 활동”이 되지 않습니다.',
+  '수행평가 · 발표 · 면접']];
+function purp(b){return PURP.find(p=>p[0]===((b.ai||{}).purpose||'life'))||PURP[0];}
+
+function ensureAI(b){
+  if(!b.id)b.id=uid(); if(!b.date)b.date=today();
+  b.ai=b.ai||{};const a=b.ai;
+  a.toc=a.toc||''; a.structure=a.structure||'';
+  a.chapters=a.chapters||[];
+  a.chapters.forEach(c=>{if(!c.id)c.id=uid();c.name=c.name||'';c.myLine=c.myLine||'';c.ai=c.ai||'';c.final=c.final||'';});
+  /* 독서카드 — 書 脈 骨 我 */
+  a.card=a.card||{};
+  if(a.card.research&&!a.card.seo){a.card.seo=a.card.research;}      /* 구버전 마이그레이션 */
+  a.card.seo=a.card.seo||''; a.card.maek=a.card.maek||''; a.card.gol=a.card.gol||''; a.card.judgment=a.card.judgment||'';
+  a.review=a.review||{}; const rv=a.review;
+  rv.claims=rv.claims||[];
+  while(rv.claims.length<3)rv.claims.push({id:uid(),text:'',why:'',ex:'',debate:[],draft:'',feedback:''});
+  rv.claims.forEach(c=>{if(!c.id)c.id=uid();c.text=c.text||'';c.why=c.why||'';c.ex=c.ex||'';c.debate=c.debate||[];c.draft=c.draft||'';c.feedback=c.feedback||'';});
+  rv.full=rv.full||''; rv.fullFeedback=rv.fullFeedback||'';
+  /* 1분 발표 — 60초 4블록 */
+  a.speech=a.speech||{};const sp=a.speech;
+  sp.hook=sp.hook||''; sp.core=sp.core||''; sp.msg=sp.msg||''; sp.close=sp.close||'';
+  if(sp.script&&!sp.hook){sp.hook=sp.script;sp.script='';}           /* 구버전 마이그레이션 */
+  sp.transcript=sp.transcript||''; sp.practice=sp.practice||''; sp.feedback=sp.feedback||'';
+  a.pledge=a.pledge||{p1:false,p2:false,p3:false};
+  a.purpose=a.purpose||'life';
+  if(!a.step)a.step='setup';
+  return b;
 }
-function addReading(){const t=document.getElementById('rt').value.trim();if(!t){toast('제목을 입력하세요');return;}
-  S.reading.unshift({id:uid(),date:today(),title:t,author:document.getElementById('ra').value,note:document.getElementById('rn').value,apply:document.getElementById('rp').value,rating:parseInt(document.getElementById('rr').value)});
-  save();vReading(document.getElementById('view'));toast('독서 기록을 추가했습니다');}
+const SPBLK=[['hook','훅','15초',90,'질문 또는 장면으로 청중을 붙잡는다'],
+             ['core','책의 핵심','15초',90,'이 책을 한 문장으로'],
+             ['msg','메시지 + 경험','25초',150,'세 메시지 중 가장 강한 하나 + 나의 경험'],
+             ['close','마무리','5초',30,'청중에게 건네는 초대']];
+function spText(b){return SPBLK.map(k=>b.ai.speech[k[0]]).filter(x=>x.trim()).join('\n');}
+
+function curBook(){const L=S.reading||[];if(!L.length)return null;
+  let b=L.find(x=>x.id===S.ui.book); if(!b)b=L[0];
+  S.ui.book=b.id; return ensureAI(b);}
+function bset(path,val){const b=curBook();if(!b)return;
+  const ks=path.split('.');let o=b;for(let i=0;i<ks.length-1;i++)o=o[ks[i]];
+  o[ks[ks.length-1]]=val;save();}
+function bsetR(path,val){bset(path,val);vReading(document.getElementById('view'));}
+function rlen(s){return (s==null?'':String(s)).replace(/\s/g,'').length;}
+function rcopy(t){try{navigator.clipboard.writeText(t);toast('복사했습니다');}
+  catch(e){const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();
+    try{document.execCommand('copy');toast('복사했습니다');}catch(_){toast('복사 실패 — 직접 선택해 복사하세요');}ta.remove();}}
+function rdl(name,text){const bl=new Blob([text],{type:'text/markdown;charset=utf-8'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(bl);
+  a.download=name.replace(/[\\/:*?"<>|]/g,'')+'.md';a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),3000);toast('내려받았습니다');}
+
+/* ---------- AI 연결 (Claude API / Gemini API / 복사 모드) ---------- */
+function aiCfg(){S.settings.ai=S.settings.ai||{prov:'copy',key:'',model:''};return S.settings.ai;}
+function setAiCfg(k,v){const c=aiCfg();c[k]=v;save();if(k==='prov')vReading(document.getElementById('view'));}
+async function callAI(prompt,system){
+  const c=aiCfg();
+  if(c.prov==='claude'&&c.key){
+    const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',
+      headers:{'content-type':'application/json','x-api-key':c.key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:c.model||'claude-sonnet-4-5-20250929',max_tokens:1800,system:system||'',messages:[{role:'user',content:prompt}]})});
+    if(!r.ok)throw new Error('Claude '+r.status+' — '+(await r.text()).slice(0,160));
+    const j=await r.json();return (j.content||[]).map(x=>x.text||'').join('').trim();
+  }
+  if(c.prov==='gemini'&&c.key){
+    const m=c.model||'gemini-2.0-flash';
+    const body={contents:[{role:'user',parts:[{text:prompt}]}]};
+    if(system)body.system_instruction={parts:[{text:system}]};
+    const r=await fetch('https://generativelanguage.googleapis.com/v1beta/models/'+m+':generateContent?key='+encodeURIComponent(c.key),
+      {method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body)});
+    if(!r.ok)throw new Error('Gemini '+r.status+' — '+(await r.text()).slice(0,160));
+    const j=await r.json();const cd=(j.candidates||[])[0]||{};const ps=((cd.content||{}).parts)||[];
+    return ps.map(x=>x.text||'').join('').trim();
+  }
+  const v=await pasteModal((system?('[역할] '+system+'\n\n'):'')+prompt);
+  if(v==null)throw new Error('__cancel__');
+  return v;
+}
+function pasteModal(prompt){return new Promise(res=>{
+  const ov=document.createElement('div');ov.className='ovl';
+  ov.innerHTML='<div class="ovlbox">'+
+    '<h3>🤖 AI에게 물어보기 <span class="hint">(복사 모드)</span></h3>'+
+    '<p class="hint" style="margin:0 0 9px">아래 프롬프트를 복사해 Claude·ChatGPT·Gemini 등에 붙여넣고, 받은 답을 아래 칸에 붙여 넣으세요.</p>'+
+    '<div class="ovlpre" id="ovlp"></div>'+
+    '<div style="display:flex;gap:6px;margin:9px 0"><button class="btn sm" id="ovlcopy">📋 프롬프트 복사</button></div>'+
+    '<textarea id="ovlans" placeholder="AI 답변을 여기에 붙여넣기" style="min-height:150px"></textarea>'+
+    '<div style="display:flex;gap:6px;justify-content:flex-end;margin-top:9px">'+
+    '<button class="btn ghost sm" id="ovlx">취소</button><button class="btn sm" id="ovlok">저장</button></div></div>';
+  document.body.appendChild(ov);
+  ov.querySelector('#ovlp').textContent=prompt;
+  ov.querySelector('#ovlcopy').onclick=()=>rcopy(prompt);
+  const done=v=>{ov.remove();res(v);};
+  ov.querySelector('#ovlx').onclick=()=>done(null);
+  ov.querySelector('#ovlok').onclick=()=>{const t=ov.querySelector('#ovlans').value.trim();done(t||null);};
+  ov.addEventListener('click',e=>{if(e.target===ov)done(null);});
+  setTimeout(()=>{const a=ov.querySelector('#ovlans');if(a)a.focus();},60);
+});}
+async function askAI(btn,prompt,system,cb){
+  const old=btn.innerHTML;btn.disabled=true;btn.innerHTML='<span class="spin"></span> 생각 중…';
+  let out=null,err=null;
+  try{out=await callAI(prompt,system);}catch(e){err=e;}
+  try{btn.disabled=false;btn.innerHTML=old;}catch(_){}
+  if(err){if(String(err.message)!=='__cancel__')toast('AI 오류: '+err.message);return;}
+  if(out)cb(out);
+}
+
+/* ---------- 뷰 ---------- */
+function vReading(v){
+  const L=S.reading||[]; L.forEach(ensureAI);
+  const b=curBook();
+  const c=aiCfg();
+  let h='<h2 class="vh">📚 독서 기록 <span class="hint">AI 독서법 — 읽고 · 남기고 · 말하기</span></h2>'+
+   '<p class="vsub">규칙은 하나 — <b>내 생각을 먼저 쓰면, AI가 열린다.</b> ① 내 생각 먼저 → ② AI로 보강 → ③ 다시 내 언어로 출력.</p>'+
+   '<div class="card no-print"><h3>AI 연결</h3><div class="aiset">'+
+     '<select onchange="setAiCfg(\'prov\',this.value)">'+
+       ['copy|복사 모드 (키 없이 · 어떤 AI든)','claude|Claude API 키','gemini|Gemini API 키']
+        .map(o=>{const p=o.split('|');return '<option value="'+p[0]+'"'+(c.prov===p[0]?' selected':'')+'>'+p[1]+'</option>';}).join('')+
+     '</select>'+
+     (c.prov==='copy'?'<span class="hint">프롬프트를 복사해 붙여넣고, 답을 다시 붙여 넣는 방식입니다. 키가 필요 없어 공용 PC에서도 안전합니다.</span>':
+       '<input type="password" placeholder="API 키" value="'+esc(c.key)+'" onchange="setAiCfg(\'key\',this.value)">'+
+       '<input type="text" placeholder="모델(비우면 기본)" value="'+esc(c.model)+'" onchange="setAiCfg(\'model\',this.value)">'+
+       '<span class="hint">키는 이 브라우저에만 저장됩니다. 공용 PC에서는 복사 모드를 쓰세요.</span>')+
+   '</div></div>';
+
+  /* 책 선반 */
+  h+='<div class="rshelf no-print">'+
+     L.map(x=>'<button class="bchip'+(b&&x.id===b.id?' on':'')+'" onclick="openBook(\''+x.id+'\')">'+esc(x.title||'제목 없음')+' <span style="opacity:.7">'+rprog(x)+'%</span></button>').join('')+
+     '<button class="bchip new" onclick="newBook()">＋ 새 책</button></div>';
+
+  if(!b){ v.innerHTML=h+
+    '<div class="card"><h3>시작하기 <span class="hint">한 권의 책이 네 번 변신합니다 · 기간은 자유</span></h3>'+
+    whyBox('왜 이 프로그램인가',
+      '읽고 <b>덮어두면</b> 한 달 뒤 남는 것이 거의 없습니다. 이 여정은 한 권의 책을 <b>요약 → 카드 → 글 → 말</b>의 네 단계로 바꿔 놓습니다. '+
+      '앞 단계의 아웃풋이 다음 단계의 재료가 되기 때문에, 마지막 발표까지 가면 그 책은 <b>꺼내 쓸 수 있는 내 지식</b>이 됩니다.')+
+    '<div class="mapi"><span class="no">준비 1</span><span class="bd"><b>1회독을 마친 책 1권</b> — 끝까지 읽고 싶은 책으로 고르세요.</span></div>'+
+    '<div class="mapi"><span class="no">준비 2</span><span class="bd"><b>기록장</b> — 이 화면이 그 역할을 합니다. 종이 노트를 함께 써도 좋습니다.</span></div>'+
+    '<div class="mapi" style="border:none"><span class="no">준비 3</span><span class="bd"><b>AI 도구</b> — 위 [AI 연결]에서 복사 모드를 쓰면 키 없이 어떤 AI로도 가능합니다.</span></div>'+
+    '<p class="hint" style="margin-top:10px">＋ 새 책을 눌러 시작하세요. 먼저 할 일은 딱 셋 — ① 책 고르기 ② 목차를 입력해 책 세팅 ③ 1장을 읽고 “내 한 줄” 쓰기.</p></div>';
+    return; }
+
+  /* 단계 레일 */
+  h+='<div class="rrail no-print">'+RSTEPS.map(s=>
+     '<button class="rstep'+(b.ai.step===s[0]?' on':'')+(stepDone(b,s[0])?' ok':'')+'" onclick="goStep(\''+s[0]+'\')" title="'+s[4]+'">'+
+     '<span class="n">'+s[1]+'</span><span class="t">'+s[2]+'</span><span class="w">'+s[3]+'</span></button>').join('')+'</div>'+
+     '<p class="chain no-print">앞 단계의 산출물이 다음 단계의 재료가 됩니다 — <b>요약이 카드로, 카드가 글로, 글이 말로.</b><br>'+
+     '시간은 권장일 뿐입니다. <b>4주에 나눠 해도, 하루에 몰아서 끝내도 됩니다.</b></p>';
+
+  h+={setup:pSetup,l1:pL1,l2:pL2,l3:pL3,l4:pL4,rec:pRec}[b.ai.step](b);
+
+  h+='<div class="card"><h3>전체 독서 기록</h3><div id="rlist"></div></div>';
+  v.innerHTML=h; renderReading();
+}
+function stepHd(k,extra){const s=RSTEPS.find(x=>x[0]===k);
+  return '<h3>'+s[1]+' · '+s[2]+' <span class="hint">'+s[3]+(extra?' — '+extra:'')+'</span><span class="obadge">'+s[4]+'</span></h3>';}
+function goStep(k){const b=curBook();if(!b)return;b.ai.step=k;save();vReading(document.getElementById('view'));window.scrollTo(0,0);}
+function nextBtn(k){const s=RSTEPS.find(x=>x[0]===k);
+  return '<button class="btn sm" onclick="goStep(\''+k+'\')">'+s[1]+' · '+s[2]+' →</button>';}
+/* 왜 이걸 써야 하는가 — 각 단계 맨 위에 붙는 근거 상자 */
+function whyBox(t,body){return '<div class="whyb"><span class="wt">'+t+'</span>'+body+'</div>';}
+/* 커리큘럼의 『코스모스』 예시 — 접었다 펴는 안내 */
+function exBox(label,body){return '<details class="exb"><summary>『코스모스』 예시 보기 — '+label+'</summary><div class="exbd">'+body+'</div></details>';}
+function newBook(){const b=ensureAI({id:uid(),date:today(),title:'',author:'',note:'',apply:'',rating:5});
+  S.reading.unshift(b);S.ui.book=b.id;save();vReading(document.getElementById('view'));toast('새 책을 시작했습니다');}
+function openBook(id){S.ui.book=id;save();vReading(document.getElementById('view'));window.scrollTo(0,0);}
+function delBook(id){if(!confirm('이 책의 독서 여정 전체를 삭제할까요?'))return;
+  S.reading=S.reading.filter(x=>x.id!==id);if(S.ui.book===id)S.ui.book='';save();vReading(document.getElementById('view'));}
+function stepDone(b,k){const a=b.ai;
+  if(k==='setup')return !!(b.title&&a.structure);
+  if(k==='l1')return a.chapters.length>0&&a.chapters.every(c=>c.final||c.myLine);
+  if(k==='l2')return !!(a.card.judgment&&a.card.seo);
+  if(k==='l3')return rlen(a.review.full)>=1500;
+  if(k==='l4')return rlen(spText(b))>=300;
+  if(k==='rec')return !!(b.apply);
+  return false;}
+function rprog(b){ensureAI(b);let n=0;RSTEPS.forEach(s=>{if(stepDone(b,s[0]))n++;});return Math.round(n/RSTEPS.length*100);}
+
+/* ---------- 1단계 · 책 세팅 (1강 ①) ---------- */
+function pSetup(b){const a=b.ai;
+  return '<div class="card"><h3>왜 AI에게 먼저 시키면 안 될까? <span class="hint">이 여정의 단 하나의 규칙</span></h3>'+
+   '<p class="vsub" style="margin-top:0">① 내 생각 먼저 → ② AI로 보강 → ③ 다시 내 언어로 출력. 순서를 바꾸면 도구가 아니라 대필이 됩니다.</p>'+
+   '<div class="mapi"><span class="no">생성</span><span class="bd"><b>생성 효과</b> — 내가 만든 답은 받아 적은 답보다 훨씬 오래 남습니다. 그래서 <b>“내 한 줄 먼저”</b>.</span></div>'+
+   '<div class="mapi"><span class="no">인출</span><span class="bd"><b>인출 연습</b> — 책을 덮고 떠올리는 그 순간 진짜 내 기억이 됩니다. 그래서 <b>“책 덮고 쓰기”</b>.</span></div>'+
+   '<div class="mapi" style="border:none"><span class="no">설명</span><span class="bd"><b>설명 효과</b> — 남에게 말할 수 있어야 정말 아는 것입니다. 그래서 마지막은 <b>1분 말하기</b>.</span></div>'+
+   '<div class="lockn" style="margin-top:8px">⚠ AI가 먼저 읽어주면 — 결과물은 남아도, 내 실력은 0이 됩니다.</div></div>'+
+   '<div class="card">'+stepHd('setup','제목·저자·목차를 AI에 입력하면, 이후 모든 대화가 이 책의 논리 구조 안에서 이루어집니다')+
+   whyBox('왜 목차부터 입력하나',
+     '세팅 없이 “이 책 어때?”라고 물으면 AI는 인터넷 어딘가의 <b>일반론</b>을 말합니다. 목차를 넣어 두면 이후 모든 대화가 <b>이 책의 논리 구조 안에서</b> 이루어집니다. '+
+     '또 목차를 옮겨 적는 동안 내가 <b>책의 전체 지도</b>를 한 번 훑게 됩니다 — 이 5분이 이후 전 과정의 방향을 잡습니다.')+
+   '<div class="grid2">'+
+     '<label class="fld"><span class="lb">제목</span><input type="text" placeholder="예) 코스모스" value="'+esc(b.title)+'" onchange="bsetR(\'title\',this.value)"></label>'+
+     '<label class="fld"><span class="lb">저자</span><input type="text" placeholder="예) 칼 세이건" value="'+esc(b.author)+'" onchange="bset(\'author\',this.value)"></label>'+
+   '</div>'+
+   '<label class="fld"><span class="lb">이 책을 어디에 쓸 것인가 <span class="hint">— 고르면 이후 단계의 안내와 예시가 그 맥락으로 바뀝니다</span></span>'+
+   '<select onchange="bsetR(\'ai.purpose\',this.value)">'+
+     PURP.map(p=>'<option value="'+p[0]+'"'+(a.purpose===p[0]?' selected':'')+'>'+p[1]+' — '+p[2]+'</option>').join('')+
+   '</select></label>'+
+   '<label class="fld"><span class="lb">목차 (책 앞의 차례를 그대로 옮겨 적으세요 — 한 줄에 한 장)</span>'+
+   '<textarea style="min-height:150px" placeholder="1장 코스모스의 바닷가에서&#10;2장 우주 생명의 푸가&#10;3장 지상과 천상의 하모니" onchange="bset(\'ai.toc\',this.value)">'+esc(a.toc)+'</textarea></label>'+
+   '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px">'+
+     '<button class="btn aibtn sm"'+(a.toc.trim()?'':' disabled')+' onclick="aiSetup(this)">🤖 책 세팅 — 문제의식 · 논리 구조 파악</button>'+
+     '<button class="btn ghost sm" onclick="applyToc()">목차 → 장 목록 만들기 (2단계로)</button>'+
+     '<button class="btn ghost sm" onclick="delBook(\''+b.id+'\')">✕ 이 책 삭제</button></div>'+
+   (a.toc.trim()?'':'<div class="lockn" style="margin-top:6px">🔒 목차를 먼저 입력하면 AI가 열립니다.</div>')+
+   (a.structure?'<div class="aiout"><span class="tg">AI — 핵심 문제의식 · 전체 논리 구조 (문제 제기 → 분석 → 대안)</span>'+esc(a.structure)+'</div>':'')+
+   exBox('책 세팅',
+     '<b>입력</b> — 『코스모스』(칼 세이건) + 목차 전체<br>'+
+     '<b>AI 답</b> — <span class="q">“문제의식: 인간은 우주에서 어떤 존재인가. 구조: 우주의 규모 제시(문제 제기) → 과학사의 오류와 발견(분석) → 과학적 사고와 겸손(대안)”</span><br>'+
+     '이 구조가 잡히면, 이후 장별 요약·토론·감상록이 모두 이 뼈대 위에서 이어집니다.')+
+   '</div>';}
+function aiSetup(btn){const b=curBook();
+  const p='『'+(b.title||'제목 미상')+'』'+(b.author?'('+b.author+')':'')+'를 함께 분석할 거야.\n목차는 다음과 같아.\n\n'+b.ai.toc+
+   '\n\n이 책의 핵심 문제의식과 전체 논리 구조(문제 제기→분석→대안)를 먼저 6~8줄 개조식으로 정리해줘. 이후 대화에서도 이 구조를 기준으로 답해줘.';
+  askAI(btn,p,'당신은 독서 코치입니다. 간결한 한국어 개조식으로 답합니다.',t=>{bset('ai.structure',t);vReading(document.getElementById('view'));});}
+function applyToc(){const b=curBook();
+  const names=b.ai.toc.split('\n').map(s=>s.trim()).filter(s=>s.length>1);
+  if(!names.length){toast('목차를 먼저 입력하세요');return;}
+  const old=b.ai.chapters;
+  b.ai.chapters=names.map(n=>{const p=old.find(o=>o.name===n);return p||{id:uid(),name:n,myLine:'',ai:'',final:''};});
+  b.ai.step='l1';save();vReading(document.getElementById('view'));toast(names.length+'개 장을 만들었습니다');}
+
+/* ---------- 2단계 · 장별 3줄 요약 (1강 ②③④) ---------- */
+function pL1(b){const a=b.ai;
+  if(!a.chapters.length)return '<div class="card">'+stepHd('l1')+'<p class="hint">먼저 [1단계]에서 <b>목차 → 장 목록 만들기</b>를 눌러 주세요.</p>'+
+    '<button class="btn ghost sm" onclick="goStep(\'setup\')">← 1단계로</button></div>';
+  const done=a.chapters.filter(c=>c.final).length;
+  let h='<div class="card">'+stepHd('l1','내 한 줄 + AI 보완 = 장별 3줄 요약')+
+   whyBox('왜 “내 한 줄”을 먼저 쓰나',
+     '<b>책을 덮고</b> 기억만으로 한 줄을 쓰는 이 순간이 학습의 전부입니다(<b>인출 연습</b>). 책을 펴 놓고 베껴 적으면 손은 움직여도 기억은 남지 않습니다. '+
+     '<b>이 단계를 건너뛰면 학습이 사라집니다.</b><br>'+
+     'AI를 나중에 부르는 이유도 같습니다 — AI 요약을 먼저 읽으면 내 머리는 “아, 그렇구나”로 끝나고 <b>떠올리는 훈련이 통째로 없어집니다.</b> '+
+     'AI는 대체가 아니라 보완이라서, 최종 3줄의 <b>1줄째에는 내 문장이 그대로 살아 있어야</b> 합니다.<br>'+
+     '<b>왜 전 장을 다 하나</b> — 장별 3줄이 모이면 <b>책의 뼈대(지식 지도)</b>가 되고, 그 지도가 다음 단계 독서카드의 骨 칸으로 그대로 들어갑니다.')+
+   '<div class="synchint" style="margin-bottom:10px">🔒 내 요약을 <b>10자 이상</b> 써야 그 장의 AI 보완이 열립니다. '+
+   '<b>'+done+'/'+a.chapters.length+'</b>장 확정</div>'+
+   exBox('1장「코스모스의 바닷가에서」',
+     '<b>① 내 한 줄(책 덮고)</b> — <span class="q">“우주는 인간에게 겸손을 가르치는 가장 큰 교실이다.”</span><br>'+
+     '<b>② AI 보완 제안</b> — 우주의 시공간 규모 / 인간 존재의 상대적 위치 / 그럼에도 우주를 이해하려는 과학의 시도<br>'+
+     '<b>③ 나의 최종 3줄</b><br>1. 우주는 인간에게 겸손을 가르치는 가장 큰 교실이다.<br>2. 우주의 시공간 앞에서 인간의 역사는 한 점에 불과하다.<br>3. 그럼에도 그 점이 우주를 이해하려 한다는 사실이 경이롭다.<br>'+
+     '<b>포인트</b> — 1줄째는 <b>내 문장이 그대로 살아 있습니다.</b> AI는 대체가 아니라 보완입니다.')+'';
+  a.chapters.forEach((c,i)=>{
+    const ok=c.myLine.trim().length>=10;
+    h+='<div class="chcard"><div class="chhd"><span class="nm">'+(i+1)+'. '+esc(c.name)+'</span>'+
+      '<span class="st'+(c.final?' ok':'')+'">'+(c.final?'확정':(ok?'AI 열림':'내 한 줄 대기'))+'</span></div>'+
+      '<label class="fld"><span class="lb">① 내 한 줄 — 책을 덮고</span>'+
+      '<textarea style="min-height:52px" placeholder="이 장을 한 줄로 요약하면? (기억만으로, 내 문장으로)" onchange="setChap('+i+',\'myLine\',this.value)">'+esc(c.myLine)+'</textarea></label>'+
+      '<div style="margin-top:4px"><button class="btn aibtn sm"'+(ok?'':' disabled')+' onclick="aiChapter(this,'+i+')">🤖 ② AI 보완 요청 — 놓친 핵심</button>'+
+      (ok?'':' <span class="lockn">🔒 내 생각 먼저</span>')+'</div>'+
+      (c.ai?'<div class="aiout"><span class="tg">AI 보완 제안 — 그대로 받지 말 것</span>'+esc(c.ai)+'</div>':'')+
+      '<label class="fld" style="margin-top:8px"><span class="lb">③ 나의 최종 3줄 — 내 언어로 다듬어 확정</span>'+
+      '<textarea style="min-height:68px" placeholder="1. …&#10;2. …&#10;3. …" onchange="setChap('+i+',\'final\',this.value)">'+esc(c.final)+'</textarea></label></div>';
+  });
+  h+='<div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn ghost sm" onclick="copyGol()">📋 지식 지도 복사</button>'+nextBtn('l2')+'</div></div>';
+  return h;}
+function setChap(i,k,v){const b=curBook();b.ai.chapters[i][k]=v;save();
+  if(k==='myLine'||k==='final')vReading(document.getElementById('view'));}
+function aiChapter(btn,i){const b=curBook();const c=b.ai.chapters[i];
+  const p='『'+(b.title||'')+'』「'+c.name+'」에 대한 내 한 줄 요약은 "'+c.myLine+'"이야.\n\n'+
+   '놓친 핵심을 보완해 3줄 요약을 제안해줘. 단, 1줄째는 내 문장의 취지를 유지해줘. 각 줄 40자 이내.';
+  askAI(btn,p,'독자의 생각을 대체하지 말고 보완합니다. 한국어 개조식.',t=>{setChap(i,'ai',t);vReading(document.getElementById('view'));});}
+function golText(b){return b.ai.chapters.filter(c=>c.final||c.myLine)
+  .map((c,i)=>(i+1)+'. '+c.name+'\n'+(c.final||c.myLine)).join('\n\n');}
+function copyGol(){rcopy(golText(curBook()));}
+
+/* ---------- 3단계 · 나만의 독서카드 (2강) 書 脈 骨 我 ---------- */
+function pL2(b){const a=b.ai,cd=a.card;
+  const row=(gl,nm,desc,src,body)=>'<div class="chcard"><div class="chhd">'+
+    '<span class="nm"><span style="font-size:22px;color:var(--brand-d);margin-right:8px">'+gl+'</span>'+nm+'</span>'+
+    '<span class="st'+(/금지/.test(src)?'':' ok')+'">'+src+'</span></div>'+
+    '<p class="hint" style="margin:0 0 7px">'+desc+'</p>'+body+'</div>';
+  return '<div class="card">'+stepHd('l2','한 장의 카드 — 사실은 AI가, 판단은 내가')+
+   whyBox('왜 카드 한 장으로 만드나',
+     '요약만으로는 <b>“읽었다”</b>에서 끝납니다. 책 한 권을 나중에 <b>꺼내 쓰려면</b> 사실·맥락·뼈대·내 판단이 한 장에 모여 있어야 합니다. '+
+     '이 카드가 있으면 몇 달 뒤 글을 쓸 때도, 수업에서 인용할 때도 이 한 장만 보면 됩니다.<br>'+
+     '<b>왜 앞의 세 칸은 AI에게 맡기나</b> — 書·脈은 <b>찾으면 나오는 사실</b>입니다. 여기에 시간을 쓰는 대신, 그 시간을 我 칸에 씁니다. '+
+     '단, AI가 준 사실은 <b>틀릴 수 있으므로</b> 인용 전에 확인하세요.<br>'+
+     '<b>왜 我 칸은 내 손으로만 쓰나</b> — <b>我 칸이 있어야 “꺼내 쓸 수 있는” 카드가 됩니다.</b> '+purp(b)[7]+'의 재료는 전부 이 칸에서 나오고, '+
+     '여기 쓴 두세 줄이 다음 단계 감상록의 <b>“하고 싶은 말”로 자랍니다.</b> 이 칸을 AI로 채우면 카드는 남지만 나는 남지 않습니다.')+
+   row('書','서지 · 저자의 문제의식','저자는 누구이고, 무엇과 싸웠는가',' AI 조사',
+     '<button class="btn aibtn sm" onclick="aiSeo(this)">🤖 저자 조사</button>'+
+     '<textarea style="min-height:70px;margin-top:7px" onchange="bset(\'ai.card.seo\',this.value)">'+esc(cd.seo)+'</textarea>')+
+   row('脈','시대 배경 · 대표 비평','왜 그 시점에 나왔고, 세상은 어떻게 평가했는가 (긍정 1 · 비판 1)','AI 조사 + 웹검색',
+     '<button class="btn aibtn sm" onclick="aiMaek(this)">🤖 맥락 · 비평 조사</button>'+
+     '<textarea style="min-height:80px;margin-top:7px" onchange="bset(\'ai.card.maek\',this.value)">'+esc(cd.maek)+'</textarea>'+
+     '<p class="hint" style="margin-top:5px">AI가 준 사실은 <b>틀릴 수 있습니다.</b> 사실과 해석을 구분해 기록하고, 인용 전에 출처를 확인하세요.</p>')+
+   row('骨','장별 3줄 요약','2단계에서 만든 지식 지도가 그대로 들어온다','2단계 결과물',
+     '<button class="btn ghost sm" onclick="pullGol()">↓ 2단계 요약 불러오기</button>'+
+     '<textarea style="min-height:90px;margin-top:7px" onchange="bset(\'ai.card.gol\',this.value)">'+esc(cd.gol)+'</textarea>')+
+   '<div class="myzone"><div class="chhd"><span class="nm" style="font-size:14px"><span style="font-size:22px;color:#c3552f;margin-right:8px">我</span>나의 판단과 연결 — 카드의 심장</span>'+
+     '<span class="st" style="color:#c3552f;font-weight:800">🚫 AI 사용 금지</span></div>'+
+   '<p class="hint" style="margin:0 0 8px"><b>'+purp(b)[4]+'.</b> 이 칸이 있어야 "꺼내 쓸 수 있는" 카드가 됩니다 — '+purp(b)[7]+'의 재료는 전부 여기서 나옵니다. AI 없이 내 손으로 쓰세요.</p>'+
+   '<textarea style="min-height:150px" placeholder="동의: …&#10;이견: …&#10;연결: …" onchange="bsetR(\'ai.card.judgment\',this.value)">'+esc(cd.judgment)+'</textarea>'+
+   '<div class="cnt'+(rlen(cd.judgment)>=200?' ok':'')+'">'+rlen(cd.judgment)+'자 (권장 200자 이상)</div></div>'+
+   exBox('완성된 독서카드',
+     '<b>書</b> 칼 세이건 — 천문학자·과학 커뮤니케이터. 과학을 소수 전문가의 언어에서 <b>모두의 언어</b>로 되돌리려 했다.<br>'+
+     '<b>脈</b> 1980년, 냉전과 우주 경쟁의 한복판. 긍정 — <span class="q">“과학을 시로 만들었다.”</span> 비판 — <span class="q">“낭만이 과학적 엄밀함을 흐린다.”</span><br>'+
+     '<b>骨</b> (2단계에서 만든 장별 3줄 요약이 그대로)<br>'+
+     '<b>我</b> <span class="q">“겸손은 무력함이 아니라 탐구의 출발점이라는 말에 동의한다. 다만 세이건은 과학의 자정 능력을 과신한다 — 내 교실에서도 “모른다”를 말할 수 있는 안전함이 먼저 있어야 질문이 나왔다.”</span><br>'+
+     '<b>포인트</b> — 我 칸만은 내 손글씨. 이 두 줄이 이후 감상록의 <b>“하고 싶은 말”</b>로 자랍니다.')+
+   '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:9px">'+
+     '<button class="btn ghost sm" onclick="copyCard()">📋 독서카드 복사</button>'+
+     '<button class="btn ghost sm" onclick="dlCard()">⬇ 독서카드 .md</button>'+
+     '<button class="btn ghost sm" onclick="judgeToIdea()">💡 구상 기록으로</button>'+
+     nextBtn('l3')+'</div></div>';}
+function aiSeo(btn){const b=curBook();
+  const p='『'+(b.title||'')+'』의 저자'+(b.author?' '+b.author:'')+'에 대해 알려줘.\n'+
+   '1) 전공·경력·주요 관심  2) 이 저자가 무엇과 싸웠는가(핵심 문제의식)\n각 2~3줄 개조식. 불확실하면 "불확실"이라고 명시할 것.';
+  askAI(btn,p,'사실 조사를 돕는 리서처입니다. 추측을 사실처럼 쓰지 않습니다. 한국어 개조식.',
+    t=>{bset('ai.card.seo',t);vReading(document.getElementById('view'));});}
+function aiMaek(btn){const b=curBook();
+  const p='『'+(b.title||'')+'』'+(b.author?'('+b.author+')':'')+'에 대해 조사해줘.\n'+
+   '1) 이 책이 나온 시대 배경 — 왜 그 시점이었는가\n2) 대표적 비평 — 긍정 1개, 비판 1개를 각각 한 문장 인용 형태로\n'+
+   '확인 가능한 근거는 (출처: …)로 괄호 표기하고, 사실과 해석을 구분해서 써줘.';
+  askAI(btn,p,'사실 조사를 돕는 리서처입니다. 사실과 해석을 구분해 표기합니다. 한국어 개조식.',
+    t=>{bset('ai.card.maek',t);vReading(document.getElementById('view'));});}
+function pullGol(){const b=curBook();const t=golText(b);
+  if(!t){toast('2단계 요약이 아직 없습니다');return;}
+  bsetR('ai.card.gol',t);toast('2단계 요약을 불러왔습니다');}
+function cardText(){const b=curBook();const cd=b.ai.card;
+  return '『'+(b.title||'')+'』 — '+(b.author||'')+'\n\n'+
+   '【書 · 서지와 저자의 문제의식】\n'+(cd.seo||'—')+'\n\n'+
+   '【脈 · 시대 배경과 대표 비평】\n'+(cd.maek||'—')+'\n\n'+
+   '【骨 · 장별 3줄 요약】\n'+(cd.gol||'—')+'\n\n'+
+   '【我 · 나의 판단과 연결】\n'+(cd.judgment||'—')+'\n';}
+function copyCard(){rcopy(cardText());}
+function dlCard(){rdl((curBook().title||'독서카드')+'_독서카드','# 독서카드\n\n'+cardText());}
+function judgeToIdea(){const b=curBook();const j=(b.ai.card.judgment||'').trim();
+  if(!j){toast('我 칸(나의 판단)을 먼저 쓰세요');return;}
+  S.ideas.unshift({id:uid(),date:today(),tag:'독서',title:'['+(b.title||'책')+'] 我 — 나의 판단',text:j});
+  save();toast('구상 기록으로 보냈습니다');}
+
+/* ---------- 4단계 · 독서감상록 (3강) 333 개조식 ---------- */
+function pL3(b){const a=b.ai,rv=a.review;
+  let h='<div class="card">'+stepHd('l3','333 개조식 — 하고 싶은 말 3 × 요소 3 = 9블록')+
+   whyBox('왜 9블록으로 쪼개 쓰나',
+     '“2,000자를 써라”는 막막하지만, <b>블록 하나에 250자</b>는 쓸 수 있습니다. 9블록을 채우면 <b>자연스럽게 2,000~3,000자, A4 2쪽</b>이 됩니다 — '+
+     '분량을 늘리는 게 아니라 <b>구조를 채우면 분량이 따라옵니다.</b><br>'+
+     '<b>왜 세 요소인가</b> — <b>주장</b>만 있으면 감상문이고, <b>근거</b>가 붙으면 독후감이며, 여기에 <b>경험·감정</b>이 붙어야 나만 쓸 수 있는 글이 됩니다. '+
+     '근거는 3단계 카드와 2단계 요약에서 꺼내 오세요.<br>'+
+     '<b>왜 저자와 토론하나</b> — 반론을 견뎌 본 주장만 근거가 단단해집니다. <b>토론에서 오간 문장이 그대로 본문의 근거가 되고</b>, '+
+     '저자가 되물은 질문에 답한 내용이 그대로 <b>경험 블록</b>이 됩니다.<br>'+
+     '<b>왜 에디터에게 대필을 금지하나</b> — 고쳐 준 글은 내 글이 아니고, 다음 글에 남지 않습니다. AI는 <b>논리 비약·근거 부족·중복만 지적</b>합니다. '+
+     '<b>에디터는 방향만 짚습니다 — 고치는 손은 언제나 나의 것.</b>')+
+   '<div class="synchint" style="margin-bottom:10px">절차 — 주장 3개 확정 → 주장마다 <b>저자와 토론</b> → 블록 초고(3요소) → <b>에디터 피드백</b> → 내 손으로 수정 → 전체 합치기.</div>';
+  rv.claims.forEach((c,i)=>{
+    const ready=c.text.trim().length>=8;
+    const three=[c.text,c.why,c.ex].filter(x=>x.trim()).length;
+    h+='<div class="chcard"><div class="chhd"><span class="nm">하고 싶은 말 '+['①','②','③'][i]+'</span>'+
+      '<span class="st'+(three===3?' ok':'')+'">3요소 '+three+'/3 · '+rlen(c.text+c.why+c.ex)+'자</span></div>'+
+      '<label class="fld"><span class="lb">주장 — 한 문장으로</span><input type="text" value="'+esc(c.text)+'" onchange="setClaim('+i+',\'text\',this.value)"></label>'+
+      '<label class="fld"><span class="lb">근거 — 독서카드·장별 요약에서</span><textarea style="min-height:60px" onchange="setClaim('+i+',\'why\',this.value)">'+esc(c.why)+'</textarea></label>'+
+      '<label class="fld"><span class="lb">경험 · 감정 — 내 삶에서</span><textarea style="min-height:60px" placeholder="'+esc(purp(b)[3])+'" onchange="setClaim('+i+',\'ex\',this.value)">'+esc(c.ex)+'</textarea></label>'+
+      '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px">'+
+        '<button class="btn aibtn sm"'+(ready?'':' disabled')+' onclick="aiDebate(this,'+i+')">⚔ 저자와 토론</button>'+
+        (ready?'':'<span class="lockn">🔒 주장을 먼저 쓰세요</span>')+'</div>';
+    if(c.debate.length){
+      h+='<div class="dbate">'+c.debate.map(m=>'<div class="dmsg '+(m.who==='au'?'au':'me')+'">'+
+        '<span class="who">'+(m.who==='au'?'저자 '+esc(b.author||''):'나')+'</span>'+esc(m.text)+'</div>').join('')+
+        '<div style="display:flex;gap:6px"><input type="text" placeholder="내 재반론… (토론에서 오간 문장이 그대로 본문의 근거가 됩니다)" id="reb'+i+'" onkeydown="if(event.key===\'Enter\')aiRebut(this,'+i+')">'+
+        '<button class="btn aibtn sm" onclick="aiRebut(document.getElementById(\'reb'+i+'\'),'+i+')">보내기</button></div></div>';
+    }
+    h+='</div>';
+  });
+  const n=rlen(rv.full);
+  h+='<div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn sm" onclick="assembleFull()">📝 9블록 → 감상록 초고 합치기</button></div>'+
+   '<label class="fld" style="margin-top:10px"><span class="lb">감상록 전문 — 내 글, 자유롭게 고쳐 쓰세요</span>'+
+   '<textarea style="min-height:280px" onchange="bsetR(\'ai.review.full\',this.value)">'+esc(rv.full)+'</textarea></label>'+
+   '<div class="cnt'+(n>=2000&&n<=3000?' ok':'')+'">'+n+'자 / 목표 2,000~3,000자 (A4 2쪽)'+(n>3000?' — 줄이세요':(n<2000?' — 더 필요합니다':' ✓'))+'</div>'+
+   '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px">'+
+     '<button class="btn aibtn sm"'+(n>=200?'':' disabled')+' onclick="aiFullEdit(this)">🖋 수석 에디터 피드백 (대필 금지)</button>'+
+     '<button class="btn ghost sm" onclick="copyDebateLog()">📋 토론 로그 복사</button>'+nextBtn('l4')+'</div>'+
+   exBox('토론 · 에디터 피드백',
+     '<b>⚔ 저자와 토론</b><br>나 — <span class="q">“겸손을 배웠다는 말은 결국 아무것도 바꾸지 않는 감상 아닌가?”</span><br>'+
+     '저자 — <span class="q">“겸손은 감상이 아니라 방법입니다. 확신을 의심할 때만 관측이 시작되니까요. 그런데 당신은 확신을 접어 본 경험이 있습니까?”</span><br>'+
+     '→ <b>이 질문에 답한 내용이 그대로 본문 경험 블록이 되었습니다.</b><br><br>'+
+     '<b>🖋 수석 에디터 피드백</b><br>'+
+     '✓ 잘된 점 — 세 주장이 하나의 문제의식으로 모입니다.<br>'+
+     '△ 근거 부족 — 주장②에 카드 脈(비평)의 문장을 한 줄 가져오세요.<br>'+
+     '△ 요소 누락 — 주장③에 경험이 없습니다. 언제, 어디서였는지 한 장면만.<br>'+
+     '△ 중복 — 1문단과 4문단이 같은 말을 합니다. 하나를 지우세요.<br>'+
+     '<b>포인트</b> — 에디터는 방향만 짚습니다. 고치는 손은 언제나 나의 것.')+
+   (rv.fullFeedback?'<div class="aiout"><span class="tg">수석 에디터 — 방향만 짚는다, 고치는 손은 나의 것</span>'+esc(rv.fullFeedback)+'</div>':'')+
+   '</div>';
+  return h;}
+function setClaim(i,k,v){const b=curBook();b.ai.review.claims[i][k]=v;save();
+  if(k==='text')vReading(document.getElementById('view'));}
+function authorSys(b){return '너는 책 『'+(b.title||'')+'』의 저자 '+(b.author||'')+'다. 책의 논지를 지키며, 정중하지만 날카롭게 반론하라. 3~5문장. 마지막에 독자에게 되묻는 질문 하나를 반드시 던져라.';}
+function aiDebate(btn,i){const b=curBook();const c=b.ai.review.claims[i];
+  const p='한 독자가 당신의 책에 대해 이렇게 주장한다.\n\n주장: '+c.text+
+   (c.why?'\n근거: '+c.why:'')+(c.ex?'\n경험: '+c.ex:'')+'\n\n저자로서 반론하라.';
+  askAI(btn,p,authorSys(b),t=>{c.debate.push({who:'me',text:c.text});c.debate.push({who:'au',text:t});
+    save();vReading(document.getElementById('view'));});}
+function aiRebut(inp,i){const v=(inp.value||'').trim();if(!v){toast('재반론을 입력하세요');return;}
+  const b=curBook();const c=b.ai.review.claims[i];
+  c.debate.push({who:'me',text:v});save();
+  const hist=c.debate.map(m=>(m.who==='au'?'저자: ':'독자: ')+m.text).join('\n');
+  const btn=inp.parentElement.querySelector('button');
+  askAI(btn,'지금까지의 토론이다.\n\n'+hist+'\n\n저자로서 마지막 독자 발언에 다시 반론하라.',authorSys(b),
+    t=>{c.debate.push({who:'au',text:t});save();vReading(document.getElementById('view'));});
+  inp.value='';}
+function debateLog(){const b=curBook();
+  return b.ai.review.claims.filter(c=>c.debate.length).map((c,i)=>
+    '### 하고 싶은 말 '+(i+1)+' — '+c.text+'\n'+
+    c.debate.map(m=>(m.who==='au'?'**저자 '+(b.author||'')+'** ':'**나** ')+m.text).join('\n\n')).join('\n\n');}
+function copyDebateLog(){const t=debateLog();if(!t){toast('아직 토론 기록이 없습니다');return;}rcopy(t);}
+function assembleFull(){const b=curBook();const rv=b.ai.review;
+  const parts=rv.claims.filter(c=>c.text.trim()).map((c,i)=>
+    '■ 하고 싶은 말 '+['①','②','③'][i]+' — '+c.text+'\n\n'+
+    (c.why?'[근거] '+c.why+'\n\n':'')+(c.ex?'[경험·감정] '+c.ex+'\n':''));
+  if(!parts.length){toast('주장을 먼저 쓰세요');return;}
+  const head='『'+(b.title||'')+'』'+(b.author?' — '+b.author:'')+'\n\n'+
+    (b.ai.card.judgment?'[我 · 나의 판단]\n'+b.ai.card.judgment+'\n\n':'');
+  rv.full=(rv.full?rv.full+'\n\n':'')+head+parts.join('\n');
+  save();vReading(document.getElementById('view'));toast('초고를 합쳤습니다 — 이제 내 문장으로 고쳐 쓰세요');}
+function aiFullEdit(btn){const b=curBook();
+  const p='다음은 내가 쓴 독서감상록 초고다.\n\n'+b.ai.review.full+'\n\n수정 방향만 제안해. 문장을 다시 쓰지 마.';
+  askAI(btn,p,'너는 까다로운 수석 에디터다. 절대 글을 대신 쓰거나 수정 예시 문장을 제시하지 마라. 오직 (1) 논리 비약 (2) 근거 부족 (3) 중복·늘어짐 (4) 3요소(주장·근거·경험) 중 빠진 것 만 지적하라. 잘된 점 하나는 반드시 먼저 인정하라. 한국어 개조식.',
+    t=>{bset('ai.review.fullFeedback',t);vReading(document.getElementById('view'));});}
+
+/* ---------- 5단계 · 1분 발표 (4강) 60초 설계 ---------- */
+let rtInt=null,rtLeft=60;
+function pL4(b){const sp=b.ai.speech;const tot=rlen(spText(b));
+  let h='<div class="card">'+stepHd('l4','60초의 설계 — 1분 ≈ 350~400자')+
+   whyBox('왜 마지막이 말하기인가',
+     '<b>설명 효과</b> — 남에게 말할 수 있어야 정말 아는 것입니다. 글은 고쳐 쓸 수 있지만 말은 못 합니다. '+
+     '그래서 <b>60초로 압축하는 순간, 무엇이 진짜 핵심이었는지가 스스로 드러납니다.</b><br>'+
+     '<b>왜 네 블록으로 나누나</b> — 1분은 짧아서 즉흥으로 말하면 반드시 무너집니다. 훅으로 붙잡고, 핵심을 한 문장으로 주고, '+
+     '메시지 하나에 <b>내 경험</b>을 붙이고, 초대로 닫습니다. <b>경험 블록이 발표의 심장입니다</b> — 그 대목만 청중이 기억합니다.<br>'+
+     '<b>왜 전사까지 하나</b> — 원고를 잘 쓰는 것과 잘 말하는 것은 다릅니다. 실제로 <b>소리 내어 말한 그대로</b>를 옮겨 적어야 '+
+     'AI가 <b>늘어진 구간</b>을 짚어 줄 수 있습니다. 여기서도 AI는 대신 써 주지 않고 <b>잘라낼 곳만</b> 알려 줍니다.<br>'+
+     '<b>누구에게 말하나</b> — '+purp(b)[5]+' 쓰세요. 발표 자리가 없다면 혼자 소리 내어 말하고 녹음해도 효과는 같습니다.')+
+   '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">'+
+     '<button class="btn aibtn sm"'+(rlen(b.ai.review.full)>=200?'':' disabled')+' onclick="aiScript(this)">🤖 감상록 → 4블록 스크립트 추출</button>'+
+     (rlen(b.ai.review.full)>=200?'':'<span class="lockn">🔒 4단계 감상록을 먼저 쓰세요</span>')+'</div>';
+  SPBLK.forEach(k=>{const v=sp[k[0]];const n=rlen(v);
+    h+='<div class="secblk"><div class="hd"><span class="sec">'+k[1]+'</span>'+
+      '<span class="tt">'+k[2]+' · 약 '+k[3]+'자 <b class="'+(n>=k[3]*0.7&&n<=k[3]*1.4?'':'')+'">'+n+'자</b></span></div>'+
+      '<p class="hint" style="margin:0 0 5px">'+k[4]+'</p>'+
+      '<textarea style="min-height:62px" onchange="bsetR(\'ai.speech.'+k[0]+'\',this.value)">'+esc(v)+'</textarea></div>';});
+  h+='<div class="cnt'+(tot>=350&&tot<=400?' ok':'')+'">전체 '+tot+'자 / 목표 350~400자'+(tot>400?' — 줄이세요':(tot<350?' — 더 필요합니다':' ✓'))+'</div>'+
+   '<div class="synchint" style="margin-top:8px">숫자보다 장면, 설명보다 고백 — <b>60초에는 하나의 메시지만 삽니다.</b></div>'+
+   '<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:10px">'+
+     '<button class="btn sm" id="rtb" onclick="rtToggle()">▶ 60초 연습 시작</button>'+
+     '<span id="rtd" style="font-variant-numeric:tabular-nums;font-weight:800;font-size:20px">'+rtLeft+'초</span>'+
+     '<button class="btn ghost sm" onclick="copyScript()">📋 스크립트 복사</button></div>'+
+   '<label class="fld" style="margin-top:10px"><span class="lb">실제로 말한 내용 전사 (소리 내어 연습하고, 말한 그대로 옮겨 적으세요)</span>'+
+   '<textarea style="min-height:90px" onchange="bset(\'ai.speech.transcript\',this.value)">'+esc(sp.transcript)+'</textarea></label>'+
+   '<label class="fld"><span class="lb">연습 후 스스로 메모 (어디서 막혔나)</span>'+
+   '<textarea style="min-height:56px" onchange="bset(\'ai.speech.practice\',this.value)">'+esc(sp.practice)+'</textarea></label>'+
+   '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px">'+
+     '<button class="btn aibtn sm"'+(rlen(sp.transcript)>=50||tot>=100?'':' disabled')+' onclick="aiSpeechFb(this)">🎙 늘어진 구간만 짚어달라기</button>'+
+     nextBtn('rec')+'</div>'+
+   exBox('60초 스크립트 (약 380자)',
+     '<b>훅</b> — <span class="q">“여러분, 지금 이 순간 우리가 서 있는 이 자리가 우주에서 얼마나 작은지 생각해 본 적 있나요?”</span><br>'+
+     '<b>핵심</b> — <span class="q">“『코스모스』는 우주의 크기를 알려주는 책이 아니라, 그 앞에서 인간이 어떤 태도를 가져야 하는지를 말하는 책입니다.”</span><br>'+
+     '<b>메시지 + 경험</b> — <span class="q">“저는 시험 문제를 틀렸을 때 제일 먼저 변명을 찾았습니다. 그런데 이 책을 읽고 나서, 모른다고 인정하는 순간부터 배움이 시작된다는 걸 알았습니다.”</span><br>'+
+     '<b>마무리</b> — <span class="q">“오늘 밤, 잠깐 하늘을 올려다보시면 좋겠습니다.”</span><br>'+
+     '<b>포인트</b> — 숫자보다 장면, 설명보다 고백. <b>경험 블록이 발표의 심장입니다.</b>')+
+   (sp.feedback?'<div class="aiout"><span class="tg">스피치 코치 — 늘어진 구간</span>'+esc(sp.feedback)+'</div>':'')+
+   '</div>';
+  return h;}
+function copyScript(){rcopy(spText(curBook()));}
+function rtToggle(){const d=document.getElementById('rtd'),bt=document.getElementById('rtb');
+  if(rtInt){clearInterval(rtInt);rtInt=null;rtLeft=60;if(d){d.textContent='60초';d.style.color='';}if(bt)bt.textContent='▶ 60초 연습 시작';return;}
+  rtLeft=60;if(d)d.textContent='60초';if(bt)bt.textContent='■ 정지';
+  rtInt=setInterval(()=>{rtLeft--;const dd=document.getElementById('rtd');
+    if(!dd){clearInterval(rtInt);rtInt=null;return;}
+    dd.textContent=rtLeft+'초';dd.style.color=rtLeft<=10?'#d1495b':'';
+    if(rtLeft<=0){clearInterval(rtInt);rtInt=null;dd.textContent='끝!';
+      const b2=document.getElementById('rtb');if(b2)b2.textContent='▶ 다시';toast('60초 종료 — 말한 내용을 바로 전사하세요');}},1000);}
+function parseSpeech(t){const map=[['hook','훅'],['core','핵심'],['msg','메시지'],['close','마무리']];
+  const res={};let hit=0;
+  map.forEach(k=>{const re=new RegExp('\\[\\s*'+k[1]+'[^\\]]*\\]\\s*([\\s\\S]*?)(?=\\n\\s*\\[|$)');
+    const m=t.match(re);if(m&&m[1].trim()){res[k[0]]=m[1].trim();hit++;}});
+  return hit>=2?res:null;}
+function aiScript(btn){const b=curBook();
+  const p='다음은 내가 쓴 독서감상록이다.\n\n'+b.ai.review.full+
+   '\n\n여기서 1분(350~400자) 발표 스크립트를 추출해줘. 내 표현을 최대한 살릴 것. 반드시 아래 네 블록 형식 그대로 출력해줘.\n\n'+
+   '[훅] (15초·약 90자) 질문 또는 장면으로 청중을 붙잡는 도입\n'+
+   '[핵심] (15초·약 90자) 이 책을 한 문장으로\n'+
+   '[메시지] (25초·약 150자) 세 메시지 중 가장 강한 하나 + 나의 경험\n'+
+   '[마무리] (5초·약 30자) 청중에게 건네는 초대';
+  askAI(btn,p,'발표 원고를 다듬는 코치입니다. 독자의 표현을 최대한 살리고, 지정한 블록 형식을 정확히 지킵니다. 한국어 구어체.',
+    t=>{const r=parseSpeech(t);const b2=curBook();
+      if(r){Object.keys(r).forEach(k=>b2.ai.speech[k]=r[k]);}
+      else{b2.ai.speech.hook=t;toast('형식을 못 읽어 [훅] 칸에 넣었습니다 — 나눠 옮겨 주세요');}
+      save();vReading(document.getElementById('view'));});}
+function aiSpeechFb(btn){const b=curBook();const sp=b.ai.speech;
+  const p='다음은 내 1분 발표 원고다.\n\n'+spText(b)+
+   (sp.transcript?'\n\n[실제로 말한 내용 전사]\n'+sp.transcript:'')+(sp.practice?'\n\n[연습 후 내 메모]\n'+sp.practice:'')+
+   '\n\n늘어진 구간만 짚어줘. (1) 어디를 잘라야 60초에 맞는가 (2) 첫 문장이 청중을 붙잡는가 (3) 하나의 메시지로 모이는가 (4) 청중이 기억할 한 마디는 무엇인가. 원고를 대신 고쳐 쓰지는 마.';
+  askAI(btn,p,'스피치 코치입니다. 대신 써주지 않고 잘라낼 구간과 방향만 짚습니다. 한국어 개조식.',
+    t=>{bset('ai.speech.feedback',t);vReading(document.getElementById('view'));});}
+
+/* ---------- 6단계 · 마무리 · 기록 ---------- */
+function pRec(b){const a=b.ai;const pl=a.pledge;
+  const sub=[['지식 지도 (장별 3줄 요약)',stepDone(b,'l1'),'2단계 · 장당 5~10분'],
+             ['독서카드 1장 (書脈骨我)',stepDone(b,'l2'),'3단계 · 권장 30분'],
+             ['독서감상록 + 토론 로그',stepDone(b,'l3')&&!!debateLog(),'4단계 · 권장 60~90분'],
+             ['1분 스피치 스크립트',stepDone(b,'l4'),'5단계 · 권장 20분']];
+  return '<div class="card">'+stepHd('rec','배움이 실천으로 이어지도록')+
+   whyBox('왜 여기까지 기록으로 남기나',
+     '읽은 책은 <b>실천으로 옮겨질 때</b>만 삶을 바꿉니다. “좋았다”로 끝내지 않고 <b>내일 할 수 있는 한 가지</b>까지 적어야 배움이 행동이 됩니다.<br>'+
+     '<b>왜 과정까지 남기나</b> — 결과물만 보면 누구의 생각인지 알 수 없지만, <b>我 칸과 토론 로그</b>에는 나만의 생각 경로가 남습니다. '+
+     purp(b)[6])+
+   '<label class="fld"><span class="lb">핵심 문장 · 깨달음</span><textarea style="min-height:70px" onchange="bset(\'note\',this.value)">'+esc(b.note)+'</textarea></label>'+
+   '<label class="fld"><span class="lb">나의 적용 (내일 할 수 있는 한 가지)</span>'+
+   '<textarea style="min-height:70px" onchange="bsetR(\'apply\',this.value)">'+esc(b.apply)+'</textarea></label>'+
+   '<label class="fld"><span class="lb">별점</span><select onchange="bsetR(\'rating\',parseInt(this.value))">'+
+     [5,4,3,2,1].map(n=>'<option value="'+n+'"'+((b.rating||5)===n?' selected':'')+'>'+'★'.repeat(n)+'</option>').join('')+'</select></label>'+
+   '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">'+
+     '<button class="btn sm" onclick="applyToTask()">✅ 오늘의 과제로 보내기</button>'+
+     '<button class="btn ghost sm" onclick="copyBookMd()">📋 전체 마크다운 복사</button>'+
+     '<button class="btn ghost sm" onclick="downloadBookMd()">⬇ 전체 .md 내려받기</button>'+
+     '<button class="btn ghost sm" onclick="window.print()">🖨 인쇄 / PDF</button></div>'+
+   '</div>'+
+   '<div class="card"><h3>단계별 산출물 <span class="hint">진행률 '+rprog(b)+'% · 기간은 자유입니다</span></h3>'+
+   '<p class="hint" style="margin:-2px 0 10px">한 단계씩 며칠에 나눠 해도 되고, 시간이 되면 하루에 끝까지 가도 됩니다. '+
+   '중요한 것은 순서 — <b>앞 단계의 산출물이 없으면 다음 단계가 얕아집니다.</b></p>'+
+   sub.map((s,i)=>'<div class="mapi"'+(i===sub.length-1?' style="border:none"':'')+'><span class="no">'+(s[1]?'✓':'□')+'</span>'+
+     '<span class="bd"'+(s[1]?' style="color:#1c7a58;font-weight:700"':'')+'>'+s[0]+' <span class="hint">· '+s[2]+'</span></span></div>').join('')+
+   '<h3 style="margin-top:14px">정직한 사용 약속 <span class="hint">감시가 아니라, 내 실력을 지키는 선</span></h3>'+
+   [['p1','내 손 구간 — 내 한 줄과 我 칸은 AI 없이 내 손으로 쓴다'],
+    ['p2','과정도 함께 — 감상록을 남길 때 저자 토론 로그도 함께 남긴다'],
+    ['p3','내 말로 답하기 — 말하기 뒤의 질문에는 스크립트 없이 내 말로 답한다']]
+    .map(p=>'<label style="display:flex;gap:9px;align-items:flex-start;padding:7px 0;font-size:13.5px;cursor:pointer">'+
+      '<input type="checkbox" style="width:auto;margin-top:3px"'+(pl[p[0]]?' checked':'')+' onchange="bsetR(\'ai.pledge.'+p[0]+'\',this.checked)">'+
+      '<span>'+p[1]+'</span></label>').join('')+
+   '</div>'+
+   '<div class="card"><h3>이 방법이 무너지는 지점 <span class="hint">AI는 편집자, 저자는 나</span></h3>'+
+   '<div class="dorow">'+
+   '<div class="dolist ok"><b>이렇게 하세요</b>· 내 한 줄을 먼저 쓰고 나서 AI 버튼을 누른다<br>· AI 제안은 반드시 내 언어로 다듬어 채택한다<br>· 저자 토론의 기록을 본문의 근거로 재활용한다<br>· 에디터에게는 "방향만, 대필 금지"를 명시한다</div>'+
+   '<div class="dolist no"><b>이러면 무너집니다</b>· AI에게 "이 책 요약해줘"로 시작한다<br>· 감상록 초안을 통째로 AI에게 맡긴다<br>· 我(나의 판단) 칸에 AI 답변을 붙여넣는다<br>· AI 조사 결과를 사실 확인 없이 그대로 쓴다</div>'+
+   '</div><div class="synchint" style="margin-top:9px">구분선은 하나 — <b>결과물은 남았지만 내 생각이 자랐는가?</b></div></div>';}
+function applyToTask(){const b=curBook();const v=(b.apply||'').trim();
+  if(!v){toast('나의 적용을 먼저 쓰세요');return;}
+  const d=S.ui.day||today(); ensureDay(d);
+  const r=(S.profile.roles.find(x=>/독서|자기계발/.test(x.name))||S.profile.roles[0]||{}).id||'';
+  S.days[d].tasks.push({id:uid(),text:'[독서 적용] '+v.split('\n')[0].slice(0,60),priority:'A',role:r,impact:4,status:'todo'});
+  save();toast(d+' 과제로 보냈습니다 (A · 영향도 4)');}
+function buildBookMd(){const b=curBook();const a=b.ai;
+  let m='# '+(b.title||'제목 없음')+'\n\n';
+  if(b.author)m+='**저자** '+b.author+'  \n';
+  m+='**기록일** '+b.date+' · **별점** '+'★'.repeat(b.rating||0)+' · **진행률** '+rprog(b)+'%  \n';
+  m+='**활용 목적** '+purp(b)[1]+' — '+purp(b)[2]+'\n\n';
+  if(a.structure)m+='## 1단계 · 책 세팅 — 문제의식과 논리 구조 (AI)\n'+a.structure+'\n\n';
+  if(a.chapters.length){m+='## 2단계 · 장별 3줄 요약 (지식 지도)\n';
+    a.chapters.forEach((c,i)=>{m+='### '+(i+1)+'. '+c.name+'\n';
+      if(c.myLine)m+='- 내 한 줄: '+c.myLine+'\n';
+      if(c.final)m+='\n'+c.final+'\n';m+='\n';});}
+  m+='## 3단계 · 독서카드\n'+cardText()+'\n';
+  const cs=a.review.claims.filter(c=>c.text.trim());
+  if(cs.length){m+='## 4단계 · 독서감상록 — 333 개조식\n';
+    cs.forEach((c,i)=>{m+='**'+['①','②','③'][i]+' '+c.text+'**\n';
+      if(c.why)m+='- 근거: '+c.why+'\n';if(c.ex)m+='- 경험·감정: '+c.ex+'\n';m+='\n';});}
+  if(a.review.full)m+='### 감상록 전문 ('+rlen(a.review.full)+'자)\n'+a.review.full+'\n\n';
+  const dl=debateLog();if(dl)m+='### 저자와의 토론 로그\n'+dl+'\n\n';
+  if(a.review.fullFeedback)m+='> **수석 에디터 피드백**\n> '+a.review.fullFeedback.replace(/\n/g,'\n> ')+'\n\n';
+  const st=spText(b);
+  if(st){m+='## 5단계 · 1분 발표 ('+rlen(st)+'자)\n';
+    SPBLK.forEach(k=>{if(a.speech[k[0]])m+='**'+k[1]+' · '+k[2]+'** '+a.speech[k[0]]+'\n\n';});}
+  if(a.speech.transcript)m+='### 실제 발표 전사\n'+a.speech.transcript+'\n\n';
+  if(b.note)m+='## 핵심 문장\n'+b.note+'\n\n';
+  if(b.apply)m+='## 나의 적용\n'+b.apply+'\n';
+  return m;}
+function copyBookMd(){rcopy(buildBookMd());}
+function downloadBookMd(){rdl((curBook().title||'독서기록')+'_독서기록',buildBookMd());}
+
+/* ---------- 하단 목록 ---------- */
 function renderReading(){const el=document.getElementById('rlist');if(!el)return;
-  el.innerHTML=S.reading.length? S.reading.map((b,i)=>`<div class="list-item"><div class="li-h"><span class="li-t">${esc(b.title)} <span class="stars">${'★'.repeat(b.rating||0)}</span></span><span class="li-m no-print"><button class="del-x" onclick="S.reading.splice(${i},1);save();renderReading()">✕</button></span></div>
-    <div class="li-m">${esc(b.author||'')} · ${b.date}</div>
-    ${b.note?`<div style="font-size:13px;margin-top:6px">“${esc(b.note)}”</div>`:''}
-    ${b.apply?`<div class="li-m" style="margin-top:4px">➡ 적용: ${esc(b.apply)}</div>`:''}</div>`).join('') : '<p class="hint">아직 독서 기록이 없습니다.</p>';}
+  el.innerHTML=(S.reading||[]).length? S.reading.map(b=>{ensureAI(b);
+    return '<div class="list-item"><div class="li-h"><span class="li-t">'+esc(b.title||'제목 없음')+' <span class="stars">'+'★'.repeat(b.rating||0)+'</span></span>'+
+    '<span class="li-m no-print"><b>'+rprog(b)+'%</b> <button class="btn ghost sm" onclick="openBook(\''+b.id+'\')">열기</button> '+
+    '<button class="del-x" onclick="delBook(\''+b.id+'\')">✕</button></span></div>'+
+    '<div class="li-m">'+esc(b.author||'')+' · '+b.date+'</div>'+
+    (b.note?'<div style="font-size:13px;margin-top:6px">“'+esc(b.note)+'”</div>':'')+
+    (b.apply?'<div class="li-m" style="margin-top:4px">➡ 적용: '+esc(b.apply)+'</div>':'')+'</div>';}).join('')
+    : '<p class="hint">아직 독서 기록이 없습니다.</p>';}
+function addReading(){newBook();}
 function vIdeas(v){
   v.innerHTML=`
    <h2 class="vh">💡 구상 기록</h2>
