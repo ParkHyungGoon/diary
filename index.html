@@ -42,6 +42,9 @@
   .tools{display:flex;gap:6px;flex-wrap:wrap}
   .tbtn{background:var(--brand-soft);color:var(--brand-d);border:1px solid #ddd8f5;padding:7px 11px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit}
   .tbtn:hover{background:#e2ddf7}
+  .tbtn.cloudchip{background:#fff;border:1px solid var(--line)}
+  .tbtn.cloudchip.busy{animation:cpulse 1.1s ease-in-out infinite}
+  @keyframes cpulse{0%,100%{opacity:1}50%{opacity:.45}}
   .save{font-size:11px;color:var(--muted);align-self:center}
   .wrap{padding:22px 24px 80px;max-width:1000px}
   @media(max-width:820px){.app{flex-direction:column}.side{width:100%;height:auto;position:static;display:flex;flex-wrap:wrap;gap:4px}
@@ -465,6 +468,7 @@
       <div class="who" id="who">이름을 설정하세요</div>
       <div class="tools">
         <span class="save" id="save"></span>
+        <button class="tbtn cloudchip" id="cloudchip" onclick="cloudChipClick()">☁</button>
         <button class="tbtn" style="background:var(--brand);color:#fff;border-color:var(--brand)" onclick="ritualStart()">⏱ 3분 리추얼</button>
         <button class="tbtn" onclick="exportJSON()">💾 백업</button>
         <button class="tbtn" onclick="document.getElementById('imp').click()">📂 복원</button>
@@ -533,7 +537,7 @@ function speak(dateStr){ try{ const q=quoteFor(dateStr); if(!('speechSynthesis'i
 const KEY="life_diary_v1";
 let S=blank();
 function blank(){return{
-  meta:{savedAt:"",lastBackup:"",lastAutoRitual:"",installHidden:false},
+  meta:{savedAt:"",lastBackup:"",lastAutoRitual:"",installHidden:false,devId:"",rev:0,syncedRev:0,updatedAt:0},
   profile:{name:"",roles:[
     {id:uid(),name:"교사·수업(물리)",color:"#2f6db3"},
     {id:uid(),name:"수업",color:"#6a4fbb"},
@@ -564,7 +568,7 @@ function blank(){return{
   usage:{total:0, byView:{}, byDay:{}},
   view:"dash", ui:{month:"", week:"", day:"", book:"", navOpen:{}, lcYear:0}
 };}
-function save(){ try{ S.meta.savedAt=new Date().toLocaleString('ko-KR'); localStorage.setItem(KEY,JSON.stringify(S)); setSave("자동저장됨 "+S.meta.savedAt);}catch(e){ setSave("자동저장 불가 — 백업을 사용하세요"); } try{scheduleCloud();}catch(e){} }
+function save(){ try{ S.meta.savedAt=new Date().toLocaleString('ko-KR'); localStorage.setItem(KEY,JSON.stringify(S)); setSave("자동저장됨 "+S.meta.savedAt);}catch(e){ setSave("자동저장 불가 — 백업을 사용하세요"); } try{stampSchedule();}catch(e){} }
 /* 얕은 병합(Object.assign) 때문에 새로 추가된 하위 키는 기존 사용자 데이터에서 사라집니다.
    아래 migrate()가 그 구멍을 메웁니다. load()와 importJSON() 두 곳 모두에서 호출해야 합니다. */
 function migrate(){
@@ -582,6 +586,12 @@ function migrate(){
   S.lifemap=Object.assign({},b.lifemap,S.lifemap||{});
   if(!S.lifemap.milestones||typeof S.lifemap.milestones!=='object')S.lifemap.milestones={};
   (S.habits||[]).forEach(h=>{if(!h.id)h.id=uid();if(h.size==null)h.size=0;});
+  /* 병합에 쓰이는 식별자 — 없으면 만들어 둔다 */
+  if(!S.meta.devId)S.meta.devId='dev'+Math.abs(Math.floor(Math.random()*1e9)).toString(36)+Date.now().toString(36).slice(-4);
+  if(!S.meta.updatedAt)S.meta.updatedAt=Date.now();
+  ['reading','ideas','recurring','reminders'].forEach(k=>{(S[k]||[]).forEach(x=>{if(x&&!x.id)x.id=uid();});});
+  ((S.lifemap||{}).dreams||[]).forEach(x=>{if(x&&!x.id)x.id=uid();});
+  ((S.annual||{}).goals||[]).forEach(x=>{if(x&&!x.id)x.id=uid();});
   return S;
 }
 function load(){ try{ const r=localStorage.getItem(KEY); if(r){ S=Object.assign(blank(),JSON.parse(r)); migrate(); return true;} }catch(e){} return false; }
@@ -673,6 +683,7 @@ function vDash(v){
   v.innerHTML=`
    <h2 class="vh">🏠 오늘 · ${d} (${wd(d)})</h2>
    <p class="vsub">${esc(S.mission.statement||'사명을 설정해 보세요')}</p>
+   ${syncBanner()}
    ${reviewBanner()}
    ${ritualBanner()}
    ${nudgeCard()}
@@ -2158,28 +2169,31 @@ function exportJSON(){const blob=new Blob([JSON.stringify(S,null,2)],{type:'appl
 function importJSON(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{S=Object.assign(blank(),JSON.parse(r.result));migrate();save();renderNav();render();refreshWho();toast('복원 완료');}catch(err){alert('복원 실패: 올바른 백업 파일이 아닙니다.');}};r.readAsText(f);e.target.value='';}
 
 /* ============ GOOGLE CALENDAR (OAuth) ============ */
-const GCAL={token:null,exp:0,tc:null};
+const GCAL={token:null,exp:0,tc:null,silent:false,quiet:false};
 function tzName(){try{return Intl.DateTimeFormat().resolvedOptions().timeZone||'Asia/Seoul';}catch(e){return 'Asia/Seoul';}}
 function gTokenValid(){return GCAL.token&&Date.now()<GCAL.exp-10000;}
 function loadGIS(cb){
   if(window.google&&google.accounts&&google.accounts.oauth2){cb&&cb();return;}
-  if(document.getElementById('gis-src')){let n=0;const iv=setInterval(()=>{n++;if(window.google&&google.accounts&&google.accounts.oauth2){clearInterval(iv);cb&&cb();}else if(n>40){clearInterval(iv);toast('구글 라이브러리 로드 지연 — 다시 시도하세요');}},200);return;}
+  if(document.getElementById('gis-src')){let n=0;const iv=setInterval(()=>{n++;if(window.google&&google.accounts&&google.accounts.oauth2){clearInterval(iv);cb&&cb();}else if(n>40){clearInterval(iv);if(!GCAL.quiet)toast('구글 라이브러리 로드 지연 — 다시 시도하세요');}},200);return;}
   const s=document.createElement('script');s.id='gis-src';s.src='https://accounts.google.com/gsi/client';s.async=true;s.defer=true;
-  s.onload=()=>cb&&cb();s.onerror=()=>toast('구글 라이브러리 로드 실패 — 인터넷 연결/차단을 확인하세요');
+  s.onload=()=>cb&&cb();s.onerror=()=>{if(!GCAL.quiet)toast('구글 라이브러리 로드 실패 — 인터넷 연결/차단을 확인하세요');setCloudState('need');};
   document.head.appendChild(s);
 }
 function gInit(cb){
   const id=((S.settings&&S.settings.gClientId)||'').trim();
-  if(!id){toast('먼저 클라이언트 ID를 저장하세요');return;}
+  if(!id){if(!GCAL.quiet)toast('먼저 클라이언트 ID를 저장하세요');return;}
   loadGIS(()=>{try{
     if(!GCAL.tc){
       GCAL.tc=google.accounts.oauth2.initTokenClient({
         client_id:id, scope:'https://www.googleapis.com/auth/calendar.events https://www.googleapis.com/auth/drive.appdata',
-        callback:(resp)=>{ if(resp&&resp.access_token){GCAL.token=resp.access_token;GCAL.exp=Date.now()+((resp.expires_in||3600)*1000);toast('구글 로그인 완료');if(S.view==='gsync')vGSync(document.getElementById('view'));afterSignIn();} else {toast('로그인 취소/실패');} }
+        callback:(resp)=>{ const sil=GCAL.silent; GCAL.silent=false;
+          if(resp&&resp.access_token){GCAL.token=resp.access_token;GCAL.exp=Date.now()+((resp.expires_in||3600)*1000);
+            if(!sil)toast('구글 로그인 완료'); if(S.view==='gsync')vGSync(document.getElementById('view')); afterSignIn();}
+          else { if(!sil)toast('로그인 취소/실패'); else setCloudState('need'); } }
       });
     }
     if(cb)cb();
-  }catch(e){toast('구글 초기화 오류: '+e.message);} });
+  }catch(e){if(!GCAL.quiet)toast('구글 초기화 오류: '+e.message);} });
 }
 function gSignIn(){ gInit(()=>{ if(GCAL.tc)GCAL.tc.requestAccessToken({prompt:gTokenValid()?'':'consent'}); }); }
 function gSignOut(){ try{ if(GCAL.token&&window.google&&google.accounts&&google.accounts.oauth2)google.accounts.oauth2.revoke(GCAL.token,()=>{}); }catch(e){} GCAL.token=null;GCAL.exp=0;toast('구글 로그아웃');if(S.view==='gsync')vGSync(document.getElementById('view')); }
@@ -2320,7 +2334,10 @@ const CLOUD_NAME='life_diary.json';
 let cloudFileId=null, cloudBusy=false, cloudTimer=null;
 async function driveFind(){ const url="https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&fields=files(id,name,modifiedTime)&q="+encodeURIComponent("name='"+CLOUD_NAME+"'");
   const r=await gFetch(url); return (r.files&&r.files[0])||null; }
-async function cloudSave(){ if(!gTokenValid()){toast('구글 로그인이 필요합니다');return;} if(cloudBusy)return; cloudBusy=true;
+/* [고급] 병합 없이 이 기기 내용으로 클라우드를 통째로 덮어쓴다. 평소에는 cloudSync()를 쓴다. */
+async function cloudSave(){ if(!gTokenValid()){toast('구글 로그인이 필요합니다');return;} if(cloudBusy)return;
+  if(!confirm('이 기기의 내용으로 클라우드를 덮어씁니다.\n다른 기기에서만 쓴 기록이 있다면 사라집니다.\n\n보통은 [☁ 지금 맞추기]를 쓰세요. 계속할까요?'))return;
+  cloudBusy=true;
   try{ const content=JSON.stringify(S);
     if(!cloudFileId){const f=await driveFind(); if(f)cloudFileId=f.id;}
     if(cloudFileId){
@@ -2332,6 +2349,8 @@ async function cloudSave(){ if(!gTokenValid()){toast('구글 로그인이 필요
       if(!r.ok){const t=await r.text();url_hint_last='drive';throw gApiError(r.status,t);} const j=await r.json(); cloudFileId=j.id;
     }
     S.settings.cloudSyncedAt=new Date().toISOString(); localStorage.setItem(KEY,JSON.stringify(S));
+    try{const f2=await driveFind();CLOUD.mtime=(f2&&f2.modifiedTime)||'';}catch(e){}
+    CLOUD.ready=true; setCloudState('ok');
     toast('☁ 클라우드에 저장되었습니다'); if(S.view==='gsync')vGSync(document.getElementById('view'));
   }catch(e){gReport('클라우드 저장 실패',e);} finally{cloudBusy=false;} }
 async function cloudLoad(silent){ if(!gTokenValid()){if(!silent)toast('구글 로그인이 필요합니다');return;}
@@ -2341,11 +2360,20 @@ async function cloudLoad(silent){ if(!gTokenValid()){if(!silent)toast('구글 �
     if(!silent && !confirm('클라우드 기록을 불러와 이 기기의 현재 내용을 덮어쓸까요? (이 기기에만 있는 미동기화 내용은 사라질 수 있습니다)'))return;
     const cid=S.settings.gClientId, gid=S.settings.gcalId; // 로그인 설정은 유지
     S=Object.assign(blank(),data); S.settings=Object.assign(S.settings||{},{gClientId:cid,gcalId:gid});
-    save(); renderNav(); render(); refreshWho(); toast('☁ 클라우드에서 불러왔습니다');
+    save(); STAMP={days:{},weeks:{},months:{},rest:'',init:false}; stampTick();
+    try{const f2=await driveFind();CLOUD.mtime=(f2&&f2.modifiedTime)||'';}catch(e){}
+    CLOUD.ready=true; setCloudState('ok');
+    renderNav(); render(); refreshWho(); toast('☁ 클라우드에서 불러왔습니다');
   }catch(e){ if(!silent)gReport('클라우드 불러오기 실패',e); } }
-function scheduleCloud(){ if(!(S.settings&&S.settings.autoCloud)||!gTokenValid())return; if(cloudTimer)clearTimeout(cloudTimer); cloudTimer=setTimeout(()=>{cloudSave();},4000); }
-function afterSignIn(){ try{ const empty=Object.keys(S.days||{}).length===0 && (S.reading||[]).length===0 && (S.ideas||[]).length===0;
-  driveFind().then(f=>{ if(!f)return; if(empty){cloudLoad(true);} else {toast('☁ 클라우드 저장본이 있습니다 — 구글 연동 탭에서 불러오기/저장을 선택하세요');} }).catch(()=>{}); }catch(e){} }
+/* 자동 올리기 — 반드시 '먼저 맞추기(cloudSync)'가 끝난 뒤에만 동작한다.
+   이 조건이 없으면 다른 기기의 옛 기록이 최신 기록을 덮어쓴다. */
+function scheduleCloud(){
+  if(!(S.settings&&S.settings.autoCloud)||!gTokenValid())return;
+  if(!CLOUD.ready){setCloudState('need');return;}
+  if(cloudTimer)clearTimeout(cloudTimer);
+  cloudTimer=setTimeout(()=>{cloudPush();},4000); }
+/* 로그인 직후에는 예외 없이 '먼저 맞추기'. 이 기기의 내용과 클라우드를 병합한 뒤에야 자동 저장이 열린다. */
+function afterSignIn(){ try{ cloudSync(true); }catch(e){} }
 
 function vGSync(v){
   const on=gTokenValid(); const cid=(S.settings.gClientId||'');
@@ -2363,14 +2391,28 @@ function vGSync(v){
             :`<button class="btn" onclick="gSignIn()">구글 계정으로 로그인</button>`}
      </div>
    </div>
-   ${on?`<div class="card"><h3>☁ 클라우드 동기화 (기기 간 사용)</h3>
-       <p class="synchint" style="margin-top:-4px">내 구글 드라이브의 <b>앱 전용 비공개 공간</b>에 다이어리를 저장해, 휴대폰·노트북 어디서든 로그인하면 <b>같은 기록</b>을 씁니다. (주간·월간·일간·기록 전부 동기화)</p>
+   ${on?`<div class="card"><h3>☁ 클라우드 동기화 (노트북 ↔ 휴대폰)</h3>
+       <p class="synchint" style="margin-top:-4px">내 구글 드라이브의 <b>앱 전용 비공개 공간</b>에 다이어리를 저장해, 어느 기기에서 열어도 <b>같은 기록</b>을 씁니다.</p>
+       <div class="callout co-acc" style="margin:10px 0"><div class="tag">기기를 오갈 때 이 순서만 지키면 됩니다</div>
+         <b>다른 기기에서 열면 → 먼저 <span style="color:var(--accent)">☁ 지금 맞추기</span> → 그다음에 작성.</b>
+         <div style="margin-top:6px;font-size:12.5px">‘맞추기’는 클라우드 기록을 <b>내려받아 이 기기 기록과 합친 뒤</b> 다시 올립니다.
+           날짜·항목 단위로 합치기 때문에 <b>노트북에서 쓴 8월 8일과 휴대폰에서 쓴 8월 9일이 둘 다 남습니다.</b>
+           맞추기가 끝나면 그때부터 자동 저장이 열리고, 이후에는 작성할 때마다 알아서 올라갑니다.</div>
+       </div>
        <div style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0">
-         <button class="btn" onclick="cloudSave()">☁ 클라우드에 저장</button>
-         <button class="btn ghost" onclick="cloudLoad()">↧ 클라우드에서 불러오기</button></div>
-       <label style="font-size:13px;font-weight:600;display:block"><input type="checkbox" ${S.settings.autoCloud?'checked':''} onchange="S.settings.autoCloud=this.checked;save();toast(this.checked?'자동 동기화 켜짐':'자동 동기화 꺼짐')" style="width:auto"> 자동 동기화 (기록을 바꾸면 몇 초 뒤 자동으로 클라우드에 저장)</label>
-       <div class="synchint" style="margin-top:6px">마지막 동기화: ${S.settings.cloudSyncedAt?new Date(S.settings.cloudSyncedAt).toLocaleString('ko-KR'):'없음'}</div>
-       <div class="callout co-brand" style="margin-top:10px;font-size:12px">💡 <b>다른 기기에서 처음 열 때</b>: 로그인 → ‘↧ 클라우드에서 불러오기’ 한 번이면 최신 기록이 내려옵니다. 자동 동기화를 켜두면 이후엔 알아서 맞춰집니다.</div>
+         <button class="btn" onclick="cloudSync(false)">☁ 지금 맞추기 (권장)</button>
+         <button class="btn ghost" onclick="cloudLoad()">↧ 클라우드 것으로 되돌리기</button>
+         <button class="btn ghost" onclick="cloudSave()">↥ 이 기기 것으로 덮어쓰기</button></div>
+       <label style="font-size:13px;font-weight:600;display:block"><input type="checkbox" ${S.settings.autoCloud?'checked':''} onchange="S.settings.autoCloud=this.checked;save();toast(this.checked?'자동 동기화 켜짐 — 맞추기를 한 뒤부터 올라갑니다':'자동 동기화 꺼짐')" style="width:auto"> 자동 동기화 (작성하면 몇 초 뒤 자동으로 클라우드에 반영)</label>
+       <div class="synchint" style="margin-top:6px">마지막 동기화: ${S.settings.cloudSyncedAt?new Date(S.settings.cloudSyncedAt).toLocaleString('ko-KR'):'없음'}
+         · 이 기기 상태: <b>${CLOUD.ready?'맞춤 완료 — 자동 저장 켜짐':'아직 맞추지 않음 — 자동 저장 잠김'}</b></div>
+       <div class="callout co-gold" style="margin-top:10px;font-size:12.5px;background:#fdf6e8;border-color:#f0d9b4">
+         ⚠ <b>주의</b> — 자동 동기화만 켜두고 다른 기기에서 바로 쓰면 위험합니다.
+         맞추기 전에는 그 기기에 남아 있던 <b>옛 기록</b>이 화면에 떠 있고, 그것이 클라우드로 올라갈 수 있습니다.
+         그래서 이 다이어리는 <b>맞추기를 하기 전까지 자동 저장을 잠가 둡니다.</b> 화면 위쪽 <b>☁ 칩</b>이 지금 상태를 알려줍니다.
+         <div style="margin-top:6px">같은 날짜를 두 기기에서 각각 고쳤다면, <b>나중에 고친 쪽</b>이 그 날짜를 차지합니다(그날 안에서 섞이지는 않습니다).
+           그래서 한 기기에서 쓴 뒤에는 <b>닫기 전에 한 번 맞추기</b>를 해두시는 편이 가장 깔끔합니다.</div>
+       </div>
      </div>
      <div class="card"><h3>오늘 구글 일정</h3><div id="gevents"><p class="hint">아래 버튼으로 불러오세요.</p></div>
      <div style="margin-top:8px"><button class="btn ghost sm" onclick="loadTodayG()">오늘 일정 불러오기</button>
@@ -3281,6 +3323,226 @@ function usageTable(){
       설계·계획 화면에만 시간이 몰려 있다면, 그것은 계획이 실행을 대신하고 있다는 신호입니다.</p>
   </div>`;}
 
+
+/* ============================================================
+   ⑬ 기기 간 동기화 — 노트북 ↔ 휴대폰을 오가며 써도 안전하게
+   ------------------------------------------------------------
+   [이전 구조의 문제]
+   자동 동기화가 '올리기'만 자동이었습니다. 다른 기기에서 열면 옛 기록이 뜨고,
+   거기서 한 글자만 입력해도 4초 뒤 그 옛 기록이 클라우드를 덮어써 버렸습니다.
+   [지금 구조]
+   ① 열 때(로그인 직후) 반드시 '먼저 맞추고' 시작한다 — 맞추기 전에는 절대 올리지 않는다.
+   ② 올리기 직전 클라우드가 그새 바뀌었는지 확인한다.
+   ③ 마지막에 저장한 쪽이 이기는 방식이 아니라 **날짜·항목 단위로 병합**한다.
+      (노트북에서 쓴 8/8과 휴대폰에서 쓴 8/9이 둘 다 살아남는다)
+   ============================================================ */
+let CLOUD={ready:false,busy:false,state:'off',mtime:'',msg:''};
+let STAMP={days:{},weeks:{},months:{},rest:'',init:false};
+let stampTimer=null, DIRTY=false;
+
+/* ---- 어떤 항목이 언제 바뀌었는지 도장을 찍는다 (병합의 근거) ---- */
+function stripU(o){const c=Object.assign({},o);delete c.u;return c;}
+function stampTick(){
+  let changed=false;
+  ['days','weeks','months'].forEach(k=>{
+    const box=S[k]||{}, cache=STAMP[k];
+    Object.keys(box).forEach(key=>{
+      let s; try{s=JSON.stringify(stripU(box[key]));}catch(e){return;}
+      if(cache[key]!==s){
+        if(STAMP.init&&cache[key]!==undefined){box[key].u=Date.now();changed=true;}
+        else if(STAMP.init){box[key].u=box[key].u||Date.now();changed=true;}
+        cache[key]=s;
+      }
+    });
+  });
+  let rest='';
+  try{ rest=JSON.stringify({p:S.profile,m:S.mission,l:S.lifemap,v:S.vision,a:S.annual,
+        h:S.habits,r:S.reading,i:S.ideas,rc:S.recurring,rm:S.reminders,f:S.focusLog,
+        st:Object.assign({},S.settings,{gClientId:'',gcalId:'',utShow:'',utOpen:'',autoCloud:''})}); }catch(e){}
+  if(STAMP.rest!==rest){ if(STAMP.init&&STAMP.rest!=='')changed=true; STAMP.rest=rest; }
+  if(!STAMP.init){STAMP.init=true;return;}
+  if(changed){
+    S.meta.updatedAt=Date.now(); DIRTY=true;
+    try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}
+    try{scheduleCloud();}catch(e){}
+  }
+}
+function stampSchedule(){ if(stampTimer)clearTimeout(stampTimer); stampTimer=setTimeout(stampTick,700); }
+
+/* ---- 병합 ---- */
+function mergeDict(A,B,lu,ru){
+  A=A||{};B=B||{};const out={};
+  Object.keys(A).forEach(k=>{const a=A[k],b=B[k];
+    out[k]=(b===undefined)?a:(((a&&a.u)||lu)>=((b&&b.u)||ru)?a:b);});
+  Object.keys(B).forEach(k=>{if(out[k]===undefined)out[k]=B[k];});
+  return out;}
+function mergeMaxNum(A,B){A=A||{};B=B||{};const out={};
+  Object.keys(A).forEach(k=>out[k]=Math.max(A[k]||0,B[k]||0));
+  Object.keys(B).forEach(k=>{if(out[k]===undefined)out[k]=B[k]||0;});
+  return out;}
+function itemKey(x){return (x&&x.id)||('#'+String((x&&(x.text||x.title||x.name))||JSON.stringify(x||'')).slice(0,60));}
+function mergeArr(A,B,lu,ru){
+  A=A||[];B=B||[];const seen={},out=[];
+  A.forEach(x=>{const k=itemKey(x);const y=B.find(z=>itemKey(z)===k);
+    out.push(y&&((y.u||ru)>(x.u||lu))?y:x);seen[k]=1;});
+  B.forEach(x=>{const k=itemKey(x);if(!seen[k]){out.push(x);seen[k]=1;}});
+  return out;}
+function mergeUsage(a,b){ a=a||{};b=b||{};
+  const A=a.byDay||{},B=b.byDay||{},byDay={};
+  Object.keys(A).concat(Object.keys(B)).forEach(d=>{ if(byDay[d])return;
+    const x=A[d]||{total:0,views:{}},y=B[d]||{total:0,views:{}};
+    byDay[d]={total:Math.max(x.total||0,y.total||0),views:mergeMaxNum(x.views,y.views)};});
+  const byView=mergeMaxNum(a.byView,b.byView);
+  const sum=Object.keys(byDay).reduce((s,d)=>s+(byDay[d].total||0),0);
+  return {total:Math.max(a.total||0,b.total||0,sum),byView,byDay};}
+function mergeState(L,R){
+  const lu=(L.meta&&L.meta.updatedAt)||0, ru=(R.meta&&R.meta.updatedAt)||0;
+  const localWins=lu>=ru;
+  const base=JSON.parse(JSON.stringify(localWins?L:R));      /* 단일 값(사명·비전 등)의 기준 */
+  base.days=mergeDict(L.days,R.days,lu,ru);
+  base.weeks=mergeDict(L.weeks,R.weeks,lu,ru);
+  base.months=mergeDict(L.months,R.months,lu,ru);
+  base.focusLog=mergeMaxNum(L.focusLog,R.focusLog);
+  base.usage=mergeUsage(L.usage,R.usage);
+  base.habits=mergeArr(L.habits,R.habits,lu,ru);
+  base.reading=mergeArr(L.reading,R.reading,lu,ru);
+  base.ideas=mergeArr(L.ideas,R.ideas,lu,ru);
+  base.recurring=mergeArr(L.recurring,R.recurring,lu,ru);
+  base.reminders=mergeArr(L.reminders,R.reminders,lu,ru);
+  base.annual=Object.assign({},localWins?L.annual:R.annual,
+    {goals:mergeArr((L.annual||{}).goals,(R.annual||{}).goals,lu,ru)});
+  /* 키 합집합 — 값이 겹치면 '더 최근에 고친 기기' 쪽을 쓴다 */
+  const pref=(A,B)=>localWins?Object.assign({},B||{},A||{}):Object.assign({},A||{},B||{});
+  base.lifemap=Object.assign({},localWins?L.lifemap:R.lifemap,{
+    dreams:mergeArr((L.lifemap||{}).dreams,(R.lifemap||{}).dreams,lu,ru),
+    areas:pref((L.lifemap||{}).areas,(R.lifemap||{}).areas),
+    milestones:pref((L.lifemap||{}).milestones,(R.lifemap||{}).milestones)});
+  base.vision=Object.assign({},localWins?L.vision:R.vision,
+    {text:pref((L.vision||{}).text,(R.vision||{}).text)});
+  base.profile=localWins?L.profile:R.profile;
+  /* 기기 전용 설정은 이 기기 것을 지킨다 */
+  base.settings=Object.assign({},base.settings,{
+    gClientId:(L.settings||{}).gClientId, gcalId:(L.settings||{}).gcalId,
+    autoCloud:(L.settings||{}).autoCloud, utShow:(L.settings||{}).utShow, utOpen:(L.settings||{}).utOpen});
+  base.meta=Object.assign({},base.meta,{
+    devId:(L.meta||{}).devId, rev:Math.max((L.meta||{}).rev||0,(R.meta||{}).rev||0),
+    updatedAt:Math.max(lu,ru), lastBackup:(L.meta||{}).lastBackup||(R.meta||{}).lastBackup||''});
+  base.view=L.view; base.ui=L.ui;
+  return base;}
+
+/* ---- 업로드 ---- */
+async function cloudPut(content){
+  if(!cloudFileId){const f=await driveFind(); if(f)cloudFileId=f.id;}
+  if(cloudFileId){
+    await gFetch('https://www.googleapis.com/upload/drive/v3/files/'+cloudFileId+'?uploadType=media',
+      {method:'PATCH',headers:{'Content-Type':'application/json'},body:content});
+  }else{
+    const boundary='diarybnd'+Math.abs(0|(performance.now()));
+    const body='--'+boundary+'\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n'+
+      JSON.stringify({name:CLOUD_NAME,parents:['appDataFolder']})+'\r\n--'+boundary+
+      '\r\nContent-Type: application/json\r\n\r\n'+content+'\r\n--'+boundary+'--';
+    const r=await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id',
+      {method:'POST',headers:{'Authorization':'Bearer '+GCAL.token,'Content-Type':'multipart/related; boundary='+boundary},body:body});
+    if(!r.ok){const t=await r.text();url_hint_last='drive';throw gApiError(r.status,t);}
+    const j=await r.json(); cloudFileId=j.id;
+  }}
+
+/* ---- 핵심: 맞추기(내려받아 병합 → 올리기) ---- */
+async function cloudSync(silent){
+  if(!gTokenValid()){ setCloudState('auth'); if(!silent)toast('먼저 구글 로그인이 필요합니다'); return false; }
+  if(CLOUD.busy)return false;
+  CLOUD.busy=true; setCloudState('sync');
+  try{
+    const f=await driveFind();
+    let merged=false;
+    if(f){
+      cloudFileId=f.id;
+      const remote=await gFetch('https://www.googleapis.com/drive/v3/files/'+f.id+'?alt=media');
+      if(remote&&typeof remote==='object'&&remote.days){
+        const before=JSON.stringify({d:S.days,w:S.weeks,m:S.months,h:S.habits,r:S.reading,i:S.ideas,a:S.annual,l:S.lifemap,v:S.vision});
+        S=mergeState(S,remote); migrate();
+        const after=JSON.stringify({d:S.days,w:S.weeks,m:S.months,h:S.habits,r:S.reading,i:S.ideas,a:S.annual,l:S.lifemap,v:S.vision});
+        merged=(before!==after);
+      }
+    }
+    S.meta.rev=(S.meta.rev||0)+1;
+    S.meta.syncedRev=S.meta.rev;
+    await cloudPut(JSON.stringify(S));
+    const f2=await driveFind(); CLOUD.mtime=(f2&&f2.modifiedTime)||'';
+    S.settings.cloudSyncedAt=new Date().toISOString();
+    try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}
+    STAMP={days:{},weeks:{},months:{},rest:'',init:false}; stampTick();   /* 도장 캐시 재설정 */
+    CLOUD.ready=true; DIRTY=false; setCloudState('ok');
+    if(merged){ renderNav(); render(); refreshWho();
+      if(!silent)toast('☁ 다른 기기의 기록과 합쳤습니다 — 최신 상태입니다');
+      else toast('☁ 다른 기기의 기록을 가져와 합쳤습니다'); }
+    else if(!silent)toast('☁ 최신 상태입니다');
+    return true;
+  }catch(e){ setCloudState('err'); if(!silent)gReport('동기화 실패',e); return false; }
+  finally{ CLOUD.busy=false; }}
+
+/* ---- 자동 저장(가벼운 올리기). 클라우드가 그새 바뀌었으면 전체 맞추기로 전환 ---- */
+async function cloudPush(){
+  if(!(S.settings&&S.settings.autoCloud))return;
+  if(!gTokenValid()||!CLOUD.ready||CLOUD.busy)return;
+  CLOUD.busy=true; setCloudState('sync');
+  try{
+    const f=await driveFind();
+    if(f&&CLOUD.mtime&&f.modifiedTime!==CLOUD.mtime){    /* 다른 기기가 먼저 올렸다 → 병합 경로 */
+      CLOUD.busy=false; await cloudSync(true); return;
+    }
+    if(f)cloudFileId=f.id;
+    S.meta.rev=(S.meta.rev||0)+1;
+    await cloudPut(JSON.stringify(S));
+    const f2=await driveFind(); CLOUD.mtime=(f2&&f2.modifiedTime)||'';
+    S.settings.cloudSyncedAt=new Date().toISOString();
+    try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}
+    DIRTY=false; setCloudState('ok');
+  }catch(e){ setCloudState('err'); }
+  finally{ CLOUD.busy=false; }}
+
+/* ---- 상태 칩 ---- */
+function setCloudState(s){CLOUD.state=s;paintCloud();}
+function cloudChipText(){
+  if(!(S.settings&&S.settings.gClientId))return {t:'☁ 동기화 꺼짐',c:'#9aa3af',tip:'구글 연동에서 설정하면 기기 간에 같은 기록을 씁니다'};
+  switch(CLOUD.state){
+    case 'sync':return {t:'☁ 맞추는 중…',c:'#2f6db3',tip:''};
+    case 'ok':{const t=S.settings.cloudSyncedAt?new Date(S.settings.cloudSyncedAt).toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'}):'';
+      return {t:'☁ 최신 '+t,c:'#12a594',tip:'이 기기와 클라우드가 같은 내용입니다'};}
+    case 'err':return {t:'☁ 동기화 실패 · 다시',c:'#d1495b',tip:'눌러서 다시 시도'};
+    case 'auth':return {t:'☁ 로그인하고 맞추기',c:'#c98a1a',tip:'다른 기기에서 쓴 내용을 먼저 가져옵니다'};
+    default:return {t:'☁ 맞추기',c:'#c98a1a',tip:'다른 기기에서 쓴 내용을 먼저 가져옵니다'};
+  }}
+function paintCloud(){
+  const el=document.getElementById('cloudchip'); if(!el)return;
+  const c=cloudChipText();
+  el.textContent=c.t; el.title=c.tip; el.style.color=c.c; el.style.borderColor=c.c+'55';
+  el.classList.toggle('busy',CLOUD.state==='sync');}
+function cloudChipClick(){
+  if(!(S.settings&&S.settings.gClientId)){go('gsync');return;}
+  if(!gTokenValid()){gSignIn();return;}
+  cloudSync(false);}
+
+/* ---- 열 때 조용히 로그인 시도 → 성공하면 곧바로 맞추기 ---- */
+function cloudAutoOpen(){
+  if(!(S.settings&&S.settings.gClientId))return;
+  if(!(S.settings.autoCloud||S.settings.cloudSyncedAt))return;   /* 한 번이라도 클라우드를 쓴 사람만 */
+  setCloudState('auth'); GCAL.quiet=true;
+  setTimeout(()=>{GCAL.quiet=false;},15000);
+  try{ gInit(()=>{ try{ GCAL.silent=true; if(GCAL.tc)GCAL.tc.requestAccessToken({prompt:''}); }catch(e){GCAL.silent=false;} }); }catch(e){}}
+
+/* ---- 다른 기기 기록이 더 최신일 수 있다는 안내 배너 ---- */
+function syncBanner(){
+  if(!(S.settings&&S.settings.gClientId))return '';
+  if(CLOUD.ready||CLOUD.state==='ok')return '';
+  const last=S.settings.cloudSyncedAt;
+  if(!last)return '';
+  return `<div class="rbanner no-print" style="background:linear-gradient(135deg,#c98a1a,#e0a52f)"><div>
+    <div class="bt">☁ 다른 기기에서 쓴 내용이 있을 수 있습니다</div>
+    <div class="bs">지금 화면은 <b>이 기기에 저장된 기록</b>입니다. 먼저 맞춘 뒤에 쓰셔야 안전합니다.
+      (마지막 동기화 ${new Date(last).toLocaleString('ko-KR')})</div></div>
+    <button onclick="cloudChipClick()">☁ 지금 맞추기</button></div>`;}
+
 /* ============ INIT ============ */
 (function init(){const had=load();if(!S.view)S.view='dash';
   (S.profile.roles||[]).forEach((r,i)=>{if(!r.color)r.color=ROLE_COLOR_MAP[r.name]||ROLE_PALETTE[i%ROLE_PALETTE.length];});
@@ -3295,7 +3557,9 @@ function usageTable(){
     }
   }catch(e){}
   renderNav();render();refreshWho();setSave(had?'불러옴 · '+(S.meta.savedAt||''):'자동저장 켜짐');
+  try{stampTick();}catch(e){}          /* 도장 캐시 초기화 (첫 호출은 기록만) */
   try{utInit();}catch(e){}
+  try{paintCloud();cloudAutoOpen();}catch(e){}
   checkReminders();setInterval(checkReminders,30000);
   let rz=null;window.addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(alignPanels,120);});})();
 </script>
