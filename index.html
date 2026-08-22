@@ -431,23 +431,32 @@
   table.tt td.tc input.rm{margin-top:3px;font-weight:500;font-size:11px;color:var(--muted)}
   .cnum{display:inline-block;min-width:34px;font-weight:800;color:var(--brand-d)}
   /* 말풍선 툴팁 — 짧은 블록은 글자가 안 보이므로 올려두면 전체가 뜬다 */
-  #dtip{position:fixed;z-index:200;max-width:330px;background:#20242e;color:#fff;border-radius:11px;
-    padding:11px 13px;font-size:12.5px;line-height:1.55;box-shadow:0 10px 30px rgba(0,0,0,.32);
-    pointer-events:none;opacity:0;transition:opacity .12s;display:none}
+  /* 종이·메모지 느낌의 베이지 말풍선 */
+  #dtip{position:fixed;z-index:200;max-width:330px;background:#fdf6e3;color:#3a3320;border:1px solid #e3d5b0;
+    border-radius:11px;padding:11px 13px;font-size:12.5px;line-height:1.55;
+    box-shadow:0 10px 28px rgba(96,74,30,.24);pointer-events:none;opacity:0;transition:opacity .12s;display:none}
   #dtip.on{display:block;opacity:1}
-  #dtip .th{font-weight:800;font-size:13.5px;margin-bottom:3px}
-  #dtip .tm2{font-size:11.5px;opacity:.8;margin-bottom:6px}
-  #dtip .tsec{margin-top:7px;padding-top:6px;border-top:1px solid rgba(255,255,255,.18)}
-  #dtip .tlab{font-size:10.5px;font-weight:800;letter-spacing:.4px;opacity:.7;display:block;margin-bottom:2px}
-  #dtip .tcsf{color:#ffe08a}
-  #dtip .tchip{display:inline-block;background:rgba(255,255,255,.16);border-radius:5px;padding:1px 7px;
+  #dtip .th{font-weight:800;font-size:13.5px;margin-bottom:3px;color:#2b2618}
+  #dtip .tm2{font-size:11.5px;color:#8c7c53;margin-bottom:6px}
+  #dtip .tsec{margin-top:7px;padding-top:6px;border-top:1px solid #e8dcbc}
+  #dtip .tlab{font-size:10.5px;font-weight:800;letter-spacing:.4px;color:#a08f60;display:block;margin-bottom:2px}
+  #dtip .tcsf{color:#8a5a00;font-weight:700}
+  #dtip .tchip{display:inline-block;background:#f1e7cb;color:#6d5e35;border-radius:5px;padding:1px 7px;
     font-size:10.5px;font-weight:700;margin:0 4px 3px 0}
+  #dtip .tchip.over{background:var(--del);color:#fff}
   #dtip .twrap{white-space:pre-wrap;word-break:break-word}
   /* 과제 행의 핵심 성공 요인 단추 */
   .trow .csfb{flex:none;width:22px;height:22px;border:none;background:transparent;cursor:pointer;
     font-size:12px;line-height:1;padding:0;opacity:.3;border-radius:6px}
   .trow .csfb:hover{opacity:.9;background:var(--brand-soft)}
   .trow .csfb.on{opacity:1;background:#fff3d6}
+  .dbadge{flex:none;font-size:10px;font-weight:800;border-radius:5px;padding:2px 5px;line-height:1.3;
+    cursor:pointer;border:none;font-family:inherit;white-space:nowrap;letter-spacing:-.2px}
+  .dbadge.far{background:#eceef4;color:#5b6070}
+  .dbadge.soon{background:#fdf0d8;color:#8a5a00}
+  .dbadge.today{background:var(--gold);color:#fff}
+  .dbadge.over{background:var(--del);color:#fff}
+  .trow.carried .tin{font-style:italic}
   .csfline{color:#8a5a00;background:#fdf6e8;border-left:3px solid var(--gold);
     border-radius:0 7px 7px 0;padding:4px 9px;font-size:12.5px;margin-top:3px}
   .gcal .ev .csfd{position:absolute;right:2px;bottom:1px;font-size:9px;opacity:.85}
@@ -456,8 +465,8 @@
   .chk{width:24px;height:24px;border-radius:7px;border:2px solid #cfd4e0;background:#fff;cursor:pointer;font-weight:900;
     color:var(--muted);font-size:12px;line-height:1;padding:0;flex:none}
   .chk.on{background:var(--done);border-color:var(--done);color:#fff}
-  .gcal .ev.kl .klno{display:inline-block;color:#fff;border-radius:4px;padding:0 5px;margin-right:4px;
-    font-size:9.5px;font-weight:800;line-height:1.5;letter-spacing:-.2px;vertical-align:1px}
+  .gcal .ev.kl .klno{position:absolute;left:0;top:0;bottom:0;color:#fff;font-size:11px;font-weight:800;
+    display:flex;align-items:center;justify-content:center;letter-spacing:-.3px;border-radius:4px 0 0 4px}
   .gcal .ev.kl .klp{display:block;font-size:10px;opacity:.85;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .mmask{position:fixed;inset:0;z-index:130;background:rgba(15,20,35,.45);display:none;align-items:center;justify-content:center;padding:18px}
   .mbox{background:#fff;border-radius:14px;max-width:520px;width:100%;padding:20px 22px;box-shadow:0 18px 50px rgba(0,0,0,.3);max-height:88vh;overflow:auto}
@@ -1044,7 +1053,12 @@ function taskRow(d,i,t){const isOne=(S.days[d]&&S.days[d].one===t.id);
     <button class="del-x no-print" onclick="delTaskId('${t.id}','${d}')">✕</button></div>`;
 }
 /* ── 과제 조회·수정 (id 기반) ── */
-function findTask(d,id){if(!id)return null;ensureDay(d);return (S.days[d].tasks||[]).find(t=>t.id===id)||null;}
+function findTask(d,id){if(!id)return null;ensureDay(d);
+  const t=(S.days[d].tasks||[]).find(x=>x.id===id); if(t)return t;
+  let x=addDays(d,-1);                       /* 이월된 과제는 원래 날짜에 살아 있다 */
+  for(let i=0;i<180;i++){const dd=S.days[x];
+    if(dd&&dd.tasks){const f=dd.tasks.find(y=>y.id===id); if(f)return f;} x=addDays(x,-1);}
+  return null;}
 function setTaskText(d,id,val){const t=findTask(d,id);if(!t)return;const v=val.trim();
   if(!v){if(!confirm('내용을 비우면 이 과제가 삭제됩니다. 삭제할까요?')){renderTasks(d);return;} return delTaskId(id,d);}
   t.text=v;save();renderTasks(d);renderOne(d);renderSchedule(d);}
@@ -1053,7 +1067,7 @@ function setImpact(d,id,k){const t=findTask(d,id);if(!t)return;t.impact=(t.impac
 function setTaskStatusId(id,st,d){d=d||S.ui.day;const t=findTask(d,id);if(!t)return;t.status=st;save();renderTasks(d);renderOne(d);renderSchedule(d);if(S.view==='dash')render();}
 function toggleTaskDoneId(id,d){d=d||S.ui.day;const t=findTask(d,id);if(!t)return;t.status=(t.status==='done')?'todo':'done';save();
   if(S.view==='dash'){render();return;} renderTasks(d);renderOne(d);renderSchedule(d);}
-function delTaskId(id,d){d=d||S.ui.day;const day=S.days[d];if(!day)return;
+function delTaskId(id,d){d=taskHome(id,d||S.ui.day);const day=S.days[d];if(!day)return;
   day.tasks=day.tasks.filter(t=>t.id!==id); if(day.one===id)day.one='';
   save(); if(S.view==='dash'){render();return;} renderTasks(d);renderOne(d);renderSchedule(d);}
 /* 시각 파서 — "9" "930" "9:30" "09.30" "9시30분" "오후2" 모두 HH:MM 으로 */
@@ -1114,7 +1128,7 @@ function newTaskIn(d,role,inp){const v=(inp.value||'').trim();if(!v)return;
 function setOneThing(d,id){ensureDay(d);S.days[d].one=(S.days[d].one===id?'':id);save();renderOne(d);renderTasks(d);renderSchedule(d);}
 function clearOne(d){ensureDay(d);S.days[d].one='';save();renderOne(d);renderTasks(d);renderSchedule(d);}
 function oneScore(t){const pw={A:3,B:2,C:1}[t.priority]||1;return (t.impact||3)*2+pw;}
-function oneCandidate(d){const ts=(S.days[d].tasks||[]).filter(t=>t.status!=='done'&&t.status!=='drop'&&t.text);
+function oneCandidate(d){const ts=dayTasks(d).filter(t=>t.status!=='done'&&t.status!=='drop'&&t.text);
   if(!ts.length)return null;return ts.slice().sort((a,b)=>oneScore(b)-oneScore(a))[0];}
 function recommendOne(d){const c=oneCandidate(d);
   if(!c){toast('먼저 할 일을 적어주세요');return;}
@@ -1145,9 +1159,11 @@ function renderOne(d){const el=document.getElementById('oneslot');if(!el)return;
 const PRIS=['A','B','C'];
 function impHtml(d,t){return `<span class="imp" title="영향도(선두 도미노 후보) — 이 일을 끝내면 다른 일이 얼마나 쉬워지는가">${[1,2,3,4,5].map(k=>`<i class="${k<=(t.impact||3)?'on':''}" onclick="setImpact('${d}','${t.id}',${k})"></i>`).join('')}</span>`;}
 function taskRowG(d,t){const done=t.status==='done';const isOne=S.days[d].one===t.id;
-  return `<div class="trow${done?' done':''}${isOne?' one':''}" data-tid="${t.id}" data-tk="${tipTask(d,t)}">
+  const carried=taskHome(t.id,d)!==d;
+  return `<div class="trow${done?' done':''}${isOne?' one':''}${carried?' carried':''}" data-tid="${t.id}" data-tk="${tipTask(d,t)}">
     <span class="grip" draggable="true" ondragstart="taskDrag(event,'${t.id}')" title="시간표로 끌어놓기">⠿</span>
     <select class="prisel p${t.priority}" onchange="setTaskPri('${d}','${t.id}',this.value)" title="중요도">${PRIS.map(p=>`<option ${t.priority===p?'selected':''}>${p}</option>`).join('')}</select>
+    ${dueBadge(d,t)}
     <input class="tin" value="${esc(t.text)}" onchange="setTaskText('${d}','${t.id}',this.value)" onkeydown="if(event.key==='Enter')this.blur()">
     ${impHtml(d,t)}
     <input class="tmin no-print${t.start?' set':''}" inputmode="numeric" autocomplete="off" placeholder="--:--" value="${t.start||''}"
@@ -1160,13 +1176,15 @@ function taskRowG(d,t){const done=t.status==='done';const isOne=S.days[d].one===
   </div>`;}
 function blankRow(d,role){return `<div class="trow"><span class="grip" style="opacity:.25">⠿</span>
     <input class="tin blank" data-role="${role}" placeholder="＋ 할 일" onchange="newTaskIn('${d}','${role}',this)" onkeydown="if(event.key==='Enter')this.blur()"></div>`;}
-function renderTasks(d){const el=document.getElementById('tasks');if(!el)return;ensureDay(d);const day=S.days[d];
+function renderTasks(d){const el=document.getElementById('tasks');if(!el)return;ensureDay(d);
+  const all=dayTasks(d);                                   /* 오늘 과제 + 마감일이 남은 이월 과제 */
   const roles=(S.profile.roles||[]);
-  const groups=roles.map(r=>({id:r.id,name:r.name,color:r.color||'#5b53b0',ts:day.tasks.filter(t=>t.role===r.id)}));
-  const orphan=day.tasks.filter(t=>!t.role||!roles.some(r=>r.id===t.role));
+  const groups=roles.map(r=>({id:r.id,name:r.name,color:r.color||'#5b53b0',ts:all.filter(t=>t.role===r.id)}));
+  const orphan=all.filter(t=>!t.role||!roles.some(r=>r.id===t.role));
   if(orphan.length)groups.push({id:'',name:'기타',color:'#8792a3',ts:orphan});
   const ord={A:0,B:1,C:2};
-  groups.forEach(g=>g.ts.sort((a,b)=>(ord[a.priority]-ord[b.priority])||((b.impact||3)-(a.impact||3))));
+  const od=t=>{const i=dueInfo(t.due);return i?(i.over?0:(i.n<=2?1:2)):3;};   /* 지난 마감 → 임박 → 나머지 */
+  groups.forEach(g=>g.ts.sort((a,b)=>(od(a)-od(b))||(ord[a.priority]-ord[b.priority])||((b.impact||3)-(a.impact||3))));
   el.style.height=((SC_END-SC_START)*SC_H)+'px';
   el.style.gridTemplateRows=`repeat(${groups.length||1},1fr)`;
   el.innerHTML=groups.map(g=>{
@@ -1259,6 +1277,10 @@ function placeTaskAt(d,id,sm,kind){ensureDay(d);
   if(!obj){obj=findTask(d,id);}
   if(!obj){obj=dayEvents(d).find(x=>x.id===id);isEv=!!obj;}
   if(!obj){toast('옮길 항목을 찾지 못했습니다');return;}
+  if(!isEv){const home=taskHome(id,d);            /* 이월 과제를 시간표에 놓으면 그날로 옮긴다 */
+    if(home!==d){S.days[home].tasks=S.days[home].tasks.filter(t=>t.id!==id);
+      if(S.days[home].one===id)S.days[home].one='';
+      S.days[d].tasks.push(obj);}}
   let dur=60;
   if(obj.start&&obj.end){dur=Math.max(5,toMin(obj.end)-toMin(obj.start));}
   else if(obj.start){dur=60;}
@@ -2626,11 +2648,11 @@ function ritualTomorrowOne(){
   ritualFinish('pm');
 }
 function ritualCarryCandidate(){
-  const d=RIT.d;const ts=(S.days[d].tasks||[]).filter(t=>t.text&&t.status!=='done'&&t.status!=='drop');
+  const d=RIT.d;const ts=dayTasks(d).filter(t=>t.text&&t.status!=='done'&&t.status!=='drop');
   if(!ts.length)return null; return ts.slice().sort((a,b)=>oneScore(b)-oneScore(a))[0];}
 
 function ritQuickTasks(d){
-  const ts=(S.days[d].tasks||[]).filter(t=>t.text&&t.status!=='drop');
+  const ts=dayTasks(d).filter(t=>t.text&&t.status!=='drop');
   if(!ts.length)return '<p class="hint">오늘 등록된 과제가 없습니다.</p>';
   return `<div class="rpick" style="flex-direction:column">${ts.map(t=>
     `<button class="${t.status==='done'?'on':''}" style="width:100%" onclick="toggleTaskDoneId('${t.id}','${d}');vCheckin(document.getElementById('view'))">
@@ -2834,7 +2856,7 @@ function deferC(d){
   save(); toast(n?n+'개 C 과제를 '+nd+'로 옮겼습니다':'옮길 C 과제가 없습니다');
   vDay(document.getElementById('view'));}
 function calibHtml(d){
-  const ts=(S.days[d].tasks||[]).filter(t=>t.text&&t.status!=='drop');
+  const ts=dayTasks(d).filter(t=>t.text&&t.status!=='drop');
   const n=ts.length, avg=avgDone(14), cap=S.settings.dailyCap||0;
   const lim=cap||(avg!=null?Math.max(3,Math.round(avg*1.3)):0);
   const over=!!(lim&&n>lim);
@@ -3223,6 +3245,19 @@ function openMemo(d,kind,id){
   MEMO={d,kind,id};
   modalBox(`<h3 style="margin:0 0 4px">🎯 핵심 성공 요인 · 메모</h3>
     <div class="hint" style="margin-bottom:10px"><b>${d} (${wd(d)}) ${o.start||''}${o.end?'–'+o.end:''}</b> · ${esc(itemLabel(o,kind))}</div>
+    ${kind==='task'?`<label class="fld"><span class="lb">📅 마감일 (D-day)</span>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+        <input type="date" id="duetx" style="max-width:170px" value="${esc(o.due||'')}"
+          onchange="setDue('${d}','${id}',this.value);dueQuick('${id}',null)||0">
+        <button class="btn ghost sm" onclick="dueQuick('${id}',0)">오늘</button>
+        <button class="btn ghost sm" onclick="dueQuick('${id}',1)">내일</button>
+        <button class="btn ghost sm" onclick="dueQuick('${id}',3)">+3일</button>
+        <button class="btn ghost sm" onclick="dueQuick('${id}',7)">+7일</button>
+        <button class="btn ghost sm" onclick="dueQuick('${id}',null)">지우기</button>
+      </div>
+      <div id="duenow" style="margin-top:5px;font-size:12.5px">${(()=>{const i=dueInfo(o.due);
+        return i?`<span class="dbadge ${i.cls}" style="cursor:default">${i.txt}</span> ${o.due} (${wd(o.due)})`:'<span class="hint">마감일 없음 — 정해두면 끝낼 때까지 오늘 목록에 계속 나타납니다</span>';})()}</div>
+    </label>`:''}
     <label class="fld"><span class="lb">🎯 핵심 성공 요인 (CSF) <span class="hint">— 이 일이 성공하려면 반드시 지켜야 할 것</span></span>
       <textarea id="csftx" rows="3" placeholder="예: 학생 예시 답안 2개를 미리 준비 · 도입 5분 안에 질문 던지기">${esc(o.csf||'')}</textarea></label>
     <label class="fld"><span class="lb">🗒 메모 <span class="hint">— 하고 난 뒤의 기록</span></span>
@@ -3238,6 +3273,8 @@ function saveMemo(){
   const t=document.getElementById('memotx'), c=document.getElementById('csftx');
   o.memo=(t?t.value:'').trim(); if(!o.memo)delete o.memo;
   o.csf=(c?c.value:'').trim(); if(!o.csf)delete o.csf;
+  const dq=document.getElementById('duetx');
+  if(dq){const v=(dq.value||'').trim(); if(v)o.due=v; else delete o.due;}
   o.memoAt=new Date().toISOString(); save(); closeModal();
   toast('저장했습니다 — 시간표에 마우스를 올리면 바로 보입니다');
   if(S.view==='day'){renderTasks(MEMO.d);renderSchedule(MEMO.d);}else render();}
@@ -4191,14 +4228,17 @@ function kImportJSON(e){
   r.readAsText(f); e.target.value='';}
 
 /* ── 다른 화면과의 연결 ── */
+/* 차시 번호 자릿수에 맞춰 앞쪽 띠 폭을 정한다 (두 자리도 잘리지 않게) */
+function kNoW(n){return n>=100?27:(n>=10?21:16);}
 function kScheduleBlocks(d){                      /* 일간 계획 시간표에 얹을 수업 블록 */
   if(!kOn())return [];
   return kLessonsOn(d).map(x=>{
     const l=K().logs[x.key]||{}, base=kColor(x.g), c=blockColors(base,!!l.done);
     return {sm:toMin(x.start),em:toMin(x.end),build:st=>`<div class="ev kl" onclick="openLesson('${esc(x.key)}')"
       data-tk="${tipLesson(x)}"
-      style="${st};background:${c.bg};color:${c.fg};border:2px solid ${base};cursor:pointer">
-      <span class="tm" style="color:${c.fg}"><span class="klno" style="background:${base}">${x.no}차시</span>${x.p}교시 ${x.start}${x.mv?(x.mv.k==='add'?' · 보강':' · 이동'):''}${l.done?' ✓':''}</span>
+      style="${st};background:${c.bg};color:${c.fg};border:2px solid ${base};cursor:pointer;padding-left:${kNoW(x.no)+4}px">
+      <span class="klno" style="background:${base};width:${kNoW(x.no)}px">${x.no}</span>
+      <span class="tm" style="color:${c.fg}">${x.p}교시 ${x.start}${x.mv?(x.mv.k==='add'?' · 보강':' · 이동'):''}${l.done?' ✓':''}</span>
       <span class="ttl" style="${l.done?DONE_BLK:''}">${esc(x.g)}</span>
       ${l.prog?`<span class="klp">${esc(l.prog)}</span>`:''}</div>`};
   });}
@@ -4280,6 +4320,8 @@ function tipTask(d,t){
      <span class="tchip">영향도 ${'●'.repeat(t.impact||3)}${'○'.repeat(5-(t.impact||3))}</span>
      ${rn?`<span class="tchip">${esc(rn)}</span>`:''}
      ${S.days[d]&&S.days[d].one===t.id?'<span class="tchip">🁢 오늘의 ONE</span>':''}
+     ${(()=>{const i=dueInfo(t.due);return i?`<span class="tchip ${i.over?'over':''}">${i.txt} · 마감 ${t.due}(${wd(t.due)})</span>`:'';})()}
+     ${(()=>{const h=taskHome(t.id,d);return h!==d?`<span class="tchip">↩ ${h} 에서 넘어옴</span>`:'';})()}
      ${tipSec('핵심 성공 요인 (CSF)',t.csf,'tcsf')}
      ${tipSec('메모',t.memo)}
      ${!t.csf&&!t.memo?'<div class="tsec" style="opacity:.6;font-size:11.5px">🎯 를 눌러 핵심 성공 요인을 적어두면 여기에 함께 보입니다.</div>':''}`);}
@@ -4304,6 +4346,50 @@ function tipLesson(x){
      ${tipSec('수업 방법·특이사항',l.note)}
      ${tipSec('결시·비고',l.absent)}
      ${!l.prog&&!l.note?'<div class="tsec" style="opacity:.6;font-size:11.5px">눌러서 진도를 적어두면 여기에 보입니다.</div>':''}`);}
+
+/* ============================================================
+   ⑯ 마감일(D-day) — 끝낼 때까지 따라오는 과제
+   · 마감일이 있는 미완료 과제는 날짜가 지나도 '오늘'의 우선순위 과제에 계속 나타난다.
+   · D-3 → D-DAY → D+2 (지나면 빨강). 완료하면 그날로 사라진다.
+   ============================================================ */
+function dayDiff(a,b){return Math.round((parseD(b)-parseD(a))/86400000);}
+function dueInfo(due){
+  if(!due)return null;
+  const n=dayDiff(today(),due);
+  if(n>0)return {n:n,txt:'D-'+n,cls:(n<=2?'soon':'far'),over:false};
+  if(n===0)return {n:0,txt:'D-DAY',cls:'today',over:false};
+  return {n:n,txt:'D+'+(-n),cls:'over',over:true};}
+function dueBadge(d,t){
+  const i=dueInfo(t.due); if(!i)return '';
+  return `<button class="dbadge ${i.cls}" onclick="openMemo('${d}','task','${t.id}')"
+    title="마감 ${t.due} (${wd(t.due)})${i.over?' — 지났습니다':''}">${i.txt}</button>`;}
+function setDue(d,id,v){const t=findTask(d,id);if(!t)return;
+  v=(v||'').trim(); if(v)t.due=v; else delete t.due;
+  save(); if(S.view==='day'){renderTasks(S.ui.day);renderOne(S.ui.day);renderSchedule(S.ui.day);} else render();}
+function dueQuick(id,n){
+  const el=document.getElementById('duetx'); if(!el)return;
+  el.value = (n===null)?'':addDays(today(),n);
+  const t=findTask(S.ui.day,id); if(t){ if(el.value)t.due=el.value; else delete t.due; save(); }
+  const box=document.getElementById('duenow');
+  if(box){const i=dueInfo(el.value); box.innerHTML=i?`<span class="dbadge ${i.cls}" style="cursor:default">${i.txt}</span> ${el.value} (${wd(el.value)})`:'<span class="hint">마감일 없음</span>';}}
+
+/* 과제가 실제로 들어 있는 날짜 (이월되어 다른 날에 살아 있을 수 있다) */
+function taskHome(id,d){ d=d||S.ui.day;
+  if(((S.days[d]||{}).tasks||[]).some(t=>t.id===id))return d;
+  let x=addDays(d,-1);
+  for(let i=0;i<180;i++){const dd=S.days[x]; if(dd&&dd.tasks&&dd.tasks.some(t=>t.id===id))return x; x=addDays(x,-1);}
+  return d;}
+/* 마감일이 있고 아직 끝내지 않은 지난 과제 — 오늘(그리고 그 이후) 목록에 함께 올린다 */
+function carriedTasks(d){
+  if(!d||d<today())return [];
+  const out=[]; let x=addDays(d,-1);
+  for(let i=0;i<180;i++){
+    const dd=S.days[x];
+    if(dd&&dd.tasks)dd.tasks.forEach(t=>{
+      if(t.text&&t.due&&t.status!=='done'&&t.status!=='drop')out.push(t);});
+    x=addDays(x,-1);}
+  return out;}
+function dayTasks(d){return ((S.days[d]||{}).tasks||[]).concat(carriedTasks(d));}
 
 /* ============ INIT ============ */
 (function init(){const had=load();if(!S.view)S.view='dash';
