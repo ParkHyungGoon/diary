@@ -430,14 +430,34 @@
   table.tt td.tc input:hover{border-color:var(--line)}
   table.tt td.tc input.rm{margin-top:3px;font-weight:500;font-size:11px;color:var(--muted)}
   .cnum{display:inline-block;min-width:34px;font-weight:800;color:var(--brand-d)}
+  /* 말풍선 툴팁 — 짧은 블록은 글자가 안 보이므로 올려두면 전체가 뜬다 */
+  #dtip{position:fixed;z-index:200;max-width:330px;background:#20242e;color:#fff;border-radius:11px;
+    padding:11px 13px;font-size:12.5px;line-height:1.55;box-shadow:0 10px 30px rgba(0,0,0,.32);
+    pointer-events:none;opacity:0;transition:opacity .12s;display:none}
+  #dtip.on{display:block;opacity:1}
+  #dtip .th{font-weight:800;font-size:13.5px;margin-bottom:3px}
+  #dtip .tm2{font-size:11.5px;opacity:.8;margin-bottom:6px}
+  #dtip .tsec{margin-top:7px;padding-top:6px;border-top:1px solid rgba(255,255,255,.18)}
+  #dtip .tlab{font-size:10.5px;font-weight:800;letter-spacing:.4px;opacity:.7;display:block;margin-bottom:2px}
+  #dtip .tcsf{color:#ffe08a}
+  #dtip .tchip{display:inline-block;background:rgba(255,255,255,.16);border-radius:5px;padding:1px 7px;
+    font-size:10.5px;font-weight:700;margin:0 4px 3px 0}
+  #dtip .twrap{white-space:pre-wrap;word-break:break-word}
+  /* 과제 행의 핵심 성공 요인 단추 */
+  .trow .csfb{flex:none;width:22px;height:22px;border:none;background:transparent;cursor:pointer;
+    font-size:12px;line-height:1;padding:0;opacity:.3;border-radius:6px}
+  .trow .csfb:hover{opacity:.9;background:var(--brand-soft)}
+  .trow .csfb.on{opacity:1;background:#fff3d6}
+  .csfline{color:#8a5a00;background:#fdf6e8;border-left:3px solid var(--gold);
+    border-radius:0 7px 7px 0;padding:4px 9px;font-size:12.5px;margin-top:3px}
+  .gcal .ev .csfd{position:absolute;right:2px;bottom:1px;font-size:9px;opacity:.85}
   .mvb{display:inline-block;background:var(--brand);color:#fff;border-radius:5px;padding:1px 6px;font-size:10.5px;font-weight:800;margin-left:3px}
   .swp{display:inline-block;background:var(--gold);color:#fff;border-radius:5px;padding:1px 6px;font-size:10.5px;font-weight:800}
   .chk{width:24px;height:24px;border-radius:7px;border:2px solid #cfd4e0;background:#fff;cursor:pointer;font-weight:900;
     color:var(--muted);font-size:12px;line-height:1;padding:0;flex:none}
   .chk.on{background:var(--done);border-color:var(--done);color:#fff}
-  .gcal .ev.kl{padding-left:22px}
-  .gcal .ev.kl .klno{position:absolute;left:0;top:0;bottom:0;width:18px;color:#fff;font-size:10px;font-weight:800;
-    display:flex;align-items:center;justify-content:center;writing-mode:vertical-rl}
+  .gcal .ev.kl .klno{display:inline-block;color:#fff;border-radius:4px;padding:0 5px;margin-right:4px;
+    font-size:9.5px;font-weight:800;line-height:1.5;letter-spacing:-.2px;vertical-align:1px}
   .gcal .ev.kl .klp{display:block;font-size:10px;opacity:.85;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .mmask{position:fixed;inset:0;z-index:130;background:rgba(15,20,35,.45);display:none;align-items:center;justify-content:center;padding:18px}
   .mbox{background:#fff;border-radius:14px;max-width:520px;width:100%;padding:20px 22px;box-shadow:0 18px 50px rgba(0,0,0,.3);max-height:88vh;overflow:auto}
@@ -589,7 +609,7 @@ function blank(){return{
   focusLog:{},
   settings:{gClientId:"",gcalId:"primary",autoCloud:false,cloudSyncedAt:"",ai:{prov:"copy",key:"",model:""},
     autoRitual:true, amTime:"07:00", pmTime:"21:30", amUntil:12, pmFrom:18,
-    restDay:-1, reviewDay:0, dailyCap:0, utShow:true, utOpen:true},
+    restDay:-1, reviewDay:0, dailyCap:0, utShow:true, utOpen:true, hideDupG:true},
   usage:{total:0, byView:{}, byDay:{}},
   klass:null,                      /* 교사용 수업 기록 모듈 — kFix()가 채운다 */
   view:"dash", ui:{month:"", week:"", day:"", book:"", navOpen:{}, lcYear:0}
@@ -1125,7 +1145,7 @@ function renderOne(d){const el=document.getElementById('oneslot');if(!el)return;
 const PRIS=['A','B','C'];
 function impHtml(d,t){return `<span class="imp" title="영향도(선두 도미노 후보) — 이 일을 끝내면 다른 일이 얼마나 쉬워지는가">${[1,2,3,4,5].map(k=>`<i class="${k<=(t.impact||3)?'on':''}" onclick="setImpact('${d}','${t.id}',${k})"></i>`).join('')}</span>`;}
 function taskRowG(d,t){const done=t.status==='done';const isOne=S.days[d].one===t.id;
-  return `<div class="trow${done?' done':''}${isOne?' one':''}" data-tid="${t.id}">
+  return `<div class="trow${done?' done':''}${isOne?' one':''}" data-tid="${t.id}" data-tk="${tipTask(d,t)}">
     <span class="grip" draggable="true" ondragstart="taskDrag(event,'${t.id}')" title="시간표로 끌어놓기">⠿</span>
     <select class="prisel p${t.priority}" onchange="setTaskPri('${d}','${t.id}',this.value)" title="중요도">${PRIS.map(p=>`<option ${t.priority===p?'selected':''}>${p}</option>`).join('')}</select>
     <input class="tin" value="${esc(t.text)}" onchange="setTaskText('${d}','${t.id}',this.value)" onkeydown="if(event.key==='Enter')this.blur()">
@@ -1133,6 +1153,7 @@ function taskRowG(d,t){const done=t.status==='done';const isOne=S.days[d].one===
     <input class="tmin no-print${t.start?' set':''}" inputmode="numeric" autocomplete="off" placeholder="--:--" value="${t.start||''}"
       onchange="setTaskTimeStr('${d}','${t.id}',this.value)" onkeydown="tminKey(event,'${d}','${t.id}')"
       title="시작 시간 — 숫자만 쳐도 됩니다&#10;9 → 09:00 · 930 → 09:30 · 1430 → 14:30&#10;930-1030 처럼 쓰면 끝 시각까지 지정&#10;↑↓ 키로 5분씩 조정 · 비우면 시간표에서 내려옵니다">
+    <button class="csfb${(t.csf||t.memo)?' on':''}" onclick="openMemo('${d}','task','${t.id}')" title="핵심 성공 요인 · 메모">🎯</button>
     <button class="onebtn${isOne?' on':''}" onclick="setOneThing('${d}','${t.id}')" title="오늘의 The ONE Thing으로 지정">🁢</button>
     <button class="tdone${done?' on':''}" onclick="toggleTaskDoneId('${t.id}','${d}')" title="완료">✓</button>
     <button class="del-x no-print" onclick="delTaskId('${t.id}','${d}')" title="삭제">✕</button>
@@ -1248,6 +1269,14 @@ function placeTaskAt(d,id,sm,kind){ensureDay(d);
   toast((isEv?'일정':'과제')+' → '+obj.start+'–'+obj.end+' 배치');}
 function renderSchedule(d){const el=document.getElementById('gcal');if(!el)return;
   const gev=gDayCache[d]||[];
+  /* 수업 시간과 겹치는 구글 일정은 숨긴다 (같은 수업이 두 번 그려지는 문제) */
+  const kBlocks=kScheduleBlocks(d);
+  const kRanges=kBlocks.map(b=>[b.sm,b.em]);
+  const hideDup=(S.settings.hideDupG!==false)&&kRanges.length>0;
+  let dupN=0;
+  const isDupOfLesson=(sm,em)=>{ if(!hideDup)return false;
+    const dur=Math.max(1,em-sm);
+    return kRanges.some(r=>{const ov=Math.min(em,r[1])-Math.max(sm,r[0]); return ov>0 && ov>=dur*0.6;});};
   const items=dayEvents(d).map(ev=>({o:ev,rec:false})).concat(recForDay(d).map(r=>({o:r,rec:true})));
   const tks=(S.days[d].tasks||[]).map((t,i)=>({t,i})).filter(x=>x.t.start);
   const recDone=S.days[d].recDone||[];const oneId=S.days[d].one||'';
@@ -1255,34 +1284,43 @@ function renderSchedule(d){const el=document.getElementById('gcal');if(!el)retur
   // 내 계획 + 반복 + 과제 + 구글 일정을 하나의 블록 목록으로 통합
   const blocks=[];
   items.forEach(it=>{const ev=it.o;const isRec=it.rec;
+    if(!isRec&&ev.fromG&&isDupOfLesson(toMin(ev.start),toMin(ev.end))){dupN++;return;}
     const base=ev.role?roleColor(ev.role):(ev.color||'#5b53b0');
     const done=isRec?recDone.includes(ev.id):!!ev.done;const c=blockColors(base,done);
     const tog=isRec?`toggleRecDone('${d}','${ev.id}')`:`toggleEventDone('${d}','${ev.id}')`;
     const del=isRec?`delRecur('${ev.id}')`:`delEvent('${d}','${ev.id}')`;
     const dg=isRec?'':` draggable="true" ondragstart="blockDrag(event,'${ev.id}','event')" ondragend="hideDropLine()"`;
-    blocks.push({sm:toMin(ev.start),em:toMin(ev.end),build:st=>`<div class="ev${isRec?' rec':' grab'}"${dg} style="${st};background:${c.bg};color:${c.fg};border:${done?'4px':'2px'} solid ${base}">
+    blocks.push({sm:toMin(ev.start),em:toMin(ev.end),build:st=>`<div class="ev${isRec?' rec':' grab'}"${dg} data-tk="${tipEvent(d,ev,isRec)}" style="${st};background:${c.bg};color:${c.fg};border:${done?'4px':'2px'} solid ${base}">
       ${isRec?'':`<button class="evx" style="color:${c.fg};right:57px" onclick="openEvEdit('${d}','${ev.id}')" title="수정${ev.gEventId?' (구글에도 반영)':''}">✏</button>`}
       ${isRec?'':`<button class="evx" style="color:${c.fg};right:38px;${ev.memo?'background:rgba(0,0,0,.34)':''}" onclick="openMemo('${d}','event','${ev.id}')" title="${ev.memo?'메모 있음 — 수정':'메모 남기기'}">🗒</button>`}
       <button class="evx" style="color:${c.fg};right:19px" onclick="${tog}" title="완료">${done?'↺':'✓'}</button>
       <button class="evx" style="color:${c.fg}" onclick="${del}" title="삭제">✕</button>
-      <span class="tm" style="color:${c.fg}">${ev.start}–${ev.end}${isRec?' ↻':''}${ev.gEventId?' ✓구글':''}</span><span class="ttl" style="${done?DONE_BLK:''}">${esc(ev.title)}</span></div>`});});
+      <span class="tm" style="color:${c.fg}">${ev.start}–${ev.end}${isRec?' ↻':''}${ev.gEventId?' ✓구글':''}${ev.csf?' 🎯':''}</span><span class="ttl" style="${done?DONE_BLK:''}">${esc(ev.title)}</span></div>`});});
   tks.forEach(({t,i})=>{const done=t.status==='done';const c=blockColors(roleColor(t.role),done);const isOne=oneId===t.id;
-    blocks.push({sm:toMin(t.start),em:toMin(t.end||addMinStr(t.start,60)),build:st=>`<div class="ev tk grab${isOne?' one':''}" draggable="true" ondragstart="blockDrag(event,'${t.id}','task')" ondragend="hideDropLine()" style="${st};background:${c.bg};color:${c.fg};border:${done?'5px':'3px'} solid ${priColor(t.priority)}">
+    blocks.push({sm:toMin(t.start),em:toMin(t.end||addMinStr(t.start,60)),build:st=>`<div class="ev tk grab${isOne?' one':''}" draggable="true" ondragstart="blockDrag(event,'${t.id}','task')" ondragend="hideDropLine()" data-tk="${tipTask(d,t)}" style="${st};background:${c.bg};color:${c.fg};border:${done?'5px':'3px'} solid ${priColor(t.priority)}">
       <button class="evx" style="color:${c.fg};right:19px;${t.memo?'background:rgba(0,0,0,.34)':''}" onclick="openMemo('${d}','task','${t.id}')" title="${t.memo?'메모 있음 — 수정':'메모 남기기'}">🗒</button>
       <button class="evx" style="color:${c.fg}" onclick="toggleTaskDoneId('${t.id}','${d}')" title="완료">${done?'↺':'✓'}</button>
-      <span class="tm" style="color:${c.fg}">${t.start}–${t.end||''} · ${t.priority} 과제${t.gEventId?' ✓구글':''}</span><span class="ttl" style="${done?DONE_BLK:''}">${isOne?'🁢 ':''}${esc(t.text)}</span></div>`});});
-  kScheduleBlocks(d).forEach(b=>blocks.push(b));      /* 교사용 수업 블록 (차시 번호 포함) */
-  gev.forEach(g=>{const bg=gColor(g.colorId);const fg=contrastText(bg);const dur=g.em-g.sm;const tip=g.start+'–'+g.end+' · '+g.title;
-    blocks.push({sm:g.sm,em:g.em,build:st=>`<div class="ev g" title="${esc(tip)}" style="${st};background:${bg};color:${fg}">${dur>=45?`<span class="tm" style="color:${fg}">${g.start}</span>`:''}<span class="ttl">${esc(g.title)}</span></div>`});});
+      <span class="tm" style="color:${c.fg}">${t.start}–${t.end||''} · ${t.priority} 과제${t.gEventId?' ✓구글':''}${t.csf?' 🎯':''}</span><span class="ttl" style="${done?DONE_BLK:''}">${isOne?'🁢 ':''}${esc(t.text)}</span></div>`});});
+  kBlocks.forEach(b=>blocks.push(b));                 /* 교사용 수업 블록 (차시 번호 포함) */
+  gev.forEach((g,gi)=>{
+    if(isDupOfLesson(g.sm,g.em)){dupN++;return;}
+    const bg=gColor(g.colorId);const fg=contrastText(bg);const dur=g.em-g.sm;
+    const tk=tipSet('g:'+gi,`<div class="th">${esc(g.title)}</div><div class="tm2">${d} (${wd(d)}) · ${g.start}–${g.end} · 구글 캘린더</div>`);
+    blocks.push({sm:g.sm,em:g.em,build:st=>`<div class="ev g" data-tk="${tk}" style="${st};background:${bg};color:${fg}">${dur>=45?`<span class="tm" style="color:${fg}">${g.start}</span>`:''}<span class="ttl">${esc(g.title)}</span></div>`});});
   layoutBlocks(blocks);
   const laneHtml=blocks.map(b=>b.build(blockStyle(b.sm,b.em,b.col,b.cols))).join('');
   el.style.height=((SC_END-SC_START)*SC_H)+'px';
   el.innerHTML=`<div class="lines">${lines}</div><div class="lane" ondragover="laneOver(event)" ondrop="laneDrop(event)" ondragleave="laneLeave(event)">${laneHtml}<div class="dropline" id="dropline" style="display:none"><span></span></div></div>`;
   const sr=document.getElementById('syncrow');
   if(sr){const hasRec=(S.recurring||[]).some(r=>!r.gEventId);
+    const dupNote=dupN?`<span class="synchint" style="color:var(--brand-d);font-weight:700">
+        · 수업과 겹치는 구글 일정 ${dupN}개를 숨겼습니다
+        <button class="btn ghost sm" style="padding:2px 7px;font-size:11px" onclick="S.settings.hideDupG=false;save();renderSchedule('${d}')">모두 보기</button></span>`
+      :((S.settings.hideDupG===false&&kRanges.length)?`<span class="synchint">
+        · <button class="btn ghost sm" style="padding:2px 7px;font-size:11px" onclick="S.settings.hideDupG=true;save();renderSchedule('${d}')">수업과 겹치는 구글 일정 숨기기</button></span>`:'');
     sr.innerHTML=gTokenValid()
-    ? `<button class="btn ghost sm" onclick="pullDay('${d}')">↧ 구글 일정 불러오기(편집 가능)</button> <button class="btn ghost sm" onclick="pushDay('${d}')">↥ 이 날 시간표 등록</button> ${(S.recurring||[]).length?`<button class="btn ghost sm" onclick="pushRecurring()">↻ 반복 일정 구글 등록</button>`:''} <span class="synchint">불러온 구글 일정은 <b>내 일정으로 들어와</b> 드래그 이동·✏ 수정·✕ 삭제가 되고, 변경은 구글 원본에도 반영됩니다 · 🗒 = 그 시각의 메모(일상 기록으로 연결)</span>`
-    : `<span class="synchint">구글과 주고받으려면 ‘🔗 구글 연동’ 탭에서 로그인하세요. (로그인 전에도 작성·저장·반복 설정은 됩니다)</span>`;}
+    ? `<button class="btn ghost sm" onclick="pullDay('${d}')">↧ 구글 일정 불러오기(편집 가능)</button> <button class="btn ghost sm" onclick="pushDay('${d}')">↥ 이 날 시간표 등록</button> ${(S.recurring||[]).length?`<button class="btn ghost sm" onclick="pushRecurring()">↻ 반복 일정 구글 등록</button>`:''} <span class="synchint">불러온 구글 일정은 <b>내 일정으로 들어와</b> 드래그 이동·✏ 수정·✕ 삭제가 되고, 변경은 구글 원본에도 반영됩니다 · 🗒 = 핵심 성공 요인·메모 · <b>블록에 마우스를 올리면</b> 전체 내용이 뜹니다</span>${dupNote}`
+    : `<span class="synchint">구글과 주고받으려면 ‘🔗 구글 연동’ 탭에서 로그인하세요. (로그인 전에도 작성·저장·반복 설정은 됩니다) · <b>블록에 마우스를 올리면</b> 전체 내용이 뜹니다</span>${dupNote}`;}
   alignPanels();
 }
 /* 왼쪽 과제표와 오른쪽 시간표의 첫 줄 높이를 맞춘다 */
@@ -3183,31 +3221,37 @@ function itemLabel(o,kind){return kind==='task'?(o.text||''):(o.title||'');}
 function openMemo(d,kind,id){
   const o=findItem(d,kind,id); if(!o){toast('항목을 찾지 못했습니다');return;}
   MEMO={d,kind,id};
-  modalBox(`<h3 style="margin:0 0 4px">🗒 메모</h3>
+  modalBox(`<h3 style="margin:0 0 4px">🎯 핵심 성공 요인 · 메모</h3>
     <div class="hint" style="margin-bottom:10px"><b>${d} (${wd(d)}) ${o.start||''}${o.end?'–'+o.end:''}</b> · ${esc(itemLabel(o,kind))}</div>
-    <textarea id="memotx" rows="6" placeholder="이 시간에 무슨 일이 있었는지, 무엇을 느꼈는지 — 짧아도 됩니다">${esc(o.memo||'')}</textarea>
-    <div class="hint" style="margin-top:6px">저장하면 <b>일자·시각과 함께 일상 기록</b>에 쌓입니다.</div>
+    <label class="fld"><span class="lb">🎯 핵심 성공 요인 (CSF) <span class="hint">— 이 일이 성공하려면 반드시 지켜야 할 것</span></span>
+      <textarea id="csftx" rows="3" placeholder="예: 학생 예시 답안 2개를 미리 준비 · 도입 5분 안에 질문 던지기">${esc(o.csf||'')}</textarea></label>
+    <label class="fld"><span class="lb">🗒 메모 <span class="hint">— 하고 난 뒤의 기록</span></span>
+      <textarea id="memotx" rows="4" placeholder="이 시간에 무슨 일이 있었는지, 무엇을 느꼈는지 — 짧아도 됩니다">${esc(o.memo||'')}</textarea></label>
+    <div class="hint" style="margin-top:2px">핵심 성공 요인은 <b>시간표 블록에 마우스를 올리면</b> 바로 보이고,
+      메모와 함께 <b>일상 기록</b>에도 쌓입니다.</div>
     <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">
       <button class="btn ghost" onclick="closeModal()">닫기</button>
       <button class="btn" onclick="saveMemo()">저장</button></div>`);
-  setTimeout(()=>{const t=document.getElementById('memotx');if(t)t.focus();},60);}
+  setTimeout(()=>{const t=document.getElementById('csftx');if(t)t.focus();},60);}
 function saveMemo(){
   const o=findItem(MEMO.d,MEMO.kind,MEMO.id); if(!o){closeModal();return;}
-  const t=document.getElementById('memotx');
+  const t=document.getElementById('memotx'), c=document.getElementById('csftx');
   o.memo=(t?t.value:'').trim(); if(!o.memo)delete o.memo;
+  o.csf=(c?c.value:'').trim(); if(!o.csf)delete o.csf;
   o.memoAt=new Date().toISOString(); save(); closeModal();
-  toast('메모를 저장했습니다 — 일상 기록에서 함께 볼 수 있습니다');
+  toast('저장했습니다 — 시간표에 마우스를 올리면 바로 보입니다');
   if(S.view==='day'){renderTasks(MEMO.d);renderSchedule(MEMO.d);}else render();}
 function dayMemos(d){
   const x=S.days[d]; if(!x)return [];
   const out=[];
-  (x.tasks||[]).forEach(t=>{if(t.memo)out.push({start:t.start||'',end:t.end||'',title:t.text,memo:t.memo,kind:'task',id:t.id,role:t.role});});
-  (x.events||[]).forEach(e=>{if(e.memo)out.push({start:e.start||'',end:e.end||'',title:e.title,memo:e.memo,kind:'event',id:e.id,role:e.role});});
+  (x.tasks||[]).forEach(t=>{if(t.memo||t.csf)out.push({start:t.start||'',end:t.end||'',title:t.text,memo:t.memo||'',csf:t.csf||'',kind:'task',id:t.id,role:t.role});});
+  (x.events||[]).forEach(e=>{if(e.memo||e.csf)out.push({start:e.start||'',end:e.end||'',title:e.title,memo:e.memo||'',csf:e.csf||'',kind:'event',id:e.id,role:e.role});});
   if(kOn())kLessonsOn(d).forEach(ls=>{const l=K().logs[ls.key]||{};
     const txt=[l.prog,l.note,l.absent?'('+l.absent+')':''].filter(Boolean).join(' · ');
     if(txt)out.push({start:ls.start,end:ls.end,title:ls.g+' '+ls.no+'차시',memo:txt,kind:'lesson',id:ls.key,color:kColor(ls.g)});});
   return out.sort((a,b)=>(a.start||'99:99').localeCompare(b.start||'99:99'));}
-function memoLines(d){return dayMemos(d).map(m=>`${d} ${m.start||'--:--'}${m.end?'–'+m.end:''} · ${m.title}\n  ${m.memo}`).join('\n');}
+function memoLines(d){return dayMemos(d).map(m=>`${d} ${m.start||'--:--'}${m.end?'–'+m.end:''} · ${m.title}`
+  +(m.csf?`\n  🎯 ${m.csf}`:'')+(m.memo?`\n  ${m.memo}`:'')).join('\n');}
 function memosToJournal(d){
   const lines=memoLines(d); if(!lines){toast('저장된 메모가 없습니다');return;}
   ensureDay(d);const cur=S.days[d].journal||'';
@@ -3217,13 +3261,13 @@ function memosToJournal(d){
   if(S.view==='day')vDay(document.getElementById('view'));else render();}
 function memoCard(d){
   const ms=dayMemos(d);
-  return `<div class="card"><h3>🗒 시간표 메모 <span class="hint">(일자·시각과 함께 일상 기록으로 이어집니다)</span></h3>
+  return `<div class="card"><h3>🎯 핵심 성공 요인 · 시간표 메모 <span class="hint">(일자·시각과 함께 일상 기록으로 이어집니다)</span></h3>
     ${ms.length? ms.map(m=>`<div class="memoline">
         <span class="mt">${m.start||'--:--'}${m.end?'–'+m.end:''}</span>
         <span class="mh" style="border-color:${m.color||(m.role?roleColor(m.role):'var(--brand)')}">${esc(m.title)}</span>
-        <span class="mm">${esc(m.memo)}</span>
+        <span class="mm">${m.csf?`<span class="csfline">🎯 ${esc(m.csf)}</span>`:''}${esc(m.memo)}</span>
         <button class="btn ghost sm no-print" onclick="${m.kind==='lesson'?`openLesson('${esc(m.id)}')`:`openMemo('${d}','${m.kind}','${m.id}')`}">수정</button></div>`).join('')
-      : '<p class="hint">시간표의 <b>🗒</b> 단추를 누르면 그 시각의 메모를 남길 수 있습니다. 과제·일정·구글 일정 모두 가능합니다.</p>'}
+      : '<p class="hint">과제 줄의 <b>🎯</b> 또는 시간표 블록의 <b>🗒</b> 를 누르면 <b>핵심 성공 요인</b>과 메모를 적을 수 있습니다. 적어두면 시간표에 마우스만 올려도 보입니다.</p>'}
     ${ms.length?`<div style="margin-top:8px"><button class="btn sm no-print" onclick="memosToJournal('${d}')">↧ 오늘 일상 기록에 붙여넣기</button></div>`:''}
   </div>`;}
 
@@ -3269,6 +3313,7 @@ function openEvEdit(d,id){
       <label class="fld" style="max-width:150px"><span class="lb">종료</span><input type="time" class="tmin" id="eeE" value="${ev.end||'10:00'}"></label>
       <label class="fld" style="flex:1;min-width:150px"><span class="lb">역할(색)</span><select id="eeR">${roleOptions(ev.role||'')}</select></label>
     </div>
+    <label class="fld"><span class="lb">🎯 핵심 성공 요인 (CSF)</span><textarea id="eeC" rows="2" placeholder="이 일정이 성공하려면 반드시 지켜야 할 것">${esc(ev.csf||'')}</textarea></label>
     <label class="fld"><span class="lb">메모 <span class="hint">(일상 기록에 함께 쌓입니다)</span></span><textarea id="eeM" rows="3">${esc(ev.memo||'')}</textarea></label>
     ${ev.gEventId?'<div class="hint">저장하면 구글 캘린더의 원본 일정도 함께 수정됩니다.</div>':''}
     <div style="display:flex;gap:8px;justify-content:space-between;margin-top:12px;flex-wrap:wrap">
@@ -3282,6 +3327,7 @@ function saveEvEdit(d,id){
   if(s&&e&&toMin(e)<=toMin(s)){toast('종료 시간이 시작보다 늦어야 합니다');return;}
   ev.title=g('eeT').trim()||ev.title; if(s)ev.start=s; if(e)ev.end=e;
   ev.role=g('eeR'); const mm=g('eeM').trim(); if(mm)ev.memo=mm; else delete ev.memo;
+  const cc=g('eeC').trim(); if(cc)ev.csf=cc; else delete ev.csf;
   save(); closeModal(); renderSchedule(d);
   if(S.view==='day')vDay(document.getElementById('view'));
   syncMoved(d,ev,true);}
@@ -3934,6 +3980,13 @@ function kvSetup(el){
        <input type="file" id="kimp" accept="application/json" style="display:none" onchange="kImportJSON(event)">
      </div>
    </div>
+   <div class="card"><h3>일간 계획 시간표 표시</h3>
+     <label style="font-size:13px;font-weight:600;display:block">
+       <input type="checkbox" ${S.settings.hideDupG!==false?'checked':''} onchange="S.settings.hideDupG=this.checked;save();render()" style="width:auto">
+       <b>수업 시간과 겹치는 구글 캘린더 일정 숨기기</b></label>
+     <p class="hint" style="margin-top:4px">구글 캘린더에 등록해 둔 수업 일정과 이 수업 기록이 <b>같은 시간에 두 번</b> 그려지는 것을 막습니다.
+       겹침이 60% 이상일 때만 숨기므로, 수업 시간에 걸친 <b>다른 일정</b>은 그대로 보입니다.</p>
+   </div>
    <div class="card"><h3>모듈 끄기</h3>
      <label style="font-size:13px;font-weight:600;display:block">
        <input type="checkbox" ${k.on?'checked':''} onchange="K().on=this.checked;save();renderNav();render()" style="width:auto">
@@ -4143,10 +4196,9 @@ function kScheduleBlocks(d){                      /* 일간 계획 시간표에 
   return kLessonsOn(d).map(x=>{
     const l=K().logs[x.key]||{}, base=kColor(x.g), c=blockColors(base,!!l.done);
     return {sm:toMin(x.start),em:toMin(x.end),build:st=>`<div class="ev kl" onclick="openLesson('${esc(x.key)}')"
-      title="${esc(x.g)} ${x.no}차시${l.prog?' — '+esc(l.prog):''}"
+      data-tk="${tipLesson(x)}"
       style="${st};background:${c.bg};color:${c.fg};border:2px solid ${base};cursor:pointer">
-      <span class="klno" style="background:${base}">${x.no}</span>
-      <span class="tm" style="color:${c.fg}">${x.start} · ${x.p}교시${x.mv?(x.mv.k==='add'?' 보강':' 이동'):''}${l.done?' ✓':''}</span>
+      <span class="tm" style="color:${c.fg}"><span class="klno" style="background:${base}">${x.no}차시</span>${x.p}교시 ${x.start}${x.mv?(x.mv.k==='add'?' · 보강':' · 이동'):''}${l.done?' ✓':''}</span>
       <span class="ttl" style="${l.done?DONE_BLK:''}">${esc(x.g)}</span>
       ${l.prog?`<span class="klp">${esc(l.prog)}</span>`:''}</div>`};
   });}
@@ -4181,6 +4233,78 @@ function kReviewCard(){                           /* 주간 회고용 */
       ${wTot>wDone?`이번 주에 <b>${wTot-wDone}차시</b>가 비어 있습니다.`:'이번 주는 모두 채워져 있습니다.'}</p>
     <div style="margin-top:8px" class="no-print"><button class="btn ghost sm" onclick="go('klass')">수업 기록 열기 →</button></div></div>`;}
 
+/* ============================================================
+   ⑮ 말풍선 툴팁 — 5분·10분짜리 블록은 글자가 안 보인다.
+   마우스를 올리면 제목·시간·우선순위·핵심 성공 요인·메모가 통째로 뜬다.
+   내용은 TIPS 맵에 담고 요소에는 키만 붙인다(속성 이스케이프 지옥 회피).
+   ============================================================ */
+let TIPS={};
+function tipSet(k,html){TIPS[k]=html;return k;}
+function tipEl(){let e=document.getElementById('dtip');
+  if(!e){e=document.createElement('div');e.id='dtip';document.body.appendChild(e);}return e;}
+function tipShow(el){
+  const k=el.getAttribute('data-tk'); const html=TIPS[k]; if(!html)return;
+  const t=tipEl(); t.innerHTML=html; t.classList.add('on');
+  const r=el.getBoundingClientRect(), tw=t.offsetWidth, th=t.offsetHeight, m=10;
+  let x=r.right+m, y=r.top;
+  if(x+tw>window.innerWidth-6)x=r.left-tw-m;
+  if(x<6)x=Math.max(6,Math.min(window.innerWidth-tw-6,r.left));
+  if(y+th>window.innerHeight-6)y=Math.max(6,window.innerHeight-th-6);
+  if(y<6)y=6;
+  t.style.left=Math.round(x)+'px'; t.style.top=Math.round(y)+'px';}
+function tipHide(){CURTIP=null;const t=document.getElementById('dtip'); if(t)t.classList.remove('on');}
+let CURTIP=null;
+function tipInit(){
+  /* 내부 자식 사이를 오갈 때 깜빡이지 않도록 relatedTarget 으로 진짜 진입/이탈만 잡는다 */
+  document.addEventListener('mouseover',e=>{
+    const el=e.target.closest&&e.target.closest('[data-tk]'); if(!el)return;
+    if(CURTIP===el)return; CURTIP=el; tipShow(el); },true);
+  document.addEventListener('mouseout',e=>{
+    const el=e.target.closest&&e.target.closest('[data-tk]'); if(!el)return;
+    const to=e.relatedTarget;
+    if(to&&el.contains(to))return;
+    CURTIP=null; tipHide(); },true);
+  /* 스크롤 중에는 숨기지 말고 따라붙게 한다 (스크롤 이벤트가 hover 직후에 늦게 오는 경우가 있다) */
+  document.addEventListener('scroll',()=>{ if(CURTIP)tipShow(CURTIP); else tipHide(); },true);
+  window.addEventListener('resize',tipHide);
+  document.addEventListener('click',tipHide,true);}
+function tipSec(lab,txt,cls){ if(!txt)return '';
+  return `<div class="tsec"><span class="tlab">${lab}</span><div class="twrap ${cls||''}">${esc(txt)}</div></div>`;}
+/* 과제 말풍선 */
+function tipTask(d,t){
+  const rn=t.role?roleName(t.role):'';
+  return tipSet('t:'+t.id,
+    `<div class="th">${t.status==='done'?'✓ ':''}${esc(t.text||'(제목 없음)')}</div>
+     <div class="tm2">${d} (${wd(d)})${t.start?` · ${t.start}${t.end?'–'+t.end:''}`:' · 시간 미배치'}</div>
+     <span class="tchip">${t.priority} 우선순위</span>
+     <span class="tchip">영향도 ${'●'.repeat(t.impact||3)}${'○'.repeat(5-(t.impact||3))}</span>
+     ${rn?`<span class="tchip">${esc(rn)}</span>`:''}
+     ${S.days[d]&&S.days[d].one===t.id?'<span class="tchip">🁢 오늘의 ONE</span>':''}
+     ${tipSec('핵심 성공 요인 (CSF)',t.csf,'tcsf')}
+     ${tipSec('메모',t.memo)}
+     ${!t.csf&&!t.memo?'<div class="tsec" style="opacity:.6;font-size:11.5px">🎯 를 눌러 핵심 성공 요인을 적어두면 여기에 함께 보입니다.</div>':''}`);}
+/* 일정 말풍선 */
+function tipEvent(d,e,isRec){
+  return tipSet('e:'+e.id,
+    `<div class="th">${esc(e.title||'(제목 없음)')}</div>
+     <div class="tm2">${d} (${wd(d)}) · ${e.start}–${e.end}${isRec?' · 반복':''}${e.gEventId?' · 구글 연결':''}</div>
+     ${e.role?`<span class="tchip">${esc(roleName(e.role))}</span>`:''}
+     ${tipSec('핵심 성공 요인 (CSF)',e.csf,'tcsf')}
+     ${tipSec('메모',e.memo)}`);}
+/* 수업 말풍선 */
+function tipLesson(x){
+  const l=K().logs[x.key]||{};
+  return tipSet('k:'+x.key,
+    `<div class="th">${esc(x.g)} · ${x.no}차시</div>
+     <div class="tm2">${x.date} (${wd(x.date)}) ${x.p}교시 ${x.start}–${x.end}${x.room?' · '+esc(x.room):''}</div>
+     ${x.swap?`<span class="tchip">${wd(x.date)}→${KDOW[x.swap.use]}요일 시간표</span>`:''}
+     ${x.mv?`<span class="tchip">${x.mv.k==='add'?'보강':'이동 ←'+x.mv.fd+' '+x.mv.fp+'교시'}</span>`:''}
+     ${l.done?'<span class="tchip">✓ 기록 완료</span>':''}
+     ${tipSec('진도',l.prog)}
+     ${tipSec('수업 방법·특이사항',l.note)}
+     ${tipSec('결시·비고',l.absent)}
+     ${!l.prog&&!l.note?'<div class="tsec" style="opacity:.6;font-size:11.5px">눌러서 진도를 적어두면 여기에 보입니다.</div>':''}`);}
+
 /* ============ INIT ============ */
 (function init(){const had=load();if(!S.view)S.view='dash';
   (S.profile.roles||[]).forEach((r,i)=>{if(!r.color)r.color=ROLE_COLOR_MAP[r.name]||ROLE_PALETTE[i%ROLE_PALETTE.length];});
@@ -4197,6 +4321,7 @@ function kReviewCard(){                           /* 주간 회고용 */
   renderNav();render();refreshWho();setSave(had?'불러옴 · '+(S.meta.savedAt||''):'자동저장 켜짐');
   try{stampTick();}catch(e){}          /* 도장 캐시 초기화 (첫 호출은 기록만) */
   try{utInit();}catch(e){}
+  try{tipInit();}catch(e){}
   try{paintCloud();cloudAutoOpen();}catch(e){}
   checkReminders();setInterval(checkReminders,30000);
   let rz=null;window.addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(alignPanels,120);});})();
