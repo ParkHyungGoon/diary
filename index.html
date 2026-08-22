@@ -430,6 +430,7 @@
   table.tt td.tc input:hover{border-color:var(--line)}
   table.tt td.tc input.rm{margin-top:3px;font-weight:500;font-size:11px;color:var(--muted)}
   .cnum{display:inline-block;min-width:34px;font-weight:800;color:var(--brand-d)}
+  .mvb{display:inline-block;background:var(--brand);color:#fff;border-radius:5px;padding:1px 6px;font-size:10.5px;font-weight:800;margin-left:3px}
   .swp{display:inline-block;background:var(--gold);color:#fff;border-radius:5px;padding:1px 6px;font-size:10.5px;font-weight:800}
   .chk{width:24px;height:24px;border-radius:7px;border:2px solid #cfd4e0;background:#fff;cursor:pointer;font-weight:900;
     color:var(--muted);font-size:12px;line-height:1;padding:0;flex:none}
@@ -3631,13 +3632,13 @@ const KPERIODS=[['09:00','09:50'],['10:00','10:50'],['11:00','11:50'],['12:00','
 function kBlank(){return{on:false,importedAt:'',
   term:{name:'',start:'',end:''},
   periods:KPERIODS.map((x,i)=>({p:i+1,s:x[0],e:x[1]})),
-  tt:[],colors:{},off:[],swap:[],logs:{},ui:{g:'',tab:'today'}};}
+  tt:[],colors:{},off:[],swap:[],moves:[],logs:{},ui:{g:'',tab:'today'}};}
 function kFix(){
   const b=kBlank(); const k=Object.assign(b,S.klass||{});
   k.term=Object.assign(b.term,k.term||{}); k.ui=Object.assign(b.ui,k.ui||{});
   if(!Array.isArray(k.periods)||!k.periods.length)k.periods=b.periods;
   k.periods=k.periods.map((p,i)=>({p:i+1,s:p.s||'09:00',e:p.e||'09:50'}));
-  ['tt','off','swap'].forEach(f=>{if(!Array.isArray(k[f]))k[f]=[];});
+  ['tt','off','swap','moves'].forEach(f=>{if(!Array.isArray(k[f]))k[f]=[];});
   if(!k.colors||typeof k.colors!=='object')k.colors={};
   if(!k.logs||typeof k.logs!=='object')k.logs={};
   S.klass=k; return k;}
@@ -3647,6 +3648,21 @@ function kOn(){return !!(K().on&&kReady());}
 function kPerOf(p){return K().periods.find(x=>x.p===p)||{p:p,s:'',e:''};}
 function kOffMap(){const m={};(K().off||[]).forEach(o=>{if(o.d)m[o.d]=o.t||'휴업일';});return m;}
 function kSwapMap(){const m={};(K().swap||[]).forEach(o=>{if(o.d&&o.use>=1&&o.use<=5)m[o.d]=o;});return m;}
+/* 교시 단위 수업 이동·취소·보강 — k='move'|'off'|'add' */
+function kMoveOut(){const m={};(K().moves||[]).forEach(o=>{
+  if((o.k==='move'||o.k==='off')&&o.fd&&o.fp)m[o.fd+'|'+o.fp]=o;});return m;}
+function kMoveIn(){const m={};(K().moves||[]).forEach(o=>{
+  if((o.k==='move'||o.k==='add')&&o.td&&o.tp)(m[o.td]=m[o.td]||[]).push(o);});return m;}
+function kSlotAt(d,p){const sp=kSwapMap()[d];
+  const dow=sp?sp.use:parseD(d).getDay();
+  if(dow<1||dow>5)return null;
+  return K().tt.find(x=>x.d===dow&&x.p===p)||null;}
+function kMoveLabel(o){
+  const f=o.fd?`${o.fd.slice(5)}(${wd(o.fd)}) ${o.fp}교시`:'';
+  const t=o.td?`${o.td.slice(5)}(${wd(o.td)}) ${o.tp}교시`:'';
+  if(o.k==='move')return f+' → '+t;
+  if(o.k==='off')return f+' 수업 없음';
+  return t+' 보강';}
 function kGroups(){const k=K(),seen=[];
   k.tt.slice().sort((a,b)=>a.d-b.d||a.p-b.p).forEach(x=>{const n=(x.g||'').trim();if(n&&seen.indexOf(n)<0)seen.push(n);});
   return seen.sort((a,b)=>a.localeCompare(b,'ko',{numeric:true}));}
@@ -3654,26 +3670,43 @@ function kColor(g){const k=K(); if(k.colors[g])return k.colors[g];
   const i=kGroups().indexOf(g); return KPAL[(i<0?0:i)%KPAL.length];}
 
 /* 차시 계산 — 같은 입력이면 다시 세지 않는다(시간표 렌더가 잦다) */
-let KCACHE={sig:'',map:{}};
-function kSig(){const k=K();return JSON.stringify([k.term,k.tt,k.off,k.swap,k.periods]);}
-function kLessons(g){
-  const sig=kSig(); if(KCACHE.sig!==sig){KCACHE={sig:sig,map:{}};}
-  if(KCACHE.map[g])return KCACHE.map[g];
-  const out=[],k=K();
-  if(!kReady()){KCACHE.map[g]=out;return out;}
-  const off=kOffMap(), sw=kSwapMap(), slots=k.tt.filter(x=>(x.g||'').trim()===g);
-  if(!slots.length){KCACHE.map[g]=out;return out;}
-  let d=k.term.start, guard=0, n=0;
-  while(d<=k.term.end && guard++<2000){
-    const real=parseD(d).getDay(), sp=sw[d], dow=sp?sp.use:real;
-    if(dow>=1&&dow<=5&&!off[d]){
-      slots.filter(x=>x.d===dow).sort((a,b)=>a.p-b.p).forEach(x=>{
-        const pe=kPerOf(x.p); n++;
-        out.push({no:n,date:d,p:x.p,room:x.room||'',g:g,start:pe.s,end:pe.e,
-          key:g+'|'+d+'|'+x.p, swap:sp?{real:real,use:sp.use,t:sp.t||''}:null});});
+let KCACHE={sig:'',days:null,map:{}};
+function kSig(){const k=K();return JSON.stringify([k.term,k.tt,k.off,k.swap,k.moves,k.periods]);}
+function kDayMap(){
+  const sig=kSig(); if(KCACHE.sig!==sig)KCACHE={sig:sig,days:null,map:{}};
+  if(KCACHE.days)return KCACHE.days;
+  const days={}, k=K();
+  if(kReady()){
+    const off=kOffMap(), sw=kSwapMap(), mo=kMoveOut(), mi=kMoveIn();
+    let d=k.term.start, guard=0;
+    while(d<=k.term.end && guard++<2000){
+      let arr=[];
+      if(!off[d]){
+        const sp=sw[d], dow=sp?sp.use:parseD(d).getDay();
+        if(dow>=1&&dow<=5)arr=k.tt.filter(x=>x.d===dow&&(x.g||'').trim()&&!mo[d+'|'+x.p])
+          .map(x=>({g:(x.g||'').trim(),p:x.p,room:x.room||'',sp:sp||null,mv:null}));
+        (mi[d]||[]).forEach(o=>{
+          let g='',room='';
+          if(o.k==='add'){g=(o.g||'').trim();}
+          else{const s=kSlotAt(o.fd,o.fp); if(s){g=(s.g||'').trim();room=s.room||'';}}
+          if(g)arr.push({g:g,p:o.tp,room:room,sp:sp||null,mv:o});});
+        arr.sort((a,b)=>a.p-b.p);
+      }
+      days[d]=arr; d=addDays(d,1);
     }
-    d=addDays(d,1);
   }
+  KCACHE.days=days; return days;}
+function kLessons(g){
+  if(!kReady())return [];
+  const dm=kDayMap(); if(KCACHE.map[g])return KCACHE.map[g];
+  const out=[]; let n=0;
+  Object.keys(dm).sort().forEach(d=>{
+    dm[d].filter(x=>x.g===g).forEach(x=>{
+      const pe=kPerOf(x.p); n++;
+      out.push({no:n,date:d,p:x.p,room:x.room,g:g,start:pe.s,end:pe.e,
+        key:g+'|'+d+'|'+x.p,
+        swap:x.sp?{real:parseD(d).getDay(),use:x.sp.use,t:x.sp.t||''}:null,
+        mv:x.mv||null});});});
   KCACHE.map[g]=out; return out;}
 function kLessonsOn(d){const out=[];
   if(!kReady())return out;
@@ -3694,7 +3727,7 @@ function openLesson(key){
   const l=kLog(key);
   modalBox(`<h3 style="margin:0 0 4px">📚 ${esc(x.g)} <span class="tag" style="background:${kColor(x.g)}">${x.no}차시</span></h3>
     <div class="hint" style="margin-bottom:10px"><b>${x.date} (${wd(x.date)})</b> ${x.p}교시 ${x.start}–${x.end}
-      ${x.room?' · '+esc(x.room):''}${x.swap?` · <span style="color:var(--gold);font-weight:800">${wd(x.date)}→${KDOW[x.swap.use]}요일 시간표</span>`:''}</div>
+      ${x.room?' · '+esc(x.room):''}${x.swap?` · <span style="color:var(--gold);font-weight:800">${wd(x.date)}→${KDOW[x.swap.use]}요일 시간표</span>`:''}${x.mv?` · <span style="color:var(--brand);font-weight:800">${x.mv.k==='add'?'보강':'이동 ←'+x.mv.fd+' '+x.mv.fp+'교시'}</span>`:''}</div>
     <label class="fld"><span class="lb">진도 (단원 · 학습 내용)</span>
       <input type="text" id="klProg" value="${esc(l.prog||'')}" placeholder="예: 2단원 운동량 보존 — 충돌 실험"></label>
     <label class="fld"><span class="lb">수업 방법 · 특이사항</span>
@@ -3737,7 +3770,7 @@ function kRow(x,showG){
   const cls=(l.done?'done ':'')+(x.date===today()?'today ':'');
   return `<tr class="${cls}">
     <td class="c"><span class="cnum">${x.no}차시</span></td>
-    <td class="c">${x.date.slice(5)} ${x.swap?`<span class="swp">${wd(x.date)}→${KDOW[x.swap.use]}</span>`:`(${wd(x.date)})`}</td>
+    <td class="c">${x.date.slice(5)} ${x.swap?`<span class="swp">${wd(x.date)}→${KDOW[x.swap.use]}</span>`:`(${wd(x.date)})`}${x.mv?`<span class="mvb" title="${esc(x.mv.t||'수업 이동')}">${x.mv.k==='add'?'보강':'←'+(x.mv.fd?x.mv.fd.slice(5)+' '+x.mv.fp+'교시':'')}</span>`:''}</td>
     <td class="c">${x.p}교시</td>
     ${showG?`<td class="c"><b style="color:${kColor(x.g)}">${esc(x.g)}</b></td>`:''}
     <td>${l.prog?esc(l.prog):'<span class="hint">—</span>'}</td>
@@ -3746,9 +3779,12 @@ function kRow(x,showG){
   </tr>`;}
 function kvToday(el){
   const d=today(), ls=kLessonsOn(d), off=kOffMap()[d], sp=kSwapMap()[d], k=K();
+  const mvT=(k.moves||[]).filter(o=>o.fd===d||o.td===d);
   const done=ls.filter(x=>(k.logs[x.key]||{}).done).length;
   el.innerHTML=`
    ${off?`<div class="callout co-gold"><b>오늘은 «${esc(off)}»로 수업이 없습니다.</b> 이 날은 차시에서 빠지고 이후 차시가 당겨집니다.</div>`:''}
+   ${mvT.length?`<div class="callout co-acc" style="border-width:2px"><b>🔁 오늘은 수업 이동이 있습니다.</b>
+     <div style="margin-top:4px;font-size:12.5px">${mvT.map(o=>esc(kMoveLabel(o))+(o.t?' — '+esc(o.t):'')).join('<br>')}</div></div>`:''}
    ${sp?`<div class="callout co-brand" style="border-width:2px"><b>⚠ 오늘은 요일 교체일 — ${wd(d)}요일이지만 «${KDOW[sp.use]}요일 시간표»로 운영합니다.</b>
      ${sp.t?`<div style="margin-top:4px;font-size:12.5px">${esc(sp.t)}</div>`:''}</div>`:''}
    <div class="card"><h3>오늘의 차시 <span class="hint">(${done}/${ls.length} 기록)</span></h3>
@@ -3867,7 +3903,20 @@ function kvSetup(el){
        <button class="btn sm" onclick="kAddOff()">추가</button>
        <button class="btn ghost sm" onclick="kAddRange()">기간으로 추가</button></div>
    </div>
-   <div class="card"><h3>⑤ 요일 교체 수업 <span class="hint">(${(k.swap||[]).length}일)</span></h3>
+   <div class="card"><h3>⑤ 수업 이동 · 교환 <span class="hint">(교시 단위 · ${(k.moves||[]).length}건)</span></h3>
+     <p class="hint" style="margin-top:-4px">한 교시만 바뀔 때 씁니다. 예: <b>8/18 1교시가 개학식이라 8/19 5교시(창체)와 교환</b>
+       → 그 수업의 차시가 8/19로 옮겨가고 8/18에는 없던 것으로 계산됩니다. 출장으로 한 시간만 빠지면 «수업 없음».</p>
+     <div id="kmvlist"></div>
+     <div style="margin-top:10px;padding-top:10px;border-top:1px dashed var(--line)">
+       <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+         <select id="kmvk" style="max-width:124px" onchange="kMvForm()">
+           <option value="move">이동(교환)</option><option value="off">수업 없음</option><option value="add">보강 추가</option></select>
+         <div id="kmvform" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;flex:1"></div>
+         <button class="btn sm" onclick="kAddMove()">추가</button></div>
+       <div id="kmvhint" class="hint" style="margin-top:6px"></div>
+     </div>
+   </div>
+   <div class="card"><h3>⑥ 요일 교체 수업 <span class="hint">(하루 전체 · ${(k.swap||[]).length}일)</span></h3>
      <p class="hint" style="margin-top:-4px">예: <b>12/30(수)에 금요일 시간표 운영</b> → 그날은 금요일 반들의 차시가 올라갑니다.</p>
      <div id="kswap"></div>
      <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;align-items:center">
@@ -3890,7 +3939,7 @@ function kvSetup(el){
        <input type="checkbox" ${k.on?'checked':''} onchange="K().on=this.checked;save();renderNav();render()" style="width:auto">
        왼쪽 메뉴에 <b>📚 수업 기록</b> 보이기 (교사가 아니면 꺼두세요)</label>
    </div>`;
-  kRenderTT(); kRenderOff(); kRenderSwap();}
+  kRenderTT(); kRenderOff(); kRenderSwap(); kRenderMv(); kMvForm();}
 function kAddPeriod(){const k=K(),last=k.periods[k.periods.length-1]||{e:'09:00'};
   const m=toMin(last.e)+10, s=m2s(m), e=m2s(m+50);
   k.periods.push({p:k.periods.length+1,s:s,e:e});save();render();}
@@ -3961,6 +4010,68 @@ function kAddRange(){
   let d=a,n=0,g=0;
   while(d<=b&&g++<400){const w=parseD(d).getDay(); if(w>=1&&w<=5&&kAddOff(d,t,true))n++; d=addDays(d,1);}
   save();render();toast(n+'일을 휴업일로 추가했습니다');}
+function kPOpts(sel){return K().periods.map(p=>`<option value="${p.p}" ${String(sel)===String(p.p)?'selected':''}>${p.p}교시</option>`).join('');}
+function kMvForm(){
+  const kk=(document.getElementById('kmvk')||{}).value||'move';
+  const f=document.getElementById('kmvform'); if(!f)return;
+  if(kk==='add'){
+    f.innerHTML=`<input type="date" id="kmvtd" style="max-width:155px">
+      <select id="kmvtp" style="max-width:94px">${kPOpts()}</select>
+      <select id="kmvg" style="max-width:160px">${kGroups().map(g=>`<option>${esc(g)}</option>`).join('')}</select>
+      <input type="text" id="kmvt" placeholder="사유" style="flex:1;min-width:120px">`;
+  }else if(kk==='off'){
+    f.innerHTML=`<input type="date" id="kmvfd" style="max-width:155px" onchange="kMvPreview()">
+      <select id="kmvfp" style="max-width:94px" onchange="kMvPreview()">${kPOpts()}</select>
+      <input type="text" id="kmvt" placeholder="사유 (예: 출장)" style="flex:1;min-width:140px">`;
+  }else{
+    f.innerHTML=`<input type="date" id="kmvfd" style="max-width:146px" onchange="kMvPreview()">
+      <select id="kmvfp" style="max-width:90px" onchange="kMvPreview()">${kPOpts()}</select>
+      <span class="hint" style="font-weight:800;flex:none">→</span>
+      <input type="date" id="kmvtd" style="max-width:146px">
+      <select id="kmvtp" style="max-width:90px">${kPOpts()}</select>
+      <input type="text" id="kmvt" placeholder="사유" style="flex:1;min-width:105px">`;
+  }
+  kMvPreview();}
+function kMvPreview(){
+  const h=document.getElementById('kmvhint'); if(!h)return;
+  const fd=(document.getElementById('kmvfd')||{}).value, fp=(document.getElementById('kmvfp')||{}).value;
+  if(!fd||!fp){h.textContent='';return;}
+  const s=kSlotAt(fd,parseInt(fp,10));
+  h.innerHTML=s?`그 시간의 수업: <b>${esc((s.g||'').trim())}</b>`
+   :`<span style="color:#a8681a">그 시간에는 시간표상 수업이 없습니다.</span>`;}
+function kRenderMv(){
+  const el=document.getElementById('kmvlist'); if(!el)return;
+  const mv=(K().moves||[]).slice().sort((a,b)=>String(a.fd||a.td).localeCompare(String(b.fd||b.td)));
+  el.innerHTML=mv.length?mv.map((o,i)=>{
+    const s=o.k==='add'?null:kSlotAt(o.fd,o.fp);
+    const who=o.k==='add'?(o.g||''):(s?(s.g||'').trim():'—');
+    const tag=o.k==='move'?'이동':(o.k==='off'?'수업 없음':'보강');
+    const col=o.k==='move'?'var(--brand)':(o.k==='off'?'var(--del)':'var(--accent)');
+    return `<div class="row-item" style="align-items:center">
+      <span class="tag" style="flex:none;background:${col};margin:0">${tag}</span>
+      <span style="flex:none;width:200px;font-size:12.5px;font-weight:700">${esc(kMoveLabel(o))}</span>
+      <span style="flex:none;width:110px;font-size:12.5px;color:var(--muted)">${esc(who)}</span>
+      <input type="text" value="${esc(o.t||'')}" placeholder="사유" onchange="kEditMv(${i},'t',this.value)">
+      <button class="del-x" onclick="kDelMv(${i})">✕</button></div>`;}).join('')
+    :'<p class="hint">등록된 수업 이동이 없습니다.</p>';}
+function kMvIdx(i){const mv=(K().moves||[]).slice().sort((a,b)=>String(a.fd||a.td).localeCompare(String(b.fd||b.td)));return K().moves.indexOf(mv[i]);}
+function kEditMv(i,f,v){const j=kMvIdx(i);if(j<0)return;K().moves[j][f]=v;save();render();}
+function kDelMv(i){const j=kMvIdx(i);if(j<0)return;K().moves.splice(j,1);save();render();}
+function kAddMove(kk,fd,fp,td,tp,g,t,quiet){
+  const gv=x=>{const e=document.getElementById(x);return e?e.value:'';};
+  kk=kk||gv('kmvk')||'move';
+  fd=fd||gv('kmvfd'); fp=fp||parseInt(gv('kmvfp')||'0',10);
+  td=td||gv('kmvtd'); tp=tp||parseInt(gv('kmvtp')||'0',10);
+  g=g||gv('kmvg'); t=(t!==undefined&&t!==null)?t:gv('kmvt');
+  if(kk==='move'&&(!fd||!fp||!td||!tp)){toast('원래 시간과 옮길 시간을 모두 고르세요');return false;}
+  if(kk==='off'&&(!fd||!fp)){toast('날짜와 교시를 고르세요');return false;}
+  if(kk==='add'&&(!td||!tp||!g)){toast('날짜·교시·반을 고르세요');return false;}
+  if(kk!=='add'&&!quiet&&!kSlotAt(fd,fp)){
+    if(!confirm(fd+' '+fp+'교시에는 시간표상 수업이 없습니다.\n그래도 추가할까요?'))return false;}
+  if((K().moves||[]).some(o=>o.k===kk&&o.fd===fd&&o.fp===fp&&o.td===td&&o.tp===tp)){if(!quiet)toast('이미 등록된 항목입니다');return false;}
+  K().moves.push({k:kk,fd:fd||'',fp:fp||0,td:td||'',tp:tp||0,g:g||'',t:t||''});
+  if(!quiet){save();render();toast('반영했습니다 — 이후 차시가 조정되었습니다');}
+  return true;}
 function kRenderSwap(){const el=document.getElementById('kswap'); if(!el)return;
   const sw=(K().swap||[]).slice().sort((a,b)=>String(a.d).localeCompare(String(b.d)));
   el.innerHTML=sw.length?sw.map((o,i)=>`<div class="row-item">
@@ -3991,8 +4102,8 @@ function kExportCSV(){
   const rows=[['교사',S.profile.name||'','학기',k.term.name||''],[],
     ['반·강좌','차시','날짜','요일','교시','시작','종료','장소','진도','수업 방법·특이사항','결시·비고','완료']];
   gs.forEach(g=>kLessons(g).forEach(x=>{const l=k.logs[x.key]||{};
-    rows.push([g,x.no,x.date,wd(x.date)+(x.swap?'('+KDOW[x.swap.use]+'시간표)':''),x.p+'교시',x.start,x.end,x.room||'',
-      l.prog||'',l.note||'',l.absent||'',l.done?'O':'']);}));
+    rows.push([g,x.no,x.date,wd(x.date)+(x.swap?'('+KDOW[x.swap.use]+'시간표)':'')+(x.mv?(x.mv.k==='add'?'(보강)':'(이동 ←'+x.mv.fd+' '+x.mv.fp+'교시)'):''),
+      x.p+'교시',x.start,x.end,x.room||'',l.prog||'',l.note||'',l.absent||'',l.done?'O':'']);}));
   const csv='﻿'+rows.map(r=>r.map(kCsvCell).join(',')).join('\r\n');
   const b=new Blob([csv],{type:'text/csv;charset=utf-8;'});
   const a=document.createElement('a');a.href=URL.createObjectURL(b);
@@ -4001,7 +4112,7 @@ function kExportJSON(){
   const k=K();
   const out={meta:{savedAt:new Date().toLocaleString('ko-KR'),v:2},
     school:{name:'',teacher:S.profile.name||''},
-    term:k.term,periods:k.periods,tt:k.tt,colors:k.colors,off:k.off,swap:k.swap,logs:k.logs,
+    term:k.term,periods:k.periods,tt:k.tt,colors:k.colors,off:k.off,swap:k.swap,moves:k.moves,logs:k.logs,
     view:'today',ui:{g:k.ui.g||''}};
   const b=new Blob([JSON.stringify(out,null,2)],{type:'application/json'});
   const a=document.createElement('a');a.href=URL.createObjectURL(b);
@@ -4019,8 +4130,9 @@ function kImportJSON(e){
       if(Array.isArray(j.periods)&&j.periods.length)k.periods=j.periods.map((p,i)=>({p:i+1,s:p.s||'09:00',e:p.e||'09:50'}));
       k.tt=Array.isArray(j.tt)?j.tt:[]; k.colors=j.colors||{};
       k.off=Array.isArray(j.off)?j.off:[]; k.swap=Array.isArray(j.swap)?j.swap:[];
+      k.moves=Array.isArray(j.moves)?j.moves:[];
       k.logs=j.logs||{}; k.on=true; k.importedAt=new Date().toISOString();
-      KCACHE={sig:'',map:{}}; save(); renderNav(); render();
+      KCACHE={sig:'',days:null,map:{}}; save(); renderNav(); render();
       toast('수업 기록을 가져왔습니다 — 반 '+kGroups().length+'개');
     }catch(err){ alert('가져오기 실패: 수업차시누가기록 백업 파일이 맞는지 확인해 주세요.'); } };
   r.readAsText(f); e.target.value='';}
@@ -4034,7 +4146,7 @@ function kScheduleBlocks(d){                      /* 일간 계획 시간표에 
       title="${esc(x.g)} ${x.no}차시${l.prog?' — '+esc(l.prog):''}"
       style="${st};background:${c.bg};color:${c.fg};border:2px solid ${base};cursor:pointer">
       <span class="klno" style="background:${base}">${x.no}</span>
-      <span class="tm" style="color:${c.fg}">${x.start} · ${x.p}교시${l.done?' ✓':''}</span>
+      <span class="tm" style="color:${c.fg}">${x.start} · ${x.p}교시${x.mv?(x.mv.k==='add'?' 보강':' 이동'):''}${l.done?' ✓':''}</span>
       <span class="ttl" style="${l.done?DONE_BLK:''}">${esc(x.g)}</span>
       ${l.prog?`<span class="klp">${esc(l.prog)}</span>`:''}</div>`};
   });}
