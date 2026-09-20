@@ -512,6 +512,125 @@
     .card{box-shadow:none;break-inside:avoid}
     body{background:#fff}
   }
+  /* ── 오늘의 약속 (끝낼 것 · 시작할 것 · 바로 할 것) ───────────────────
+     ChatGPT 대화의 제안을 옮긴 핵심 화면. 완료가 아니라 '착수'를 성공으로 센다. */
+  .promise{border-left:4px solid var(--brand)}
+  .phd{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;font-weight:800;font-size:15px;color:var(--brand-d);margin-bottom:10px}
+  .phd .hint{font-weight:600}
+  .pslots{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  @media(max-width:900px){.pslots{grid-template-columns:1fr}}
+  .pslot{border:1px solid var(--line);border-radius:12px;padding:9px 10px;background:#fcfcff;
+    display:flex;flex-direction:column;gap:6px;min-height:112px}
+  .pslot.s-end{border-color:#e8dfba;background:#fffdf4}
+  .pslot.s-start{border-color:#cfe6e2;background:#f6fcfb}
+  .pslot.s-quick{border-color:#dcd9f2;background:#fbfaff}
+  .pslot.started{box-shadow:inset 4px 0 0 var(--prog)}
+  .pslot.done{box-shadow:inset 4px 0 0 var(--done)}
+  .plab{font-size:11px;font-weight:700;letter-spacing:.2px;color:var(--muted);display:flex;justify-content:space-between;gap:6px;align-items:baseline}
+  .plab b{color:var(--ink);font-size:12px}
+  .ptxt{font-size:13.5px;font-weight:700;line-height:1.35;word-break:break-word}
+  .pslot.done .ptxt{color:var(--brand-d);text-decoration:underline;text-decoration-color:var(--done);
+    text-decoration-thickness:3px;text-underline-offset:3px}
+  .pline{display:flex;gap:5px;align-items:center;font-size:11.5px;color:var(--muted)}
+  .pline .pk{flex:none;width:40px;font-weight:800;color:#8a8fa0}
+  .pline select,.pline input{flex:1;min-width:0;font-size:11.5px;padding:3px 5px;border:1px solid var(--line);
+    border-radius:6px;background:#fff;font-family:inherit;color:var(--ink)}
+  .pline input:focus,.pline select:focus{border-color:var(--brand);box-shadow:0 0 0 2px rgba(91,83,176,.12);outline:none}
+  .pcueTxt{flex:1;min-width:0;font-size:11.5px;color:#4a5261;background:#fff;border:1px dashed var(--line);border-radius:6px;padding:3px 6px}
+  .pact{display:flex;gap:5px;align-items:center;margin-top:auto;flex-wrap:wrap;padding-top:3px}
+  .p3{flex:none;border:1px solid var(--line);background:#fff;border-radius:8px;font-size:11.5px;font-weight:800;
+    padding:4px 10px;cursor:pointer;font-family:inherit;color:#6b7280}
+  .p3.st{background:#e8f0fa;border-color:#b9d3ee;color:var(--prog)}
+  .p3.dn{background:var(--done);border-color:var(--done);color:#fff}
+  .pempty{font-size:12px;color:var(--muted)}
+  .pxtra{display:flex;flex-wrap:wrap;gap:4px}
+  .pxtra span{font-size:10.5px;background:#eef0f6;color:#5b6070;border-radius:6px;padding:2px 6px;font-weight:700}
+  .pwarn{margin-top:10px;font-size:12.5px;background:#fdf6e3;border:1px solid #e3d5b0;color:#6f5a20;
+    border-radius:10px;padding:8px 11px;line-height:1.55}
+  /* 착수 3단계 버튼 · 유형 배지 */
+  .tdone.mid{background:#e8f0fa;border-color:#b9d3ee;color:var(--prog)}
+  .tbadge{flex:none;font-size:9.5px;font-weight:800;border-radius:5px;padding:2px 4px;line-height:1.3;
+    white-space:nowrap;letter-spacing:-.3px;color:#fff}
+  .trow.started{background:#f2f7fd;box-shadow:inset 3px 0 0 var(--prog)}
+  /* 모드 칩 */
+  .modechip{border:1px solid var(--line);background:#fff;border-radius:8px;padding:5px 10px;font-size:12px;
+    font-weight:700;cursor:pointer;font-family:inherit;color:var(--brand-d);white-space:nowrap}
+  .modechip.design{background:var(--brand-soft);border-color:#d6d1f2}
+  /* 저녁 리추얼 — 오늘 닫기 / 내일 열기 구분선 */
+  .rsplit{margin:0 0 14px;text-align:center}
+  .rsplit span{display:inline-block;background:var(--brand-soft);color:var(--brand-d);border-radius:20px;
+    padding:5px 15px;font-size:11.5px;font-weight:800;letter-spacing:.3px}
+  /* 협상 문장 */
+  .negrow{display:flex;gap:8px;align-items:center;font-size:12.5px;margin:6px 0}
+  .negrow .nk{flex:0 0 42%;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .negrow .nb{flex:1;height:9px;background:#eef0f6;border-radius:5px;overflow:hidden}
+  .negrow .nb i{display:block;height:100%;background:var(--gold)}
+  .negrow .nn{flex:none;width:34px;text-align:right;color:var(--muted);font-weight:700}
+  /* ── 과제 이동 · 실행 시간순 보기 ── */
+  .rchip{flex:none;min-width:20px;height:19px;padding:0 3px;border-radius:6px;border:none;color:#fff;
+    font-size:10.5px;font-weight:800;line-height:1;cursor:pointer;font-family:inherit;letter-spacing:-.5px}
+  .rchip:hover{filter:brightness(1.12);box-shadow:0 0 0 2px rgba(91,83,176,.2)}
+  .rgrp.tmode{border-top:none}
+  .rrows.dragover{background:#f4f2fd;outline:2px dashed #c8c2ee;outline-offset:-3px}
+  .trow.dropbefore{box-shadow:inset 0 3px 0 var(--brand)}
+  .tsep{flex:none;display:flex;align-items:center;gap:6px;padding:3px 8px;font-size:10px;font-weight:800;
+    color:var(--muted);background:#f7f8fc;border-bottom:1px dotted #e9ecf3;letter-spacing:.3px}
+  .rlab{cursor:default}
+  @media(max-width:720px){.rchip{min-width:18px;height:18px;font-size:10px}}
+  /* ── 주간 개요 (엑셀 '1주' 시트 양식: 7일 × [끝낼 것 · To-do · 시간표]) ── */
+  .wkw{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .wkgrid{display:grid;grid-template-columns:34px repeat(7,minmax(112px,1fr));
+    border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#fff;min-width:880px}
+  .wkc{border-left:1px solid var(--line);border-top:1px solid var(--line);min-width:0}
+  .wkc.f{border-left:none}
+  .wkgrid>.wkc.r1{border-top:none}
+  .wkhd{padding:4px 5px;font-size:11.5px;font-weight:800;text-align:center;background:#f3f1fb;
+    color:var(--brand-d);cursor:pointer;line-height:1.2}
+  .wkhd:hover{filter:brightness(.97)}
+  .wkhd.tod{background:var(--brand);color:#fff}
+  .wkhd.sun{color:#b23a55}.wkhd.sat{color:#2f6db3}
+  .wkhd.tod.sun,.wkhd.tod.sat{color:#fff}
+  .wkhd small{display:block;font-size:9px;font-weight:700;opacity:.85;margin-top:1px}
+  .wklab{font-size:9.5px;font-weight:800;color:var(--muted);text-align:center;background:#fafbff;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;padding:3px 1px;
+    letter-spacing:-.5px;line-height:1.25}
+  .wkbox{padding:3px 4px;display:flex;flex-direction:column;gap:2px;min-height:24px;max-height:138px;overflow:auto}
+  .wkbox::-webkit-scrollbar{width:4px}.wkbox::-webkit-scrollbar-thumb{background:#dfe3ec;border-radius:3px}
+  .wkbox.one{background:#fffdf4;min-height:30px}
+  .wkitem{display:flex;gap:3px;align-items:center;cursor:pointer;line-height:1.25;border-radius:5px;
+    padding:1px 2px;font-size:10.5px}
+  .wkitem:hover{background:#f1f3fa}
+  .wkitem .k{flex:none;min-width:15px;height:14px;border-radius:4px;color:#fff;font-size:9px;font-weight:800;
+    display:flex;align-items:center;justify-content:center;padding:0 2px;letter-spacing:-.5px}
+  .wkitem .x{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .wkitem.dn .x{font-weight:800;color:var(--brand-d);text-decoration:underline;
+    text-decoration-color:var(--done);text-decoration-thickness:2px;text-underline-offset:2px}
+  .wkitem.stt .x{color:var(--prog);font-weight:700}
+  .wkadd{border:none;background:transparent;font-size:10.5px;width:100%;padding:1px 2px;outline:none;
+    font-family:inherit;color:inherit}
+  .wkadd::placeholder{color:#ccd0dc}
+  .wkadd:focus{background:#f1f3fa;border-radius:5px}
+  .wklane{position:relative;height:380px;overflow:hidden}
+  .wkrul{position:relative;height:380px;background:#fafbff}
+  .wkrul i{position:absolute;left:0;right:0;font-size:9px;color:#9aa1b0;font-style:normal;text-align:center;line-height:1}
+  .wkhr{position:absolute;left:0;right:0;border-top:1px dotted #edeff6}
+  .wkb{position:absolute;border-radius:4px;font-size:9px;font-weight:700;padding:0 3px;overflow:hidden;
+    line-height:1.2;cursor:pointer;border-left:3px solid;white-space:nowrap;text-overflow:ellipsis}
+  .wkft{padding:3px 4px;font-size:9.5px;text-align:center;color:var(--muted);background:#fafbff;line-height:1.3}
+  .wkbadge{display:inline-block;background:var(--gold);color:#fff;border-radius:4px;padding:0 4px;
+    font-size:8.5px;font-weight:800;margin-left:2px;vertical-align:middle}
+  .wkrock{display:flex;flex-wrap:wrap;gap:6px;margin:2px 0 4px}
+  .wkrock span{display:flex;align-items:center;gap:4px;font-size:11.5px;background:#f7f8fc;
+    border:1px solid var(--line);border-radius:8px;padding:2px 8px}
+  .wkrock b{min-width:15px;height:15px;border-radius:4px;color:#fff;font-size:9px;font-weight:800;
+    display:flex;align-items:center;justify-content:center;padding:0 2px}
+  @media print{.wkgrid{min-width:0}.wkw{overflow:visible}}
+  /* ── 반복 표시 ── */
+  .rmk{flex:none;font-size:11px;color:#8792a3;cursor:pointer;line-height:1;padding:0 1px;user-select:none}
+  .rmk:hover{color:var(--brand)}
+  .recrow{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:7px 0;border-bottom:1px dotted var(--line)}
+  .recrow:last-child{border-bottom:none}
+  .recrow.off{opacity:.5}
 </style>
 </head>
 <body>
@@ -521,6 +640,7 @@
     <div class="topbar">
       <div class="who" id="who">이름을 설정하세요</div>
       <div class="tools">
+        <span id="modeslot"></span>
         <span class="save" id="save"></span>
         <button class="tbtn cloudchip" id="cloudchip" onclick="cloudChipClick()">☁</button>
         <button class="tbtn" style="background:var(--brand);color:#fff;border-color:var(--brand)" onclick="ritualStart()">⏱ 3분 리추얼</button>
@@ -618,10 +738,10 @@ function blank(){return{
   focusLog:{},
   settings:{gClientId:"",gcalId:"primary",autoCloud:false,cloudSyncedAt:"",ai:{prov:"copy",key:"",model:""},
     autoRitual:true, amTime:"07:00", pmTime:"21:30", amUntil:12, pmFrom:18,
-    restDay:-1, reviewDay:0, dailyCap:0, utShow:true, utOpen:true, hideDupG:true},
+    restDay:-1, reviewDay:0, dailyCap:0, utShow:true, utOpen:true, hideDupG:true, mode:"auto"},
   usage:{total:0, byView:{}, byDay:{}},
   klass:null,                      /* 교사용 수업 기록 모듈 — kFix()가 채운다 */
-  view:"dash", ui:{month:"", week:"", day:"", book:"", navOpen:{}, lcYear:0}
+  view:"dash", ui:{month:"", week:"", day:"", book:"", navOpen:{}, lcYear:0, taskSort:"role"}
 };}
 function save(){ try{ S.meta.savedAt=new Date().toLocaleString('ko-KR'); localStorage.setItem(KEY,JSON.stringify(S)); setSave("자동저장됨 "+S.meta.savedAt);}catch(e){ setSave("자동저장 불가 — 백업을 사용하세요"); } try{stampSchedule();}catch(e){} }
 /* 얕은 병합(Object.assign) 때문에 새로 추가된 하위 키는 기존 사용자 데이터에서 사라집니다.
@@ -645,6 +765,14 @@ function migrate(){
   if(!S.meta.devId)S.meta.devId='dev'+Math.abs(Math.floor(Math.random()*1e9)).toString(36)+Date.now().toString(36).slice(-4);
   if(!S.meta.updatedAt)S.meta.updatedAt=Date.now();
   ['reading','ideas','recurring','reminders'].forEach(k=>{(S[k]||[]).forEach(x=>{if(x&&!x.id)x.id=uid();});});
+  /* 반복 항목 — 구버전(일정 전용·가상 표시)에서 실체화 방식으로 올린다 */
+  (S.recurring||[]).forEach(r=>{ if(!r)return;
+    if(!r.kind)r.kind='event';
+    if(!Array.isArray(r.days)||!r.days.length)r.days=[(r.byday==null?1:r.byday)];
+    if(!r.from)r.from=weekStart(today());      /* 지난 날짜를 거슬러 만들지는 않는다 */
+    if(r.until==null)r.until='';
+    if(!r.anchor)r.anchor=weekStart(r.from);
+    if(r.off==null)r.off=false;});
   ((S.lifemap||{}).dreams||[]).forEach(x=>{if(x&&!x.id)x.id=uid();});
   ((S.annual||{}).goals||[]).forEach(x=>{if(x&&!x.id)x.id=uid();});
   try{kFix();}catch(e){}
@@ -698,7 +826,11 @@ const NAV=[
  {id:"gsync",t:"구글 연동",e:"🔗"},
  {id:"stats",t:"성찰·통계",e:"📊"},
 ];
-function navOpen(k){const o=(S.ui&&S.ui.navOpen)||{};return o[k]!==false;}
+function navOpen(k){const o=(S.ui&&S.ui.navOpen)||{};
+  /* 실행 모드에서는 설계 단계를 기본으로 접는다 — 아침의 판단 요소를 줄이기 위해서.
+     사용자가 한 번이라도 직접 펼치거나 접으면 그 선택이 우선한다. */
+  if(o[k]===undefined&&k==='found'&&curMode()==='do')return false;
+  return o[k]!==false;}
 function toggleNavGrp(k){if(!S.ui.navOpen)S.ui.navOpen={};S.ui.navOpen[k]=!navOpen(k);save();renderNav();}
 let MNAV=false;
 function toggleMobileNav(){MNAV=!MNAV;renderNav();}
@@ -715,6 +847,7 @@ function renderNav(){
      const hide=!navOpen(cur)&&S.view!==n.id;
      return hide?'':`<button class="navi ${S.view===n.id?'on':''}" onclick="go('${n.id}');MNAV=false"><span class="em">${n.e}</span>${n.t}</button>`;
    }).join('');
+  try{const ms=document.getElementById('modeslot'); if(ms)ms.innerHTML=modeChipHtml();}catch(e){}
 }
 function go(v){ try{utSwitch(v);}catch(e){} S.view=v; save(); renderNav(); render(); window.scrollTo(0,0); try{utPaint();}catch(e){} }
 function refreshWho(){ document.getElementById('who').innerHTML = S.profile.name? `<b>${esc(S.profile.name)}</b> 님의 다이어리` : '이름을 설정하세요 (인생 설계 →)'; }
@@ -745,6 +878,7 @@ function vDash(v){
    ${reviewBanner()}
    ${ritualBanner()}
    ${nudgeCard()}
+   ${promiseMini(d)}
    ${quoteCard(d)}
    <div class="grid2" style="margin-top:16px">
      <div class="card"><h3>오늘의 핵심 과제</h3>
@@ -967,11 +1101,7 @@ function vWeek(v){
        <input type="text" value="${esc((wk.rocks||{})[r.id]||'')}" placeholder="이번 주 이 역할의 큰 바위" oninput="setRock('${ws}','${r.id}',this.value)"></div>`).join('')}
      <button class="btn ghost sm no-print" style="margin-top:6px" onclick="pushWeekPlan('${ws}')">☁ 이 주 계획 구글 캘린더에 추가(월~일 종일)</button>
    </div>
-   <div class="card"><h3>주간 개요</h3>
-     <div class="grid3">${days.map(ds=>{const day=S.days[ds];const n=day&&day.tasks?day.tasks.length:0;const dn=day&&day.tasks?day.tasks.filter(t=>t.status==='done').length:0;
-       return `<div class="list-item" style="cursor:pointer" onclick="openDay('${ds}')"><div class="li-h"><span class="li-t">${ds.slice(5)} (${wd(ds)})</span><span class="li-m">${dn}/${n}</span></div>
-         <div class="li-m">${day&&day.tasks&&day.tasks[0]?esc(day.tasks[0].text):'계획 없음'}</div></div>`;}).join('')}</div>
-   </div>
+   <div class="card" id="wkov">${wkOverview(ws)}</div>
    <div class="card"><h3>주 성찰</h3>
      <label class="fld"><span class="lb">이번 주 잘된 점 · 배움</span><textarea oninput="setWeek('${ws}','good',this.value)">${esc(wk.good)}</textarea></label>
      <label class="fld"><span class="lb">다음 주 조정</span><textarea oninput="setWeek('${ws}','next',this.value)">${esc(wk.next)}</textarea></label></div>
@@ -993,18 +1123,21 @@ function vDay(v){
      <input type="date" value="${d}" onchange="S.ui.day=this.value;save();vDay(document.getElementById('view'))" style="max-width:170px">
      <button class="btn ghost sm" onclick="shiftDay(1)">내일 ›</button>
      <b>${wd(d)}요일</b> ${d===today()?'<span class="tag" style="background:var(--accent)">오늘</span>':''}</div></div>
-   ${chainToDay(d)}
+   ${curMode()==='do'?chainFold(d):chainToDay(d)}
    ${quoteCard(d)}
    <div id="oneslot" style="margin-top:16px"></div>
    <div class="grid2" style="margin-top:16px">
      <div class="card"><h3>우선순위 과제 <span class="hint">(A 반드시 · B 하면좋음 · C 여유되면 · 막대=영향도)</span></h3>
        ${calibHtml(d)}
        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px">
+         <button class="btn ghost sm no-print" onclick="setTaskSort('${taskSortMode()==='time'?'role':'time'}')"
+           title="실행 시간순 — 항목 경계를 없애고 하루의 흐름대로 세웁니다. 항목은 색+앞글자 배지로 남습니다">${taskSortMode()==='time'?'🎭 항목별로 보기':'⏱ 실행 시간순으로'}</button>
          <button class="btn ghost sm no-print" onclick="recommendOne('${d}')">🁢 영향도로 원씽 추천</button>
          <button class="btn ghost sm no-print" onclick="carryOver('${d}')">↪ 미완료 이월</button>
          <button class="btn ghost sm no-print" onclick="pushDayTasks('${d}')">☁ 캘린더에(종일)</button>
        </div>
-       <div class="synchint" style="margin-bottom:6px">⠿ 를 잡아 오른쪽 시간표로 <b>드래그</b>하면 그 시각에 배치됩니다 (5분 단위) · 막대 클릭 = 영향도(1~5) · 🁢 = 오늘의 선두 도미노</div>
+       <div class="synchint" style="margin-bottom:6px">⠿ 를 잡아 오른쪽 <b>시간표</b>로 끌면 그 시각에 배치되고, <b>다른 항목 칸</b>으로 끌면 항목이 바뀝니다 (같은 칸 안에서는 순서 이동) · 막대 클릭 = 영향도(1~5) · 🁢 = 선두 도미노<br>
+         «⏱ 실행 시간순»으로 바꾸면 항목 경계 없이 하루의 흐름대로 서고, 항목은 <b>색 + 앞 글자</b> 배지로 앞에 남습니다 (배지를 누르면 이동 창).</div>
        <div id="taskspacer" style="height:0"></div>
        <div id="tasks" class="onegrid"></div>
        <div class="synchint" style="margin-top:6px">빈 줄에 바로 입력하면 그 역할의 과제가 추가됩니다. 휴대폰에서는 드래그 대신 각 줄의 <b>시간칸</b>을 쓰세요.<br>
@@ -1017,7 +1150,7 @@ function vDay(v){
            <input type="time" id="eve" value="07:00" style="max-width:104px">
            <input type="text" id="evt" placeholder="일정 제목 (예: 미라클모닝·운동)" onkeydown="if(event.key==='Enter')addEvent('${d}')">
            <select id="evrole" style="max-width:120px">${roleOptions('')}</select>
-           <select id="evrep" style="max-width:118px"><option value="none">반복 없음</option><option value="daily">매일</option><option value="weekday">평일(월~금)</option><option value="weekly">매주 이 요일</option></select>
+           <select id="evrep" style="max-width:132px" title="반복으로 만들면 해당 날짜에 일정이 실제로 생깁니다"><option value="none">반복 없음</option><option value="daily">매일</option><option value="weekday">평일(월~금)</option><option value="weekly">매주 이 요일</option><option value="biweekly">격주 이 요일</option><option value="monthly">매월 이 날짜</option><option value="nthdow">매월 n번째 이 요일</option></select>
            <button class="btn sm" onclick="addEvent('${d}')">추가</button></div>
          <div id="syncrow" class="no-print" style="margin-bottom:8px"></div>
          <div class="gcal" id="gcal"></div>
@@ -1125,7 +1258,10 @@ function newTaskIn(d,role,inp){const v=(inp.value||'').trim();if(!v)return;
   inp.value='';save();renderTasks(d);renderOne(d);
   const el=document.getElementById('tasks');if(el){const bl=el.querySelectorAll('.tin.blank');for(const b of bl){if(b.dataset.role===role){b.focus();break;}}}}
 /* ── The ONE Thing (선두 도미노) ── */
-function setOneThing(d,id){ensureDay(d);S.days[d].one=(S.days[d].one===id?'':id);save();renderOne(d);renderTasks(d);renderSchedule(d);}
+function setOneThing(d,id){ensureDay(d);
+  if(S.days[d].one===id){S.days[d].one='';const t=findTask(d,id);if(t&&t.type==='end')delete t.type;}
+  else{const t=bringHome(d,id);S.days[d].one=id;if(t)t.type='end';}
+  save();renderOne(d);renderTasks(d);renderSchedule(d);}
 function clearOne(d){ensureDay(d);S.days[d].one='';save();renderOne(d);renderTasks(d);renderSchedule(d);}
 function oneScore(t){const pw={A:3,B:2,C:1}[t.priority]||1;return (t.impact||3)*2+pw;}
 function oneCandidate(d){const ts=dayTasks(d).filter(t=>t.status!=='done'&&t.status!=='drop'&&t.text);
@@ -1138,32 +1274,34 @@ function sendOneToSchedule(d,id){const t=findTask(d,id);if(!t)return;
   const now=new Date();let m=(d===today())?snap5(now.getHours()*60+now.getMinutes()+5):9*60;
   m=Math.max(SC_START*60,Math.min(m,SC_END*60-60));placeTaskAt(d,id,m);}
 function renderOne(d){const el=document.getElementById('oneslot');if(!el)return;ensureDay(d);
-  const t=findTask(d,S.days[d].one);const rec=t?null:oneCandidate(d);const imp=t?(t.impact||3):0;
-  el.innerHTML=`<div class="card onecard${t&&t.status==='done'?' done':''}">
-   <div class="onehd">🁢 오늘의 The ONE Thing <span class="hint">선두 도미노 — 이것부터 넘어뜨리면 나머지가 쉬워진다</span></div>
-   ${t?`<div class="onebody${t.status==='done'?' done':''}">
-     <button class="onechk" onclick="toggleTaskDoneId('${t.id}','${d}')" title="완료">${t.status==='done'?'✓':'○'}</button>
-     <div class="onetxt">${esc(t.text)}</div>
-     <div class="onemeta">
-       <span class="pchip" style="background:${priColor(t.priority)}">${t.priority}</span>
-       ${t.role?`<span class="pchip" style="width:auto;padding:0 8px;font-size:10.5px;background:${roleColor(t.role)}">${esc(roleName(t.role))}</span>`:''}
-       <span class="impbig" title="영향도 — 다른 일을 움직이는 정도">영향도 ${'●'.repeat(imp)}${'○'.repeat(5-imp)}</span>
-       ${t.start?`<span class="ttime">🕘 ${t.start}${t.end?'–'+t.end:''}</span>`:`<button class="btn sm no-print" onclick="sendOneToSchedule('${d}','${t.id}')">🕘 시간표에 넣기</button>`}
-       <button class="btn ghost sm no-print" onclick="clearOne('${d}')">해제</button>
-     </div></div>`
-   :`<div class="oneempty">아직 정하지 않았습니다. 오늘 할 일을 모두 적은 뒤, 각 과제의 <b>영향도</b>를 매기고 <b>🁢</b>로 <b>단 하나</b>를 고르세요.
-      ${rec?`<button class="btn sm no-print" onclick="setOneThing('${d}','${rec.id}')">🁢 영향도로 추천: ${esc(rec.text)}</button>`:''}</div>`}
-   <div class="oneq">“이 하나를 끝내면 나머지 일들은 더 쉬워질까?” — 감이 아니라 <b>영향도</b>로 고른다.</div>
+  const all=dayTasks(d).filter(t=>t.text&&t.status!=='drop');
+  const kept=T_ORDER.filter(ty=>!!promiseOf(d,ty)).length;
+  const startedN=all.filter(t=>isStarted(t)).length;
+  const pn=promiseCount(d);
+  const rec=promiseOf(d,'end')?null:oneCandidate(d);
+  el.innerHTML=`<div class="card promise">
+   <div class="phd">🎯 오늘의 약속
+     <span class="hint">끝낼 것 1 · 시작할 것 1 · 바로 할 것 1 — <b>착수하면 성공</b>입니다</span>
+     <span style="margin-left:auto;font-size:12px;font-weight:700;color:var(--muted)">약속 ${kept}/3 · 착수 ${startedN}/${all.length}</span></div>
+   <div class="pslots">${T_ORDER.map(ty=>pSlotHtml(d,ty)).join('')}</div>
+   ${rec?`<div style="margin-top:9px"><button class="btn ghost sm no-print" onclick="pickPromise('${d}','end','${rec.id}')">🁢 영향도로 «끝낼 것» 추천: ${esc(rec.text)}</button></div>`:''}
+   ${pn>3?`<div class="pwarn">오늘 <b>${pn}개</b>를 약속하셨습니다. 막지는 않겠습니다 — 다만 실행을 가르는 것은 의지가 아니라 <b>선택의 수</b>입니다.
+      약속이 늘수록 신호가 왔을 때 “무엇부터 하지?”를 다시 결정하게 되고, 그 자리에서 협상이 시작됩니다.
+      하나를 <b>내일로 예약</b>하거나 <b>하지 않기로</b> 정하면 나머지 셋의 착수 확률이 올라갑니다.</div>`:''}
+   <div class="oneq">신호가 오면 <b>다시 결정하지 않습니다.</b> 결정은 어제의 내가 했고, 지금의 나는 첫 행동만 합니다 —
+     완성이 아니라 <b>착수</b>가 오늘의 성공입니다.</div>
   </div>`;}
 /* ── 역할별 과제 그리드 ── */
 const PRIS=['A','B','C'];
 function impHtml(d,t){return `<span class="imp" title="영향도(선두 도미노 후보) — 이 일을 끝내면 다른 일이 얼마나 쉬워지는가">${[1,2,3,4,5].map(k=>`<i class="${k<=(t.impact||3)?'on':''}" onclick="setImpact('${d}','${t.id}',${k})"></i>`).join('')}</span>`;}
-function taskRowG(d,t){const done=t.status==='done';const isOne=S.days[d].one===t.id;
+function taskRowG(d,t,showRole){const done=t.status==='done';const isOne=S.days[d].one===t.id;
   const carried=taskHome(t.id,d)!==d;
-  return `<div class="trow${done?' done':''}${isOne?' one':''}${carried?' carried':''}" data-tid="${t.id}" data-tk="${tipTask(d,t)}">
-    <span class="grip" draggable="true" ondragstart="taskDrag(event,'${t.id}')" title="시간표로 끌어놓기">⠿</span>
+  const started=!done&&isStarted(t);
+  return `<div class="trow${done?' done':''}${started?' started':''}${isOne?' one':''}${carried?' carried':''}" data-tid="${t.id}" data-tk="${tipTask(d,t)}">
+    <span class="grip" draggable="true" ondragstart="taskDrag(event,'${t.id}')" title="시간표로 끌어놓기 · 다른 항목 칸으로 끌어놓으면 항목이 바뀝니다">⠿</span>
+    ${showRole?roleChip(d,t):''}
     <select class="prisel p${t.priority}" onchange="setTaskPri('${d}','${t.id}',this.value)" title="중요도">${PRIS.map(p=>`<option ${t.priority===p?'selected':''}>${p}</option>`).join('')}</select>
-    ${dueBadge(d,t)}
+    ${typeBadge(t)}${t.rid&&recOf(t.rid)?`<span class="rmk" title="반복 — ${esc(recLabel(recOf(t.rid)))}" onclick="openRecur('${d}','task','${t.id}')">↻</span>`:''}${dueBadge(d,t)}
     <input class="tin" value="${esc(t.text)}" onchange="setTaskText('${d}','${t.id}',this.value)" onkeydown="if(event.key==='Enter')this.blur()">
     ${impHtml(d,t)}
     <input class="tmin no-print${t.start?' set':''}" inputmode="numeric" autocomplete="off" placeholder="--:--" value="${t.start||''}"
@@ -1171,13 +1309,86 @@ function taskRowG(d,t){const done=t.status==='done';const isOne=S.days[d].one===
       title="시작 시간 — 숫자만 쳐도 됩니다&#10;9 → 09:00 · 930 → 09:30 · 1430 → 14:30&#10;930-1030 처럼 쓰면 끝 시각까지 지정&#10;↑↓ 키로 5분씩 조정 · 비우면 시간표에서 내려옵니다">
     <button class="csfb${(t.csf||t.memo)?' on':''}" onclick="openMemo('${d}','task','${t.id}')" title="핵심 성공 요인 · 메모">🎯</button>
     <button class="onebtn${isOne?' on':''}" onclick="setOneThing('${d}','${t.id}')" title="오늘의 The ONE Thing으로 지정">🁢</button>
-    <button class="tdone${done?' on':''}" onclick="toggleTaskDoneId('${t.id}','${d}')" title="완료">✓</button>
-    <button class="del-x no-print" onclick="delTaskId('${t.id}','${d}')" title="삭제">✕</button>
+    <button class="tdone${done?' on':(started?' mid':'')}" onclick="cycleTask('${t.id}','${d}')"
+      title="${done?'완료 — 누르면 처음으로':(started?'착수함 — 누르면 완료':'누르면 ◐ 착수 (3분만 해도 시작입니다)')}">${done?'✓':(started?'◐':'○')}</button>
+    <button class="del-x no-print" onclick="${t.rid?`openRecDel('${d}','task','${t.id}')`:`delTaskId('${t.id}','${d}')`}" title="삭제">✕</button>
   </div>`;}
 function blankRow(d,role){return `<div class="trow"><span class="grip" style="opacity:.25">⠿</span>
     <input class="tin blank" data-role="${role}" placeholder="＋ 할 일" onchange="newTaskIn('${d}','${role}',this)" onkeydown="if(event.key==='Enter')this.blur()"></div>`;}
+/* ── 항목(역할) 배지 — 색 + 앞 글자. 누르면 이동 창이 열린다 ── */
+function roleCut(x){return String(x||'').replace(/[\s·・,\/()\-]/g,'');}
+function roleAbbr(rid){
+  const rs=S.profile.roles||[], r=rs.find(x=>x.id===rid);
+  if(!r)return '기';
+  const n=roleCut(r.name)||'?';
+  const dup=rs.some(x=>x.id!==rid&&roleCut(x.name).slice(0,1)===n.slice(0,1));
+  return dup?n.slice(0,2):n.slice(0,1);}
+function roleChip(d,t){
+  const r=(S.profile.roles||[]).find(x=>x.id===t.role);
+  const nm=r?r.name:'기타', col=r?(r.color||'#5b53b0'):'#8792a3';
+  return `<button class="rchip" style="background:${col}" title="${esc(nm)} — 눌러서 항목·순서·날짜 이동"
+    onclick="openMoveTask('${d}','${t.id}')">${esc(roleAbbr(t.role))}</button>`;}
+
+/* ── 보기 모드: 항목별(기본) / 실행 시간순 ── */
+function taskSortMode(){return ((S.ui||{}).taskSort==='time')?'time':'role';}
+function setTaskSort(m){S.ui.taskSort=(m==='time')?'time':'role';save();
+  if(S.view==='day'){renderTasks(S.ui.day);}else render();}
+function tSortKey(t){
+  if(t.start)return [0,toMin(t.start)];
+  const i=dueInfo(t.due);
+  const od=i?(i.over?0:(i.n<=2?1:2)):3;
+  return [1,od*1000+({A:0,B:1,C:2}[t.priority]||1)*100+(5-(t.impact||3))];}
+
+/* ── 드래그로 항목 간·항목 안 이동 ── */
+function taskOver(e){ if(DRAG&&DRAG.kind==='task'){e.preventDefault();try{e.dataTransfer.dropEffect='move';}catch(_){}} }
+function taskDropAt(e,d,beforeId,rid){
+  if(!DRAG||DRAG.kind!=='task')return;
+  e.preventDefault(); e.stopPropagation();
+  const id=DRAG.id; DRAG=null;
+  moveTaskInto(d,id,rid,beforeId);}
+function moveTaskInto(d,id,rid,beforeId){
+  if(id===beforeId)return;
+  const t=bringHome(d,id); if(!t)return;
+  const arr=S.days[d].tasks, i=arr.indexOf(t); if(i<0)return;
+  arr.splice(i,1);
+  if(rid!==null&&rid!==undefined)t.role=rid;
+  let j=arr.length;
+  if(beforeId){const k=arr.findIndex(x=>x.id===beforeId); if(k>=0)j=k;}
+  arr.splice(j,0,t);
+  save(); renderTasks(d); renderOne(d); renderSchedule(d);}
+
+function newTaskTime(d,inp){
+  const v=(inp.value||'').trim(); if(!v)return;
+  const sel=document.getElementById('tmrole');
+  const role=(sel&&sel.value)||((S.profile.roles[0]||{}).id||'');
+  ensureDay(d);S.days[d].tasks.push({id:uid(),text:v,priority:'B',role:role,impact:3,status:'todo'});
+  inp.value='';save();renderTasks(d);renderOne(d);
+  const el=document.querySelector('#tasks input.tin.blank'); if(el)el.focus();}
+
 function renderTasks(d){const el=document.getElementById('tasks');if(!el)return;ensureDay(d);
   const all=dayTasks(d);                                   /* 오늘 과제 + 마감일이 남은 이월 과제 */
+  el.style.height=((SC_END-SC_START)*SC_H)+'px';
+
+  /* ① 실행 시간순 — 항목 경계를 없애고 하루의 흐름대로 한 줄로 세운다.
+        항목은 색 + 앞 글자 배지로 앞에 남는다(누르면 이동 창). */
+  if(taskSortMode()==='time'){
+    const list=all.filter(t=>t.text).slice()
+      .sort((a,b)=>{const x=tSortKey(a),y=tSortKey(b);return (x[0]-y[0])||(x[1]-y[1]);});
+    const timed=list.filter(t=>t.start), free=list.filter(t=>!t.start);
+    el.style.gridTemplateRows='1fr';
+    el.innerHTML=`<div class="rgrp tmode"><div class="rrows">
+      ${timed.map(t=>taskRowG(d,t,true)).join('')}
+      ${free.length?`<div class="tsep">⏳ 시간 미정 <span style="font-weight:600">— 마감 지난 것 → 임박 → 우선순위 순</span></div>`:''}
+      ${free.map(t=>taskRowG(d,t,true)).join('')}
+      <div class="trow"><span class="grip" style="opacity:.25">⠿</span>
+        <select class="prisel" id="tmrole" style="width:52px" title="새 과제의 항목">${(S.profile.roles||[]).map((r,i)=>`<option value="${r.id}">${esc(roleAbbr(r.id))}</option>`).join('')}</select>
+        <input class="tin blank" placeholder="＋ 할 일" onchange="newTaskTime('${d}',this)"
+          onkeydown="if(event.key==='Enter')this.blur()"></div>
+    </div></div>`;
+    return;
+  }
+
+  /* ② 항목(역할)별 — 기본. 칸으로 끌어놓으면 항목이 바뀐다 */
   const roles=(S.profile.roles||[]);
   const groups=roles.map(r=>({id:r.id,name:r.name,color:r.color||'#5b53b0',ts:all.filter(t=>t.role===r.id)}));
   const orphan=all.filter(t=>!t.role||!roles.some(r=>r.id===t.role));
@@ -1185,13 +1396,64 @@ function renderTasks(d){const el=document.getElementById('tasks');if(!el)return;
   const ord={A:0,B:1,C:2};
   const od=t=>{const i=dueInfo(t.due);return i?(i.over?0:(i.n<=2?1:2)):3;};   /* 지난 마감 → 임박 → 나머지 */
   groups.forEach(g=>g.ts.sort((a,b)=>(od(a)-od(b))||(ord[a.priority]-ord[b.priority])||((b.impact||3)-(a.impact||3))));
-  el.style.height=((SC_END-SC_START)*SC_H)+'px';
   el.style.gridTemplateRows=`repeat(${groups.length||1},1fr)`;
   el.innerHTML=groups.map(g=>{
     const blanks=Math.max(1,3-g.ts.length);
     return `<div class="rgrp"><div class="rlab" style="background:${g.color}" title="${esc(g.name)}">${esc(g.name)}</div>
-      <div class="rrows">${g.ts.map(t=>taskRowG(d,t)).join('')}${Array.from({length:blanks},()=>blankRow(d,g.id)).join('')}</div></div>`;}).join('');
+      <div class="rrows" ondragover="taskOver(event)" ondrop="taskDropAt(event,'${d}','','${g.id}')">${
+        g.ts.map(t=>taskRowG(d,t).replace('<div class="trow','<div ondragover="taskOver(event)" ondrop="taskDropAt(event,\''+d+'\',\''+t.id+'\',\''+g.id+'\')" class="trow')).join('')
+      }${Array.from({length:blanks},()=>blankRow(d,g.id)).join('')}</div></div>`;}).join('');
 }
+
+/* ── 과제 이동 창 (항목 · 순서 · 날짜) ── */
+function openMoveTask(d,id){
+  const t=findTask(d,id); if(!t){toast('과제를 찾지 못했습니다');return;}
+  MEMO={d:d,kind:'task',id:id};
+  const home=taskHome(id,d);
+  modalBox(`<h3 style="margin:0 0 4px">⇄ 과제 이동</h3>
+    <div class="hint" style="margin-bottom:10px"><b>${esc(t.text||'')}</b>${t.start?` · 🕘 ${t.start}${t.end?'–'+t.end:''}`:''}</div>
+    <label class="fld"><span class="lb">🎭 항목(역할) 바꾸기</span>
+      <div class="chips">${(S.profile.roles||[]).map(r=>`<span class="chip ${t.role===r.id?'on':''}"
+        style="border-color:${r.color||'#5b53b0'}${t.role===r.id?';background:'+(r.color||'#5b53b0')+';color:#fff':''}"
+        onclick="moveTaskRole('${d}','${id}','${r.id}')">${esc(roleAbbr(r.id))} ${esc(r.name)}</span>`).join('')}</div></label>
+    <label class="fld"><span class="lb">↕ 같은 항목 안에서 순서</span>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        <button class="btn ghost sm" onclick="nudgeTask('${d}','${id}',-99)">⤒ 맨 위</button>
+        <button class="btn ghost sm" onclick="nudgeTask('${d}','${id}',-1)">↑ 위로</button>
+        <button class="btn ghost sm" onclick="nudgeTask('${d}','${id}',1)">↓ 아래로</button>
+        <button class="btn ghost sm" onclick="nudgeTask('${d}','${id}',99)">⤓ 맨 아래</button></div>
+      <div class="hint" style="margin-top:4px">«실행 시간순» 보기에서는 시각이 순서를 정하므로 이 순서가 보이지 않습니다.</div></label>
+    <label class="fld"><span class="lb">📅 다른 날로 옮기기 <span class="hint">(지금 ${home})</span></span>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+        <button class="btn ghost sm" onclick="shiftTaskDay('${d}','${id}',-1)">‹ 어제</button>
+        <button class="btn ghost sm" onclick="shiftTaskDay('${d}','${id}',1)">내일 ›</button>
+        <input type="date" id="mvdate" style="max-width:168px" value="${home}">
+        <button class="btn sm" onclick="moveTaskDay('${d}','${id}',document.getElementById('mvdate').value)">이 날로</button></div></label>
+    <div style="display:flex;gap:8px;justify-content:space-between;margin-top:12px;flex-wrap:wrap">
+      <button class="btn ghost" onclick="closeModal();openMemo('${d}','task','${id}')">🎯 신호 · 첫 행동 · 마감일</button>
+      <button class="btn" onclick="closeModal()">닫기</button></div>`);}
+function moveTaskRole(d,id,rid){const t=bringHome(d,id);if(!t)return;
+  t.role=rid;save();repaintDay(d);openMoveTask(d,id);}
+function nudgeTask(d,id,n){
+  const t=bringHome(d,id); if(!t)return;
+  const arr=S.days[d].tasks, same=arr.filter(x=>x.role===t.role);
+  const i=same.indexOf(t); if(i<0)return;
+  const j=(n<=-99)?0:(n>=99?same.length-1:Math.max(0,Math.min(same.length-1,i+n)));
+  if(j===i){toast(n<0?'이미 맨 위입니다':'이미 맨 아래입니다');return;}
+  same.splice(i,1); same.splice(j,0,t);
+  let k=0; for(let x=0;x<arr.length;x++){ if(arr[x].role===t.role)arr[x]=same[k++]; }
+  save(); repaintDay(d); openMoveTask(d,id);}
+function moveTaskDay(d,id,nd){
+  if(!nd)return;
+  const home=taskHome(id,d), src=S.days[home]; if(!src||!src.tasks)return;
+  const i=src.tasks.findIndex(x=>x.id===id); if(i<0)return;
+  const t=src.tasks.splice(i,1)[0];
+  if(src.one===id)src.one='';
+  ensureDay(nd); S.days[nd].tasks.push(t);
+  save(); closeModal(); toast(nd+' ('+wd(nd)+') 로 옮겼습니다');
+  if(S.view==='day'){renderTasks(S.ui.day);renderOne(S.ui.day);renderSchedule(S.ui.day);}else render();}
+function shiftTaskDay(d,id,n){moveTaskDay(d,id,addDays(taskHome(id,d),n));}
+
 function setTaskStatus(d,i,st){const t=S.days[d].tasks[i];if(t)setTaskStatusId(t.id,st,d);}
 function delTask(d,i){const t=S.days[d].tasks[i];if(t)delTaskId(t.id,d);}
 function carryOver(d){const nd=addDays(d,1);ensureDay(nd);let moved=0;
@@ -1219,7 +1481,13 @@ function addEvent(d){const s=document.getElementById('evs').value,e=document.get
   if(toMin(e)<=toMin(s)){toast('종료 시간이 시작보다 늦어야 합니다');return;}
   const role=(document.getElementById('evrole')||{}).value||'';
   if(rep==='none'){const arr=dayEvents(d);arr.push({id:uid(),start:s,end:e,title:t,role:role});}
-  else{if(!S.recurring)S.recurring=[];S.recurring.push({id:uid(),start:s,end:e,title:t,role:role,rule:rep,byday:parseD(d).getDay()});toast('반복 일정을 추가했습니다 ('+({daily:'매일',weekday:'평일',weekly:'매주 '+wd(d)+'요일'}[rep])+')');}
+  else{ if(!S.recurring)S.recurring=[];
+    const w=parseD(d).getDay(), dm=+d.slice(8);
+    const r={id:uid(),kind:'event',start:s,end:e,title:t,role:role,rule:rep,
+      days:[w],byday:w,dom:dm,nth:Math.ceil(dm/7),ndow:w,
+      from:d,until:'',anchor:weekStart(d),off:false};
+    S.recurring.push(r); ensureDay(d);      /* 오늘 것부터 바로 만들어 둔다 */
+    toast('반복 일정을 만들었습니다 — '+recLabel(r));}
   save();document.getElementById('evt').value='';renderSchedule(d);}
 function delEvent(d,id){
   const ev=dayEvents(d).find(x=>x.id===id);
@@ -1233,7 +1501,7 @@ function delRecur(id){if(!confirm('이 반복 일정을 삭제할까요? (모든
 function toggleTaskDone(d,i){const t=S.days[d].tasks[i];if(!t)return;t.status=(t.status==='done')?'todo':'done';save();renderTasks(d);renderSchedule(d);}
 function toggleEventDone(d,id){const ev=dayEvents(d).find(x=>x.id===id);if(!ev)return;ev.done=!ev.done;save();renderSchedule(d);}
 function toggleRecDone(d,id){ensureDay(d);const a=S.days[d].recDone||(S.days[d].recDone=[]);const k=a.indexOf(id);if(k>=0)a.splice(k,1);else a.push(id);save();renderSchedule(d);}
-function recForDay(d){const wn=parseD(d).getDay();return (S.recurring||[]).filter(r=> r.rule==='daily' || (r.rule==='weekday'&&wn>=1&&wn<=5) || (r.rule==='weekly'&&r.byday===wn));}
+function recForDay(d){return [];}   /* (구버전 가상 레이어 — 실체화 방식으로 바뀌어 더 쓰지 않습니다) */
 function snap5(m){return Math.round(m/5)*5;}
 function blockStyle(sm,em,col,cols){const ss=snap5(sm),ee=Math.max(snap5(em),ss+5);
   const top=Math.max(0,(ss-SC_START*60)/60*SC_H);const h=Math.max(14,(ee-ss)/60*SC_H-2);
@@ -1299,7 +1567,7 @@ function renderSchedule(d){const el=document.getElementById('gcal');if(!el)retur
   const isDupOfLesson=(sm,em)=>{ if(!hideDup)return false;
     const dur=Math.max(1,em-sm);
     return kRanges.some(r=>{const ov=Math.min(em,r[1])-Math.max(sm,r[0]); return ov>0 && ov>=dur*0.6;});};
-  const items=dayEvents(d).map(ev=>({o:ev,rec:false})).concat(recForDay(d).map(r=>({o:r,rec:true})));
+  const items=dayEvents(d).map(ev=>({o:ev,rec:false}));   /* 반복은 이제 실제 일정으로 들어와 있다 */
   const tks=(S.days[d].tasks||[]).map((t,i)=>({t,i})).filter(x=>x.t.start);
   const recDone=S.days[d].recDone||[];const oneId=S.days[d].one||'';
   let lines='';for(let hr=SC_START;hr<SC_END;hr++)lines+=`<div class="hr"><span class="hrlab">${String(hr).padStart(2,'0')}:00</span></div>`;
@@ -1310,14 +1578,14 @@ function renderSchedule(d){const el=document.getElementById('gcal');if(!el)retur
     const base=ev.role?roleColor(ev.role):(ev.color||'#5b53b0');
     const done=isRec?recDone.includes(ev.id):!!ev.done;const c=blockColors(base,done);
     const tog=isRec?`toggleRecDone('${d}','${ev.id}')`:`toggleEventDone('${d}','${ev.id}')`;
-    const del=isRec?`delRecur('${ev.id}')`:`delEvent('${d}','${ev.id}')`;
+    const del=ev.rid?`openRecDel('${d}','event','${ev.id}')`:`delEvent('${d}','${ev.id}')`;
     const dg=isRec?'':` draggable="true" ondragstart="blockDrag(event,'${ev.id}','event')" ondragend="hideDropLine()"`;
     blocks.push({sm:toMin(ev.start),em:toMin(ev.end),build:st=>`<div class="ev${isRec?' rec':' grab'}"${dg} data-tk="${tipEvent(d,ev,isRec)}" style="${st};background:${c.bg};color:${c.fg};border:${done?'4px':'2px'} solid ${base}">
       ${isRec?'':`<button class="evx" style="color:${c.fg};right:57px" onclick="openEvEdit('${d}','${ev.id}')" title="수정${ev.gEventId?' (구글에도 반영)':''}">✏</button>`}
       ${isRec?'':`<button class="evx" style="color:${c.fg};right:38px;${ev.memo?'background:rgba(0,0,0,.34)':''}" onclick="openMemo('${d}','event','${ev.id}')" title="${ev.memo?'메모 있음 — 수정':'메모 남기기'}">🗒</button>`}
       <button class="evx" style="color:${c.fg};right:19px" onclick="${tog}" title="완료">${done?'↺':'✓'}</button>
       <button class="evx" style="color:${c.fg}" onclick="${del}" title="삭제">✕</button>
-      <span class="tm" style="color:${c.fg}">${ev.start}–${ev.end}${isRec?' ↻':''}${ev.gEventId?' ✓구글':''}${ev.csf?' 🎯':''}</span><span class="ttl" style="${done?DONE_BLK:''}">${esc(ev.title)}</span></div>`});});
+      <span class="tm" style="color:${c.fg}">${ev.start}–${ev.end}${ev.rid?' ↻':''}${ev.gEventId?' ✓구글':''}${ev.csf?' 🎯':''}</span><span class="ttl" style="${done?DONE_BLK:''}">${esc(ev.title)}</span></div>`});});
   tks.forEach(({t,i})=>{const done=t.status==='done';const c=blockColors(roleColor(t.role),done);const isOne=oneId===t.id;
     blocks.push({sm:toMin(t.start),em:toMin(t.end||addMinStr(t.start,60)),build:st=>`<div class="ev tk grab${isOne?' one':''}" draggable="true" ondragstart="blockDrag(event,'${t.id}','task')" ondragend="hideDropLine()" data-tk="${tipTask(d,t)}" style="${st};background:${c.bg};color:${c.fg};border:${done?'5px':'3px'} solid ${priColor(t.priority)}">
       <button class="evx" style="color:${c.fg};right:19px;${t.memo?'background:rgba(0,0,0,.34)':''}" onclick="openMemo('${d}','task','${t.id}')" title="${t.memo?'메모 있음 — 수정':'메모 남기기'}">🗒</button>
@@ -2140,6 +2408,8 @@ function vRemind(v){
      </div>
    </div>
 
+   ${recListCard()}
+
    <div class="card"><h3>② 홈 화면에 앱으로 설치</h3>
      ${installHtml()}
    </div>
@@ -2208,6 +2478,7 @@ function vStats(v){
        <input type="checkbox" ${(S.klass&&S.klass.on)?'checked':''} onchange="K().on=this.checked;save();renderNav();render();if(this.checked)go('klass')" style="width:auto">
        왼쪽 메뉴에 <b>📚 수업 기록</b> 보이기</label>
    </div>
+   ${startCard()}
    ${usageTable()}
    <div class="card"><h3>실천 리듬 설정 <span class="hint">(실천율을 좌우하는 네 가지 규칙)</span></h3>
      <div class="row-item" style="align-items:center">
@@ -2252,8 +2523,10 @@ function ensureDay(d){if(!S.days[d])S.days[d]={tasks:[],sched:{},events:[],habit
   const x=S.days[d];x.tasks=x.tasks||[];x.sched=x.sched||{};x.events=x.events||[];x.recDone=x.recDone||[];x.habits=x.habits||[];if(x.praise==null)x.praise="";if(x.gratitude==null)x.gratitude="";if(x.reflect==null)x.reflect="";if(x.journal==null)x.journal="";
   x.tasks.forEach(t=>{if(!t.id)t.id=uid();if(t.impact==null)t.impact=3;if(!t.priority)t.priority='B';if(!t.status)t.status='todo';});
   if(x.one==null)x.one="";
+  if(x.negot==null)x.negot="";      /* 미룬 순간의 생각 — 협상 문장 */
   if(!x.ci||typeof x.ci!=='object')x.ci={am:"",pm:""};
   if(x.one&&!x.tasks.some(t=>t.id===x.one))x.one="";
+  try{recFill(d,x);}catch(e){}        /* 반복 항목을 이 날짜에 실제로 만들어 둔다 */
   return x;}
 function ensureMonth(mk){if(!S.months[mk])S.months[mk]={focus:"",good:"",next:""};
   const m=S.months[mk];if(!Array.isArray(m.goalIds))m.goalIds=[];if(m.focus==null)m.focus="";return m;}
@@ -2395,11 +2668,11 @@ const DAYCODE=['SU','MO','TU','WE','TH','FR','SA'];
 function nextMatch(rule,byday){let d=today();for(let i=0;i<7;i++){const wn=parseD(d).getDay();
   if(rule==='daily')return d; if(rule==='weekday'&&wn>=1&&wn<=5)return d; if(rule==='weekly'&&wn===byday)return d; d=addDays(d,1);}return today();}
 async function gcalInsertRecurring(r){ if(!gTokenValid())throw new Error('로그인 필요');
-  const anchor=nextMatch(r.rule,r.byday);
-  const rrule = r.rule==='daily'?'FREQ=DAILY':(r.rule==='weekday'?'FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR':'FREQ=WEEKLY;BYDAY='+DAYCODE[r.byday]);
+  const anchor=recFirstOn(r);
+  const rrule = recRRULE(r);
   const s=new Date(anchor+'T'+r.start+':00'),e=new Date(anchor+'T'+r.end+':00');
   const cal=encodeURIComponent(S.settings.gcalId||'primary');
-  const body={summary:r.title,start:{dateTime:isoLocal(s),timeZone:tzName()},end:{dateTime:isoLocal(e),timeZone:tzName()},recurrence:['RRULE:'+rrule],reminders:{useDefault:false,overrides:[{method:'popup',minutes:10}]}};
+  const body={summary:(r.title||r.text||''),start:{dateTime:isoLocal(s),timeZone:tzName()},end:{dateTime:isoLocal(e),timeZone:tzName()},recurrence:['RRULE:'+rrule],reminders:{useDefault:false,overrides:[{method:'popup',minutes:10}]}};
   return gFetch('https://www.googleapis.com/calendar/v3/calendars/'+cal+'/events',{method:'POST',body:JSON.stringify(body)});}
 async function pushRecurring(){ if(!gTokenValid()){toast('구글 로그인이 필요합니다');return;} let n=0;
   for(const r of (S.recurring||[])){ if(r.gEventId)continue; try{const res=await gcalInsertRecurring(r); if(res&&res.id){r.gEventId=res.id;n++;}}catch(e){gReport('반복 등록 실패',e);} }
@@ -2639,24 +2912,35 @@ function ritualTimeNow(){const n=new Date();ritualTime(m2s(snap5(n.getHours()*60
 function ritualFinish(m){ritualMark(RIT.d,m);ritualGo(999);}
 
 /* 저녁 4단계 — 내일의 ONE */
+/* 저녁 리추얼 2단 — 내일의 '첫 착수' 하나만 예약한다.
+   · 하나만 받는다: 내일의 나를 대신해 결정하는 자리라 과적재되기 가장 쉽다.
+   · 끝낼 것(ONE)은 건드리지 않는다 — 그것은 내일 아침에 정한다.
+   · 오늘 미룬 과제를 자동으로 채우지 않는다 — 만회가 아니라 재예약이어야 한다. */
 function ritualTomorrowOne(){
   const nd=addDays(RIT.d,1); ensureDay(nd);
   const el=document.getElementById('rtomo'); const v=el?(el.value||'').trim():'';
   if(v){ const role=(S.profile.roles[0]||{}).id||'';
-    const t={id:uid(),text:v,priority:'A',role:role,impact:5,status:'todo'};
-    S.days[nd].tasks.push(t); S.days[nd].one=t.id; save(); }
+    const c=document.getElementById('rtCue'), f=document.getElementById('rtFirst');
+    const t={id:uid(),text:v,priority:'B',role:role,impact:4,status:'todo',type:'start'};
+    if(c&&c.value)t.cueRef=c.value;
+    if(f&&(f.value||'').trim())t.first=f.value.trim();
+    S.days[nd].tasks.push(t); save(); }
   ritualFinish('pm');
 }
+function ritTomoPick(txt){const el=document.getElementById('rtomo'); if(el){el.value=txt;el.focus();}}
 function ritualCarryCandidate(){
   const d=RIT.d;const ts=dayTasks(d).filter(t=>t.text&&t.status!=='done'&&t.status!=='drop');
   if(!ts.length)return null; return ts.slice().sort((a,b)=>oneScore(b)-oneScore(a))[0];}
 
+/* ○ 아직 → ◐ 착수 → ✓ 완료 — 완료가 아니라 착수를 성공으로 센다 */
 function ritQuickTasks(d){
   const ts=dayTasks(d).filter(t=>t.text&&t.status!=='drop');
   if(!ts.length)return '<p class="hint">오늘 등록된 과제가 없습니다.</p>';
-  return `<div class="rpick" style="flex-direction:column">${ts.map(t=>
-    `<button class="${t.status==='done'?'on':''}" style="width:100%" onclick="toggleTaskDoneId('${t.id}','${d}');vCheckin(document.getElementById('view'))">
-      ${t.status==='done'?'✓':'○'} ${esc(t.text)}</button>`).join('')}</div>`;}
+  return `<div class="rpick" style="flex-direction:column">${ts.map(t=>{
+    const done=t.status==='done', st=isStarted(t)&&!done;
+    return `<button class="${done?'on':''}" style="width:100%;${st?'border-color:#b9d3ee;background:#e8f0fa;color:#2f6db3;font-weight:700':''}"
+      onclick="cycleTask('${t.id}','${d}')">
+      ${done?'✓':(st?'◐':'○')} ${T_TYPES[t.type]?T_TYPES[t.type].e+' ':''}${esc(t.text)}</button>`;}).join('')}</div>`;}
 
 function vCheckin(v){
   if(!RIT.d||RIT.d!==today()||!RIT.mode)RIT={mode:ritualMode(),step:0,d:today()};
@@ -2667,7 +2951,7 @@ function vCheckin(v){
   v.innerHTML=`<div class="ritual">
     <div class="rhd">
       <div class="rt">${m==='am'?'☀️ 아침 리추얼':'🌙 저녁 리추얼'} <span style="font-weight:600;color:var(--muted);font-size:15px">· 3분</span></div>
-      <div class="rs">${d} (${wd(d)}) · ${m==='am'?'오늘을 여는 세 가지':'오늘을 닫는 네 가지'} · 🔥 연속 ${ritualStreak()}일
+      <div class="rs">${d} (${wd(d)}) · ${m==='am'?'오늘을 여는 세 가지':'오늘 닫기 → 내일 열기'} · 🔥 연속 ${ritualStreak()}일
         ${ritualDone(d,m)?' · <b style="color:var(--accent)">오늘 완료</b>':''}</div>
     </div>
     <div class="rdots">${steps.map((s,k)=>`<i class="${k<i?'done':(k===i?'on':'')}"></i>`).join('')}</div>
@@ -2757,42 +3041,71 @@ function kMarkTodayDone(d){
   save();
 }
 function ritPMSteps(d,day){
-  const cur=findTask(d,day.one);
-  const ts=(day.tasks||[]).filter(t=>t.text&&t.status!=='drop');
+  /* ── 저녁 리추얼은 성격이 다른 두 단계로 나뉜다 ──────────────────────
+     1단 «오늘 닫기»  = 과거 · 관찰 · 기록   → 협상 문장이라는 데이터를 모은다
+     2단 «내일 열기»  = 미래 · 결정 · 이관   → 내일 아침의 결정 비용을 0으로 만든다
+     섞으면 "오늘 못한 걸 만회해야지"가 내일 계획의 입력값이 되어 복귀 규칙이 그 자리에서 깨진다.
+     ------------------------------------------------------------------ */
+  const ts=dayTasks(d).filter(t=>t.text&&t.status!=='drop');
   const doneN=ts.filter(t=>t.status==='done').length;
-  const cand=ritualCarryCandidate();
+  const startN=ts.filter(t=>isStarted(t)).length;
+  const left=notStarted(d);
   const nd=addDays(d,1);
+  const neg=(day.negot||'');
   return [
-  { q:'오늘의 ONE, 끝내셨습니까?',
-    why:'평가가 아니라 <b>사실 확인</b>입니다. 못 했다면 이유가 아니라 “계획이 컸는가”를 봅니다.',
-    bd:`${cur?`<div class="rpick"><button class="${cur.status==='done'?'on':''}" style="width:100%;font-size:15px"
-            onclick="toggleTaskDoneId('${cur.id}','${d}');vCheckin(document.getElementById('view'))">
-            ${cur.status==='done'?'✓':'○'} 🁢 ${esc(cur.text)}</button></div>`
-        :'<p class="hint">오늘은 ONE을 정하지 않으셨네요. 내일 아침에 하나만 정해보세요.</p>'}
-        <div class="why" style="margin:14px 0 6px">나머지 과제 — 누르면 완료됩니다 (${doneN}/${ts.length})</div>
+  /* ── 1단 ① 무엇을 시작했는가 ── */
+  { q:'오늘, 무엇을 <u>시작</u>했습니까?',
+    why:'완료가 아니라 <b>착수</b>를 봅니다. 3분만 했어도 시작한 것입니다. 눌러서 ○ 아직 → ◐ 착수 → ✓ 완료 로 바꾸세요.',
+    bd:`<div class="callout co-brand" style="margin:0 0 12px">오늘 <b>${startN}/${ts.length}</b> 착수 · <b>${doneN}</b> 완료
+        <div style="margin-top:4px;font-size:13px">큰 일을 조금 건드린 날이, 작은 일을 다 끝낸 날보다 나은 날입니다.</div></div>
         ${ritQuickTasks(d)}
         <button class="rbig" style="margin-top:16px" onclick="ritualNext()">다음 →</button>` },
-  { q:'오늘 <u>잘한 것</u> 한 가지만 적어주세요.',
-    why:'뇌는 실패를 훨씬 오래 기억합니다. 잘한 것을 말로 옮기는 순간에만 그 경험이 자기효능감으로 남습니다.',
-    bd:`<textarea data-focus rows="3" placeholder="예: 3반 수업에서 아이들 질문을 끝까지 기다렸다"
-          oninput="setDay('${d}','praise',this.value)">${esc(day.praise)}</textarea>
+
+  /* ── 1단 ② 협상 문장 (이 다이어리에서 가장 값진 데이터) ── */
+  { q:'미룬 것이 있다면, <u>미룬 그 순간</u> 무슨 생각을 했습니까?',
+    why:'평가가 아니라 <b>관찰</b>입니다. 반복해서 나오는 이 문장이 형군샘의 <b>협상 문장</b>이고, 개입점은 거기에 있습니다. 그것을 발견하는 게 목적입니다.',
+    bd:`${left.length?`<div class="why" style="margin:0 0 8px">오늘 착수하지 못한 것 (${left.length}개)</div>
+          <div class="chips" style="margin-bottom:12px">${left.slice(0,8).map(t=>`<span class="chip" style="cursor:default">${esc(t.text)}</span>`).join('')}</div>`
+        :`<div class="callout co-brand" style="margin:0 0 12px">오늘은 약속한 것을 모두 시작했습니다. 이 칸은 비워 두셔도 됩니다.</div>`}
+        <div class="why" style="margin:0 0 6px">자주 쓰는 문장 — 눌러서 담으세요</div>
+        <div class="chips">${NEG_CHIPS.map(c=>`<span class="chip ${neg.indexOf(c)>=0?'on':''}" onclick="negPick('${d}',${esc(JSON.stringify(c))})">${esc(c)}</span>`).join('')}</div>
+        <textarea data-focus rows="3" style="margin-top:10px" placeholder="예: 제대로 하려면 시간이 더 필요하다고 생각했다"
+          oninput="setNegot('${d}',this.value)">${esc(neg)}</textarea>
+        <div class="why" style="margin-top:8px">여기 쌓인 문장은 <b>성찰·통계 → 착수율 · 협상 문장</b>에서 빈도로 볼 수 있습니다.</div>
         <button class="rbig" style="margin-top:16px" onclick="ritualNext()">다음 →</button>` },
-  { q:'오늘 <u>감사한 것</u> 한 가지는 무엇입니까?',
-    why:'감사는 관계와 의미를 다시 연결합니다. 한 줄이면 충분합니다.',
-    bd:`<textarea data-focus rows="3" placeholder="예: 옆 반 선생님이 실험 준비를 도와주셨다"
-          oninput="setDay('${d}','gratitude',this.value)">${esc(day.gratitude)}</textarea>
-        <button class="rbig" style="margin-top:16px" onclick="ritualNext()">다음 →</button>` },
-  { q:'내일의 ONE을 지금 정해두시겠습니까?',
-    why:'오늘 밤에 정해두면 내일 아침의 결정 비용이 0이 됩니다. 아침의 의지력을 아껴 실행에 씁니다.',
-    bd:`<input type="text" id="rtomo" data-focus placeholder="내일 이것부터 넘어뜨린다"
-          value="${cand&&cand.status!=='done'?esc(cand.text):''}" onkeydown="if(event.key==='Enter')ritualTomorrowOne()">
-        ${cand?`<div class="why" style="margin-top:8px">오늘 남은 것 중 영향도가 가장 큰 일: <b>${esc(cand.text)}</b> (${nd}로 넘깁니다)</div>`:''}
-        <button class="rbig acc" style="margin-top:16px" onclick="ritualTomorrowOne()">저녁 리추얼 마치기 ✓</button>
-        <button class="btn ghost sm" style="width:100%;margin-top:8px" onclick="ritualFinish('pm')">내일은 아침에 정할게요</button>` },
+
+  /* ── 1단 ③ 잘한 것 · 감사한 것 ── */
+  { q:'오늘 <u>잘한 것</u>과 <u>감사한 것</u>을 한 줄씩.',
+    why:'뇌는 실패를 훨씬 오래 기억합니다. 잘한 것을 말로 옮기는 순간에만 그 경험이 자기효능감으로 남습니다. 미룬 자신을 비난하지 않는 것이, 다음 착수 확률을 가장 크게 올립니다.',
+    bd:`<label class="fld"><span class="lb">👏 오늘 잘한 것</span>
+          <textarea data-focus rows="2" placeholder="예: 3반 수업에서 아이들 질문을 끝까지 기다렸다"
+            oninput="setDay('${d}','praise',this.value)">${esc(day.praise)}</textarea></label>
+        <label class="fld"><span class="lb">🙏 감사한 것</span>
+          <textarea rows="2" placeholder="예: 옆 반 선생님이 실험 준비를 도와주셨다"
+            oninput="setDay('${d}','gratitude',this.value)">${esc(day.gratitude)}</textarea></label>
+        <button class="rbig" style="margin-top:14px" onclick="ritualNext()">오늘을 닫고 → 내일 열기</button>` },
+
+  /* ── 2단 내일 열기 — 첫 행동 하나만 ── */
+  { q:'내일의 <u>첫 행동</u> 하나만 예약합니다.',
+    why:'오늘은 닫혔습니다. 여기는 <b>만회하는 자리가 아니라 결정을 넘기는 자리</b>입니다. 전날의 내가 결정하면, 내일 아침의 나는 실행만 하면 됩니다 — 하나면 충분합니다.',
+    bd:`<div class="rsplit"><span>— 여기서부터 내일 —</span></div>
+        <label class="fld"><span class="lb">▶ 내일 시작할 일 하나 <span class="hint">(끝낼 것은 내일 아침에 정합니다)</span></span>
+          <input type="text" id="rtomo" data-focus placeholder="예: 시스템사고 글 초안"
+            onkeydown="if(event.key==='Enter')document.getElementById('rtCue').focus()"></label>
+        <label class="fld"><span class="lb">⏱ 신호 (IF) <span class="hint">— ${nd} (${wd(nd)}) 시간표 기준</span></span>
+          <select id="rtCue">${cueSelOpts(nd,null)}</select></label>
+        <label class="fld"><span class="lb">▶ 첫 행동 (THEN)</span>
+          <input type="text" id="rtFirst" placeholder="예: 초안 파일을 열고 10분 타이머를 켠다"></label>
+        ${left.length?`<div class="why" style="margin-top:6px">오늘 하지 못한 일에서 고를 수도 있습니다 — <b>만회가 아니라 재예약</b>입니다.</div>
+          <div class="rpick">${left.slice(0,6).map(t=>`<button onclick="ritTomoPick(${esc(JSON.stringify(t.text))})">${esc(t.text)}</button>`).join('')}</div>`:''}
+        <button class="rbig acc" style="margin-top:16px" onclick="ritualTomorrowOne()">예약하고 저녁 리추얼 마치기 ✓</button>
+        <button class="btn ghost sm" style="width:100%;margin-top:8px" onclick="ritualFinish('pm')">오늘은 예약 없이 마칠게요</button>` },
+
   { q:'', why:'',
     bd:`<div class="rdone"><div class="big">🌙</div>
         <div class="msg">오늘 하루, 잘 닫았습니다</div>
-        <div class="sub">과제 ${doneN}/${ts.length} 완료 · 습관 ${day.habits.length}/${S.habits.length}<br>🔥 리추얼 연속 ${ritualStreak()}일</div>
+        <div class="sub">착수 ${startN}/${ts.length} · 완료 ${doneN} · 습관 ${day.habits.length}/${S.habits.length}<br>🔥 리추얼 연속 ${ritualStreak()}일</div>
+        <div class="sub" style="margin-top:10px;font-size:12.5px">놓친 계획을 만회하려 하지 마세요. <b>다음 신호에서 다시 시작하면 됩니다.</b></div>
         <div style="margin-top:18px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
           <button class="btn" onclick="go('dash')">대시보드</button>
           <button class="btn ghost" onclick="go('review')">🔁 주간 회고 보기</button></div></div>` }];
@@ -3257,27 +3570,50 @@ function openMemo(d,kind,id){
       </div>
       <div id="duenow" style="margin-top:5px;font-size:12.5px">${(()=>{const i=dueInfo(o.due);
         return i?`<span class="dbadge ${i.cls}" style="cursor:default">${i.txt}</span> ${o.due} (${wd(o.due)})`:'<span class="hint">마감일 없음 — 정해두면 끝낼 때까지 오늘 목록에 계속 나타납니다</span>';})()}</div>
-    </label>`:''}
+    </label>
+    <label class="fld"><span class="lb">🧩 오늘의 약속 유형 <span class="hint">— 끝낼 것 1 · 시작할 것 1 · 바로 할 것 1</span></span>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        ${T_ORDER.map(ty=>`<button class="btn ${o.type===ty?'':'ghost'} sm"
+          onclick="memoCapture();setTaskType('${d}','${id}','${o.type===ty?'':ty}');openMemo('${d}','task','${id}')">${T_TYPES[ty].e} ${T_TYPES[ty].l}</button>`).join('')}
+      </div></label>
+    <label class="fld"><span class="lb">⏱ 실행 신호 (IF) <span class="hint">— 시각이 아니라 «무엇을 하고 나면»</span></span>
+      <select id="cuesel" onchange="memoCapture();setCueRef('${d}','${id}',this.value);openMemo('${d}','task','${id}')">${cueSelOpts(d,o)}</select>
+      <input type="text" id="cuetx" value="${esc(o.cue||'')}" style="margin-top:5px"
+        placeholder="직접 쓰기 — 위에서 «신호 고르기»를 택하면 이 칸이 쓰입니다"></label>
+    <label class="fld"><span class="lb">▶ 첫 행동 (THEN) <span class="hint">— 3분 안에 끝나는 물리적 행동 하나</span></span>
+      <input type="text" id="firsttx" value="${esc(o.first||'')}" placeholder="예: 평가계획 파일을 연다 · 초안을 열고 결론 첫 문장을 읽는다"></label>
+    <div class="hint" style="margin:-4px 0 8px">과제명이 아니라 <b>첫 행동</b>을 적으면 뇌가 협상할 거리가 사라집니다 —
+      «수행평가 계획 수정»이 아니라 «평가계획 파일을 열어 날짜 세 개 표시».</div>`:''}
     <label class="fld"><span class="lb">🎯 핵심 성공 요인 (CSF) <span class="hint">— 이 일이 성공하려면 반드시 지켜야 할 것</span></span>
       <textarea id="csftx" rows="3" placeholder="예: 학생 예시 답안 2개를 미리 준비 · 도입 5분 안에 질문 던지기">${esc(o.csf||'')}</textarea></label>
     <label class="fld"><span class="lb">🗒 메모 <span class="hint">— 하고 난 뒤의 기록</span></span>
       <textarea id="memotx" rows="4" placeholder="이 시간에 무슨 일이 있었는지, 무엇을 느꼈는지 — 짧아도 됩니다">${esc(o.memo||'')}</textarea></label>
     <div class="hint" style="margin-top:2px">핵심 성공 요인은 <b>시간표 블록에 마우스를 올리면</b> 바로 보이고,
       메모와 함께 <b>일상 기록</b>에도 쌓입니다.</div>
-    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">
-      <button class="btn ghost" onclick="closeModal()">닫기</button>
-      <button class="btn" onclick="saveMemo()">저장</button></div>`);
+    <div style="display:flex;gap:8px;justify-content:space-between;margin-top:12px;flex-wrap:wrap">
+      <span style="display:flex;gap:8px;flex-wrap:wrap">
+        ${kind==='task'?`<button class="btn ghost" onclick="memoCapture();closeModal();openMoveTask('${d}','${id}')">⇄ 이동</button>`:''}
+        <button class="btn ghost" onclick="memoCapture();closeModal();openRecur('${d}','${kind}','${id}')"
+          title="이 항목을 주기에 맞춰 자동으로 만들어 둡니다">🔁 반복${recOf(o.rid)?' · '+esc(recLabel(recOf(o.rid))):''}</button></span>
+      <span style="display:flex;gap:8px"><button class="btn ghost" onclick="closeModal()">닫기</button>
+      <button class="btn" onclick="saveMemo()">저장</button></span></div>`);
   setTimeout(()=>{const t=document.getElementById('csftx');if(t)t.focus();},60);}
+/* 모달이 열린 채로 다시 그려야 할 때(유형·신호 변경) 입력 중인 값을 잃지 않도록 먼저 거둬들인다 */
+function memoCapture(){
+  const o=findItem(MEMO.d,MEMO.kind,MEMO.id); if(!o)return null;
+  const t=document.getElementById('memotx'), c=document.getElementById('csftx'),
+        dq=document.getElementById('duetx'), ct=document.getElementById('cuetx'), ft=document.getElementById('firsttx');
+  if(t){o.memo=t.value.trim(); if(!o.memo)delete o.memo;}
+  if(c){o.csf=c.value.trim(); if(!o.csf)delete o.csf;}
+  if(dq){const v=dq.value.trim(); if(v)o.due=v; else delete o.due;}
+  if(ct){const v=ct.value.trim(); if(v)o.cue=v; else delete o.cue;}
+  if(ft){const v=ft.value.trim(); if(v)o.first=v; else delete o.first;}
+  save(); return o;}
 function saveMemo(){
-  const o=findItem(MEMO.d,MEMO.kind,MEMO.id); if(!o){closeModal();return;}
-  const t=document.getElementById('memotx'), c=document.getElementById('csftx');
-  o.memo=(t?t.value:'').trim(); if(!o.memo)delete o.memo;
-  o.csf=(c?c.value:'').trim(); if(!o.csf)delete o.csf;
-  const dq=document.getElementById('duetx');
-  if(dq){const v=(dq.value||'').trim(); if(v)o.due=v; else delete o.due;}
+  const o=memoCapture(); if(!o){closeModal();return;}
   o.memoAt=new Date().toISOString(); save(); closeModal();
   toast('저장했습니다 — 시간표에 마우스를 올리면 바로 보입니다');
-  if(S.view==='day'){renderTasks(MEMO.d);renderSchedule(MEMO.d);}else render();}
+  if(S.view==='day'){renderTasks(MEMO.d);renderOne(MEMO.d);renderSchedule(MEMO.d);}else render();}
 function dayMemos(d){
   const x=S.days[d]; if(!x)return [];
   const out=[];
@@ -4322,6 +4658,11 @@ function tipTask(d,t){
      ${S.days[d]&&S.days[d].one===t.id?'<span class="tchip">🁢 오늘의 ONE</span>':''}
      ${(()=>{const i=dueInfo(t.due);return i?`<span class="tchip ${i.over?'over':''}">${i.txt} · 마감 ${t.due}(${wd(t.due)})</span>`:'';})()}
      ${(()=>{const h=taskHome(t.id,d);return h!==d?`<span class="tchip">↩ ${h} 에서 넘어옴</span>`:'';})()}
+     ${T_TYPES[t.type]?`<span class="tchip">${T_TYPES[t.type].e} ${T_TYPES[t.type].l}</span>`:''}
+     ${recOf(t.rid)?`<span class="tchip">↻ ${esc(recLabel(recOf(t.rid)))}</span>`:''}
+     ${isStarted(t)&&t.status!=='done'?'<span class="tchip">◐ 착수함</span>':''}
+     ${tipSec('신호 (IF)',cueText(d,t))}
+     ${tipSec('첫 행동 (THEN)',t.first)}
      ${tipSec('핵심 성공 요인 (CSF)',t.csf,'tcsf')}
      ${tipSec('메모',t.memo)}
      ${!t.csf&&!t.memo?'<div class="tsec" style="opacity:.6;font-size:11.5px">🎯 를 눌러 핵심 성공 요인을 적어두면 여기에 함께 보입니다.</div>':''}`);}
@@ -4331,6 +4672,7 @@ function tipEvent(d,e,isRec){
     `<div class="th">${esc(e.title||'(제목 없음)')}</div>
      <div class="tm2">${d} (${wd(d)}) · ${e.start}–${e.end}${isRec?' · 반복':''}${e.gEventId?' · 구글 연결':''}</div>
      ${e.role?`<span class="tchip">${esc(roleName(e.role))}</span>`:''}
+     ${recOf(e.rid)?`<span class="tchip">↻ ${esc(recLabel(recOf(e.rid)))}</span>`:''}
      ${tipSec('핵심 성공 요인 (CSF)',e.csf,'tcsf')}
      ${tipSec('메모',e.memo)}`);}
 /* 수업 말풍선 */
@@ -4361,8 +4703,10 @@ function dueInfo(due){
   return {n:n,txt:'D+'+(-n),cls:'over',over:true};}
 function dueBadge(d,t){
   const i=dueInfo(t.due); if(!i)return '';
-  return `<button class="dbadge ${i.cls}" onclick="openMemo('${d}','task','${t.id}')"
-    title="마감 ${t.due} (${wd(t.due)})${i.over?' — 지났습니다':''}">${i.txt}</button>`;}
+  /* 마감이 지난 것은 자책 장치가 되지 않게 — 누르면 '다음 신호로 재예약' 창이 열린다 */
+  const fn=i.over?`openResched('${d}','${t.id}')`:`openMemo('${d}','task','${t.id}')`;
+  return `<button class="dbadge ${i.cls}" onclick="${fn}"
+    title="마감 ${t.due} (${wd(t.due)})${i.over?' — 만회하지 말고 다음 신호로 재예약하세요':''}">${i.txt}</button>`;}
 function setDue(d,id,v){const t=findTask(d,id);if(!t)return;
   v=(v||'').trim(); if(v)t.due=v; else delete t.due;
   save(); if(S.view==='day'){renderTasks(S.ui.day);renderOne(S.ui.day);renderSchedule(S.ui.day);} else render();}
@@ -4390,6 +4734,698 @@ function carriedTasks(d){
     x=addDays(x,-1);}
   return out;}
 function dayTasks(d){return ((S.days[d]||{}).tasks||[]).concat(carriedTasks(d));}
+
+
+/* ============================================================
+   ⑰ 신호(IF) → 첫 행동(THEN) · 착수 · 오늘의 약속 3가지
+   ------------------------------------------------------------
+   왜 만들었는가 (2026-09 대화의 진단):
+   · 실천이 막히는 지점은 '무엇을 할지 모름'이 아니라 '결정과 첫 행동 사이의 협상'이다.
+   · 그래서 다이어리를 계획표가 아니라 '행동 스위치'로 바꾼다.
+       ① 과제명이 아니라 3분 안에 끝나는 첫 물리적 행동을 적는다 (first)
+       ② 시각이 아니라 신호를 정한다 — "3교시가 끝나면" (cueRef / cue)
+       ③ 완료가 아니라 착수를 성공으로 센다 (startedAt, status='prog')
+       ④ 하루의 약속은 끝낼 것 1 · 시작할 것 1 · 바로 할 것 1 (type)
+   이 앱만의 값어치: 신호를 교시·공강 데이터에서 골라 쓸 수 있고,
+   휴업일·요일 교체·수업 이동이 반영된 '그날의 실제 공강'으로 자동 계산된다.
+   ============================================================ */
+const T_TYPES={
+  end  :{l:'끝낼 것',  e:'🁢',c:'#c98a1a',h:'오늘 안에 끝낸다'},
+  start:{l:'시작할 것',e:'▶', c:'#1f9d8f',h:'착수하면 성공'},
+  quick:{l:'바로 할 것',e:'⚡',c:'#5b53b0',h:'2분이면 끝난다'}
+};
+const T_ORDER=['end','start','quick'];
+
+/* ── 신호(cue) ── */
+const CUE_FIX=[
+  {ref:'wake', t:'알람이 울리면'},
+  {ref:'am',   t:'출근해서 자리에 앉으면'},
+  {ref:'gap',  t:'비는 시간(공강)이 시작되면'},
+  {ref:'lunch',t:'점심을 먹고 자리에 앉으면'},
+  {ref:'pm',   t:'퇴근하기 전에'},
+  {ref:'home', t:'저녁 식사를 마치면'}
+];
+function cuePeriods(){ try{ return (K().periods||[]); }catch(e){ return []; } }
+function cueOpts(d){
+  const out=CUE_FIX.slice();
+  cuePeriods().forEach(p=>out.push({ref:'p'+p.p+'e', t:p.p+'교시가 끝나면'}));
+  return out;}
+/* 그날의 실제 시간표를 보고 신호를 구체적인 문장·시각으로 바꾼다.
+   휴업일이거나 그 교시가 사라졌으면 말이 되게 바꿔 준다. */
+function cueResolve(d,ref){
+  if(!ref)return null;
+  d=d||today();
+  let off=null; try{ if(kOn())off=kOffMap()[d]||null; }catch(e){}
+  if(ref!=='gap'){
+    const fx=CUE_FIX.find(x=>x.ref===ref);
+    if(fx)return {txt:fx.t,at:''};
+  }else{
+    let on=[]; try{ on=kOn()?kLessonsOn(d):[]; }catch(e){}
+    if(off)return {txt:'('+off+') 비는 시간이 생기면',at:''};
+    if(!on.length)return {txt:'비는 시간이 생기면',at:''};
+    const used=on.map(x=>x.p), ps=cuePeriods(), first=Math.min.apply(null,used);
+    const c=ps.find(p=>p.p>first&&used.indexOf(p.p)<0);
+    if(c)return {txt:c.p+'교시 공강이 시작되면',at:c.s};
+    const last=Math.max.apply(null,used); let pe={s:'',e:''};
+    try{pe=kPerOf(last);}catch(e){}
+    return {txt:last+'교시(오늘 마지막 수업)가 끝나면',at:pe.e||''};
+  }
+  const m=/^p(\d+)e$/.exec(ref);
+  if(m){ const p=+m[1]; let pe={s:'',e:''}; try{pe=kPerOf(p);}catch(e){}
+    if(off)return {txt:'('+off+') '+p+'교시쯤',at:pe.e||''};
+    return {txt:p+'교시가 끝나면',at:pe.e||''};}
+  return null;}
+function cueText(d,t){
+  if(!t)return '';
+  const r=cueResolve(d,t.cueRef);
+  if(r)return r.txt+(r.at?' ('+r.at+')':'');
+  return (t.cue||'').trim();}
+function cueSelOpts(d,t){
+  const cur=(t&&t.cueRef)||'';
+  return '<option value="">— 신호 고르기 —</option>'+
+    cueOpts(d).map(o=>{const r=cueResolve(d,o.ref);
+      const lb=r?(r.txt+(r.at?' ('+r.at+')':'')):o.t;
+      return `<option value="${o.ref}" ${cur===o.ref?'selected':''}>${esc(lb)}</option>`;}).join('');}
+function repaintDay(d){ d=d||S.ui.day||today();
+  if(S.view==='day'){renderTasks(d);renderOne(d);renderSchedule(d);} else render(); }
+function setCueRef(d,id,ref){const t=findTask(d,id);if(!t)return;
+  if(ref)t.cueRef=ref; else delete t.cueRef;
+  save();repaintDay(d);}
+function setCueTxt(d,id,v){const t=findTask(d,id);if(!t)return;
+  v=(v||'').trim(); if(v){t.cue=v; delete t.cueRef;} else delete t.cue;
+  save();repaintDay(d);}
+function setFirstAct(d,id,v){const t=findTask(d,id);if(!t)return;
+  v=(v||'').trim(); if(v)t.first=v; else delete t.first;
+  save();repaintDay(d);}
+function setTaskType(d,id,ty){const t=findTask(d,id);if(!t)return;
+  if(ty){bringHome(d,id);t.type=ty; if(ty==='end'){ensureDay(d);S.days[d].one=id;}}
+  else {delete t.type; if(S.days[d]&&S.days[d].one===id)S.days[d].one='';}
+  save();repaintDay(d);}
+
+/* ── 착수(started) — 완료가 아니라 시작을 센다 ── */
+function isStarted(t){return !!(t&&(t.startedAt||t.status==='prog'||t.status==='done'));}
+function cycleTask(id,d){d=d||S.ui.day||today();const t=findTask(d,id);if(!t)return;
+  if(t.status==='done'){t.status='todo';delete t.startedAt;}
+  else if(isStarted(t)){t.status='done';}
+  else {t.status='prog'; t.startedAt=new Date().toISOString();}
+  save();
+  if(S.view==='dash'){render();return;}
+  if(S.view==='checkin'){vCheckin(document.getElementById('view'));return;}
+  repaintDay(d);}
+function typeBadge(t){const ty=T_TYPES[t.type];if(!ty)return '';
+  return `<span class="tbadge" style="background:${ty.c}" title="${ty.l}">${ty.e}</span>`;}
+
+/* ── 이월 과제를 오늘로 데려오기 (약속으로 삼으면 오늘 것이 된다) ── */
+function bringHome(d,id){
+  const h=taskHome(id,d); if(h===d)return findTask(d,id);
+  const src=S.days[h]; if(!src||!src.tasks)return findTask(d,id);
+  const i=src.tasks.findIndex(t=>t.id===id); if(i<0)return findTask(d,id);
+  const t=src.tasks.splice(i,1)[0];
+  if(src.one===id)src.one='';
+  ensureDay(d); S.days[d].tasks.push(t); return t;}
+
+/* ── 오늘의 약속 3가지 ── */
+function promiseAll(d,ty){
+  ensureDay(d);
+  const all=dayTasks(d).filter(x=>x.text&&x.status!=='drop');
+  const out=all.filter(x=>x.type===ty);
+  if(ty==='end'){const o=all.find(x=>x.id===S.days[d].one);
+    if(o&&out.indexOf(o)<0)out.unshift(o);
+    else if(o)out.splice(out.indexOf(o),1),out.unshift(o);}
+  return out;}
+function promiseOf(d,ty){return promiseAll(d,ty)[0]||null;}
+function promiseCount(d){
+  ensureDay(d);
+  const all=dayTasks(d).filter(x=>x.text&&x.status!=='drop');
+  return all.filter(x=>T_TYPES[x.type]||x.id===S.days[d].one).length;}
+function pickPromise(d,ty,id){
+  if(!id)return; if(!findTask(d,id))return;
+  bringHome(d,id); const t=findTask(d,id); if(!t)return;
+  t.type=ty; if(ty==='end')S.days[d].one=id;
+  save();repaintDay(d);}
+function clearPromise(d,ty,id){
+  const t=id?findTask(d,id):promiseOf(d,ty); if(!t)return;
+  delete t.type; if(S.days[d]&&S.days[d].one===t.id)S.days[d].one='';
+  save();repaintDay(d);}
+function newPromise(d,ty,inp){
+  const v=(inp.value||'').trim(); if(!v)return;
+  ensureDay(d);
+  const role=(S.profile.roles[0]||{}).id||'';
+  const t={id:uid(),text:v,priority:(ty==='end'?'A':'B'),role:role,
+           impact:(ty==='end'?5:3),status:'todo',type:ty};
+  S.days[d].tasks.push(t);
+  if(ty==='end')S.days[d].one=t.id;
+  inp.value=''; save(); repaintDay(d);}
+
+/* 대시보드용 요약 — 첫 화면에서 바로 «착수» 버튼을 누를 수 있게 */
+function promiseMini(d){
+  ensureDay(d);
+  const has=T_ORDER.some(ty=>!!promiseOf(d,ty));
+  if(!has)return `<div class="card promise" style="margin-top:16px">
+    <div class="phd">🎯 오늘의 약속 <span class="hint">아직 정하지 않았습니다</span></div>
+    <p class="hint" style="margin:0">끝낼 것 1 · 시작할 것 1 · 바로 할 것 1 — 이 세 줄이면 오늘의 다이어리는 충분합니다.
+      각각에 <b>신호</b>와 <b>첫 행동</b>까지 적어두면, 그 시각에 다시 결정하지 않아도 됩니다.</p>
+    <div style="margin-top:9px;display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn sm" onclick="go('day')">오늘의 세 가지 정하기 →</button>
+      <button class="btn ghost sm" onclick="ritualStart('am')">☀️ 아침 리추얼로</button></div></div>`;
+  const all=dayTasks(d).filter(t=>t.text&&t.status!=='drop');
+  const startedN=all.filter(t=>isStarted(t)).length;
+  return `<div class="card promise" style="margin-top:16px">
+    <div class="phd">🎯 오늘의 약속 <span class="hint">눌러서 ○ 아직 → ◐ 착수 → ✓ 완료</span>
+      <span style="margin-left:auto;font-size:12px;font-weight:700;color:var(--muted)">착수 ${startedN}/${all.length}</span></div>
+    <div class="pslots">${T_ORDER.map(ty=>{const t=promiseOf(d,ty),c=T_TYPES[ty];
+      const done=!!(t&&t.status==='done'), st=!!(t&&isStarted(t)&&!done), ct=t?cueText(d,t):'';
+      return `<div class="pslot s-${ty}${done?' done':''}${st?' started':''}"${t?` data-tk="${tipTask(d,t)}"`:''}>
+        <div class="plab"><b>${c.e} ${c.l}</b><span>${c.h}</span></div>
+        ${t?`<div class="ptxt">${esc(t.text)}</div>
+          ${ct?`<div class="pline"><span class="pk">신호</span><span class="pcueTxt">${esc(ct)}</span></div>`:''}
+          ${t.first?`<div class="pline"><span class="pk">첫 행동</span><span class="pcueTxt">${esc(t.first)}</span></div>`:''}
+          <div class="pact"><button class="p3 ${done?'dn':(st?'st':'')}" onclick="cycleTask('${t.id}','${d}')">${done?'✓ 완료':(st?'◐ 착수함':'○ 아직')}</button>
+            <button class="btn ghost sm" onclick="go('day')">자세히</button></div>`
+        :`<div class="pempty">비어 있습니다.</div>
+          <div class="pact"><button class="btn ghost sm" onclick="go('day')">정하기 →</button></div>`}
+      </div>`;}).join('')}</div></div>`;}
+
+function pSlotHtml(d,ty){
+  const cfg=T_TYPES[ty], list=promiseAll(d,ty), t=list[0]||null;
+  const done=!!(t&&t.status==='done'), started=!!(t&&isStarted(t)&&!done);
+  let body;
+  if(!t){
+    const others=dayTasks(d).filter(x=>x.text&&x.status!=='drop'&&x.status!=='done'&&!T_TYPES[x.type]).slice(0,30);
+    body=`<div class="pempty">${cfg.h} — 하나만 고르세요.</div>
+      <select onchange="pickPromise('${d}','${ty}',this.value)">
+        <option value="">오늘 과제에서 고르기…</option>
+        ${others.map(x=>`<option value="${x.id}">${esc(x.text)}</option>`).join('')}</select>
+      <input type="text" placeholder="＋ 새로 적기" onchange="newPromise('${d}','${ty}',this)"
+        onkeydown="if(event.key==='Enter')this.blur()">`;
+  }else{
+    body=`<div class="ptxt">${esc(t.text)}</div>
+      <div class="pline"><span class="pk">신호</span>
+        <select onchange="setCueRef('${d}','${t.id}',this.value)" title="시간이 아니라 '무엇을 하고 나면'으로 정합니다">${cueSelOpts(d,t)}</select></div>
+      ${(!t.cueRef&&t.cue)?`<div class="pline"><span class="pk"></span><span class="pcueTxt">${esc(t.cue)}</span></div>`:''}
+      <div class="pline"><span class="pk">첫 행동</span>
+        <input type="text" value="${esc(t.first||'')}" placeholder="3분이면 되는 행동 하나"
+          onchange="setFirstAct('${d}','${t.id}',this.value)" onkeydown="if(event.key==='Enter')this.blur()"></div>
+      ${list.length>1?`<div class="pxtra">${list.slice(1).map(x=>`<span title="${esc(x.text)}">＋ ${esc(x.text.slice(0,12))}${x.text.length>12?'…':''}</span>`).join('')}</div>`:''}
+      <div class="pact">
+        <button class="p3 ${done?'dn':(started?'st':'')}" onclick="cycleTask('${t.id}','${d}')"
+          title="○ 아직 → ◐ 착수 → ✓ 완료">${done?'✓ 완료':(started?'◐ 착수함':'○ 아직')}</button>
+        <button class="btn ghost sm" onclick="openMemo('${d}','task','${t.id}')" title="마감일 · 핵심 성공 요인 · 메모">🎯</button>
+        ${(ty==='end'&&!t.start)?`<button class="btn ghost sm" onclick="sendOneToSchedule('${d}','${t.id}')">🕘 시간표</button>`:''}
+        <button class="btn ghost sm" onclick="clearPromise('${d}','${ty}','${t.id}')">해제</button>
+      </div>`;
+  }
+  return `<div class="pslot s-${ty}${done?' done':''}${started?' started':''}"${t?` data-tk="${tipTask(d,t)}"`:''}>
+    <div class="plab"><b>${cfg.e} ${cfg.l}</b><span>${cfg.h}</span></div>${body}</div>`;}
+
+/* ── 마감일이 지난 과제 — 자책이 아니라 재예약 ── */
+function openResched(d,id){
+  const t=findTask(d,id); if(!t){toast('과제를 찾지 못했습니다');return;}
+  MEMO={d:d,kind:'task',id:id};
+  const i=dueInfo(t.due), td=today();
+  modalBox(`<h3 style="margin:0 0 4px">↻ 다음 신호로 재예약</h3>
+    <div class="hint" style="margin-bottom:10px"><b>${esc(t.text||'')}</b> · 마감 ${t.due||'—'}${i?' · '+i.txt:''}</div>
+    <div class="callout co-brand" style="margin:0 0 12px">
+      <b>밀린 계획은 만회하지 않습니다.</b><br>
+      습관 연구에서 한두 번 거른 것은 형성에 거의 영향이 없고, 실제로 그만두게 만드는 것은 그 뒤의 자기비난입니다.
+      지난 날짜를 되돌리려 하지 말고 <b>다음에 실행할 신호 하나</b>만 정하세요.</div>
+    <label class="fld"><span class="lb">⏱ 실행 신호 (IF)</span>
+      <select id="rsCue">${cueSelOpts(td,t)}</select></label>
+    <label class="fld"><span class="lb">▶ 첫 행동 (THEN) <span class="hint">— 3분 안에 끝나는 물리적 행동 하나</span></span>
+      <input type="text" id="rsFirst" value="${esc(t.first||'')}" placeholder="예: 평가계획 파일을 연다"></label>
+    <label class="fld"><span class="lb">📅 새 마감일</span>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+        <input type="date" id="rsDue" style="max-width:170px" value="${esc(t.due||'')}">
+        <button class="btn ghost sm" onclick="document.getElementById('rsDue').value='${td}'">오늘</button>
+        <button class="btn ghost sm" onclick="document.getElementById('rsDue').value='${addDays(td,1)}'">내일</button>
+        <button class="btn ghost sm" onclick="document.getElementById('rsDue').value='${addDays(td,3)}'">+3일</button>
+        <button class="btn ghost sm" onclick="document.getElementById('rsDue').value='${addDays(td,7)}'">+7일</button>
+      </div></label>
+    <div class="hint">중요하지 않은 일을 <b>하지 않기로 결정하는 것</b>도 실행력입니다.</div>
+    <div style="display:flex;gap:8px;justify-content:space-between;margin-top:12px;flex-wrap:wrap">
+      <button class="btn ghost" onclick="dropTask('${d}','${id}')">이 일은 놓아주기</button>
+      <span style="display:flex;gap:8px">
+        <button class="btn ghost" onclick="closeModal()">닫기</button>
+        <button class="btn" onclick="saveResched()">재예약</button></span></div>`);
+  setTimeout(()=>{const e=document.getElementById('rsCue');if(e)e.focus();},60);}
+function saveResched(){
+  const t=findTask(MEMO.d,MEMO.id); if(!t){closeModal();return;}
+  const c=document.getElementById('rsCue'), f=document.getElementById('rsFirst'), du=document.getElementById('rsDue');
+  if(c){ if(c.value)t.cueRef=c.value; else delete t.cueRef; }
+  if(f){ const v=f.value.trim(); if(v)t.first=v; else delete t.first; }
+  if(du){ const v=du.value.trim(); if(v)t.due=v; else delete t.due; }
+  if(t.status==='hold')t.status='todo';
+  save(); closeModal();
+  toast('다음 신호로 재예약했습니다 — 만회가 아니라 다시 시작입니다');
+  repaintDay(S.ui.day||today());}
+function dropTask(d,id){const t=findTask(d,id);if(!t)return;
+  if(!confirm('이 과제를 「하지 않기로」 결정할까요?\n\n모든 일을 실행하는 것이 실행력이 아닙니다.\n중요한 일을 실제로 하기 위해 중요하지 않은 일을 하지 않는 것도 실행력입니다.'))return;
+  t.status='drop'; save(); closeModal();
+  toast('놓아주었습니다 — 목록에서 사라집니다');
+  repaintDay(d);}
+
+/* ── 협상 문장 — 미룬 그 순간의 생각 ── */
+const NEG_CHIPS=['시간이 애매해서','제대로 하려면 시간이 더 필요해서','조금 피곤해서',
+  '결정을 조금 더 생각해보려고','다른 일이 먼저 들어와서','내키지 않아서','자료·준비가 아직 안 돼서','잊어버렸다'];
+function setNegot(d,v){ensureDay(d);S.days[d].negot=v;save();}
+function negPick(d,v){ensureDay(d);
+  const cur=(S.days[d].negot||'').trim();
+  S.days[d].negot = cur ? (cur.indexOf(v)>=0?cur:cur+' · '+v) : v;
+  save(); if(S.view==='checkin')vCheckin(document.getElementById('view'));}
+function notStarted(d){return dayTasks(d).filter(t=>t.text&&t.status!=='drop'&&!isStarted(t));}
+
+/* ── 착수율 · 협상 문장 집계 ── */
+function startStats(n){n=n||14;
+  let opp=0,st=0;
+  const byCue={'교시·공강 신호':[0,0],'그 밖의 신호':[0,0],'신호 없음':[0,0]};
+  const neg={}; let d=today(), days=0;
+  for(let i=0;i<n;i++){
+    const x=S.days[d];
+    if(x){
+      let any=false;
+      (x.tasks||[]).forEach(t=>{
+        if(!t.text||t.status==='drop')return;
+        if(!(T_TYPES[t.type]||x.one===t.id))return;      /* '약속'한 것만 센다 */
+        any=true; opp++; const s=isStarted(t); if(s)st++;
+        const k=(t.cueRef&&/^(p\d+e|gap)$/.test(t.cueRef))?'교시·공강 신호'
+               :((t.cueRef||t.cue)?'그 밖의 신호':'신호 없음');
+        if(s)byCue[k][0]++; byCue[k][1]++;});
+      if(any)days++;
+      const g=(x.negot||'').trim();
+      if(g)g.split(/\s*·\s*/).forEach(p=>{p=p.trim();if(p)neg[p]=(neg[p]||0)+1;});
+    }
+    d=addDays(d,-1);}
+  return {opp:opp,st:st,byCue:byCue,neg:neg,days:days};}
+function startCard(){
+  const s=startStats(14);
+  const negs=Object.keys(s.neg).map(k=>({k:k,n:s.neg[k]})).sort((a,b)=>b.n-a.n).slice(0,8);
+  const mx=Math.max(1,...negs.map(x=>x.n));
+  const cues=Object.keys(s.byCue).filter(k=>s.byCue[k][1]>0);
+  return `<div class="card"><h3>▶ 착수율 · 협상 문장 <span class="hint">(최근 14일 — 완료가 아니라 <b>착수</b>를 봅니다)</span></h3>
+    <p class="hint" style="margin-top:-4px">목표는 100%가 아닙니다. <b>“나는 왜 실행하지 못하지?”</b>라는 자기평가를
+      <b>“어떤 조건에서 잘 시작하고, 어떤 조건에서 협상이 길어지는가?”</b>라는 관찰로 바꾸는 것이 이 숫자의 쓸모입니다.</p>
+    <div class="stat" style="margin-bottom:12px">
+      <div class="s"><div class="n">${s.opp?Math.round(s.st/s.opp*100):0}%</div><div class="l">착수율 (${s.st}/${s.opp})</div></div>
+      <div class="s"><div class="n">${s.opp}</div><div class="l">실행 기회 (약속한 일)</div></div>
+      <div class="s"><div class="n">${s.days}일</div><div class="l">약속을 적은 날</div></div>
+    </div>
+    ${cues.length?`<h4 style="font-size:13px;margin:4px 0 6px">신호의 종류에 따라 — <span class="hint">신호가 구체적일수록 착수가 쉬운가?</span></h4>
+      ${cues.map(k=>{const a=s.byCue[k];const p=a[1]?Math.round(a[0]/a[1]*100):0;
+        return `<div class="negrow"><div class="nk">${k} <span class="hint">${a[0]}/${a[1]}</span></div>
+          <div class="nb"><i style="width:${p}%;background:var(--accent)"></i></div>
+          <div class="nn">${p}%</div></div>`;}).join('')}`:''}
+    <h4 style="font-size:13px;margin:14px 0 6px">반복되는 협상 문장 <span class="hint">— 여기에 개입점(leverage point)이 있습니다</span></h4>
+    ${negs.length? negs.map(x=>`<div class="negrow"><div class="nk" title="${esc(x.k)}">${esc(x.k)}</div>
+        <div class="nb"><i style="width:${Math.round(x.n/mx*100)}%"></i></div>
+        <div class="nn">${x.n}회</div></div>`).join('')
+      :'<p class="hint">저녁 리추얼에서 <b>“미룬 그 순간 무슨 생각을 했는가”</b>를 적으면 여기에 쌓입니다. 2주만 모으면 패턴이 보입니다.</p>'}
+    <p class="hint" style="margin-top:10px">가장 자주 나오는 문장이 형군샘의 <b>협상 문장</b>입니다.
+      그것을 없애려 하지 말고, 그 문장이 나오지 않는 <b>조건</b>을 만드세요 — 대개 신호를 더 구체적으로 하거나 첫 행동을 더 작게 하면 됩니다.</p>
+  </div>`;}
+
+/* ── 실행 모드 / 설계 모드 ── */
+function curMode(){
+  const m=(S.settings&&S.settings.mode)||'auto';
+  if(m==='do'||m==='design')return m;
+  const g=parseD(today()).getDay();
+  if(g===0||g===6)return 'design';
+  if(g===(((S.settings||{}).reviewDay)|0))return 'design';
+  return 'do';}
+function modeChipHtml(){const m=curMode(), auto=((S.settings&&S.settings.mode)||'auto')==='auto';
+  return `<button class="modechip${m==='design'?' design':''}" onclick="cycleMode()"
+    title="실행 모드 — 오늘의 세 가지에 집중하고 설계 단계를 접습니다&#10;설계 모드 — 인생·연간·월간까지 모두 펼칩니다&#10;자동 — 평일은 실행, 주말과 회고일은 설계&#10;(눌러서 자동 → 실행 고정 → 설계 고정 순으로 바뀝니다)">
+    ${m==='design'?'🧭 설계':'⚡ 실행'}${auto?' · 자동':' 고정'}</button>`;}
+function cycleMode(){const m=(S.settings.mode||'auto');
+  S.settings.mode=(m==='auto')?'do':(m==='do'?'design':'auto');
+  save();renderNav();render();
+  toast(S.settings.mode==='auto'?'자동 — 평일은 실행 모드, 주말·회고일은 설계 모드'
+       :(S.settings.mode==='do'?'⚡ 실행 모드로 고정했습니다':'🧭 설계 모드로 고정했습니다'));}
+function chainFold(d){
+  const ws=weekStart(d), wk=ensureWeek(ws);
+  const n=(S.profile.roles||[]).filter(r=>(wk.rocks[r.id]||'').trim()).length;
+  return `<div class="calib no-print" style="margin:0 0 4px">
+    <span>⚡ <b>실행 모드</b> — 설계 단계는 접어 두었습니다</span>
+    <span>· 이번 주 큰 바위 <b>${n}개</b></span>
+    <button class="btn ghost sm no-print" onclick="S.settings.mode='design';save();renderNav();render()">🧭 펼쳐 보기</button>
+  </div>`;}
+
+
+/* ============================================================
+   ⑲ 주간 개요 — 종이 플래너 '1주' 시트 양식
+   ------------------------------------------------------------
+   형식: 7일을 가로로 놓고 각 날짜마다
+         [🁢 끝낼 것] → [To-do(우선순위 과제)] → [시간표 05~24시] → [정리]
+         를 세로로 쌓아 한 장에 본다.
+   연동: 헤더를 누르면 그날 일간 계획으로 / 과제를 누르면 ○→◐→✓ /
+         빈 칸에 바로 적으면 그날 과제로 추가됩니다(일간과 같은 데이터).
+   ============================================================ */
+const WK_S=5, WK_E=24, WK_H=20;
+function wkBlocks(d){
+  ensureDay(d);
+  const out=[];
+  /* 수업(차시) — 겹치는 구글/가져온 일정은 일간 계획과 같은 규칙으로 숨긴다 */
+  const kR=[];
+  try{ if(kOn())kLessonsOn(d).forEach(x=>{
+    const l=K().logs[x.key]||{}, sm=toMin(x.start), em=toMin(x.end);
+    kR.push([sm,em]);
+    out.push({sm:sm,em:em,t:x.g+' '+x.no,c:kColor(x.g),dn:!!l.done,tk:tipLesson(x),go:''});});
+  }catch(e){}
+  const hide=(S.settings.hideDupG!==false)&&kR.length>0;
+  const dup=(sm,em)=>{ if(!hide)return false; const du=Math.max(1,em-sm);
+    return kR.some(r=>{const ov=Math.min(em,r[1])-Math.max(sm,r[0]);return ov>0&&ov>=du*0.6;});};
+  dayTasks(d).forEach(t=>{ if(!t.start||!t.text)return;
+    const sm=toMin(t.start), em=t.end?Math.max(sm+10,toMin(t.end)):sm+60;
+    out.push({sm:sm,em:em,t:t.text,c:roleColor(t.role),dn:t.status==='done',st:isStarted(t),tk:tipTask(d,t),go:''});});
+  dayEvents(d).forEach(e=>{ if(!e.start)return;
+    const sm=toMin(e.start), em=toMin(e.end||addMinStr(e.start,60));
+    if(e.fromG&&dup(sm,em))return;
+    out.push({sm:sm,em:em,t:e.title,c:e.role?roleColor(e.role):'#5b53b0',dn:!!e.done,tk:tipEvent(d,e),go:''});});
+  return layoutBlocks(out);}
+function wkItem(d,t){
+  const dn=t.status==='done', st=isStarted(t)&&!dn;
+  const r=(S.profile.roles||[]).find(x=>x.id===t.role);
+  return `<div class="wkitem${dn?' dn':(st?' stt':'')}" data-tk="${tipTask(d,t)}"
+    onclick="wkCycle('${d}','${t.id}')" title="누르면 ○ 아직 → ◐ 착수 → ✓ 완료">
+    <span class="k" style="background:${r?(r.color||'#5b53b0'):'#8792a3'}">${esc(roleAbbr(t.role))}</span>
+    <span class="x">${dn?'✓':(st?'◐':'')} ${esc(t.text)}</span></div>`;}
+function wkOverview(ws){
+  const days=[]; for(let i=0;i<7;i++)days.push(addDays(ws,i));
+  const td=today(), c=[];
+  const H=(WK_E-WK_S)*WK_H;
+  /* 1행 — 날짜 헤더 */
+  c.push(`<div class="wkc f r1 wklab">${ws.slice(0,4).slice(2)}년</div>`);
+  days.forEach(d=>{const g=parseD(d).getDay();
+    let bg=''; try{ if(kOn()){const o=kOffMap()[d]; const sp=kSwapMap()[d];
+      if(o)bg=`<span class="wkbadge">${esc(o)}</span>`;
+      else if(sp)bg=`<span class="wkbadge">${KDOW[sp.use]}요일</span>`;} }catch(e){}
+    c.push(`<div class="wkc r1 wkhd ${d===td?'tod':''} ${g===0?'sun':(g===6?'sat':'')}" onclick="openDay('${d}')"
+      title="${d} — 누르면 일간 계획으로">${(+d.slice(8))} ${wd(d)}${bg}<small>${d.slice(5,7)}월</small></div>`);});
+  /* 2행 — 끝낼 것(ONE) */
+  c.push(`<div class="wkc f wklab"><span>🁢</span><span>끝낼</span></div>`);
+  days.forEach(d=>{ensureDay(d);const t=promiseOf(d,'end');
+    c.push(`<div class="wkc wkbox one">${t?wkItem(d,t):`<span class="hint" style="font-size:9.5px;cursor:pointer" onclick="openDay('${d}')">＋ 정하기</span>`}</div>`);});
+  /* 3행 — To-do */
+  c.push(`<div class="wkc f wklab"><span>To</span><span>do</span></div>`);
+  days.forEach(d=>{const one=promiseOf(d,'end');
+    const ts=dayTasks(d).filter(t=>t.text&&t.status!=='drop'&&(!one||t.id!==one.id));
+    c.push(`<div class="wkc wkbox">${ts.map(t=>wkItem(d,t)).join('')}
+      <input class="wkadd" data-d="${d}" placeholder="＋ 할 일" onchange="wkAddTask('${ws}','${d}',this)"
+        onkeydown="if(event.key==='Enter')this.blur()"></div>`);});
+  /* 4행 — 시간표 */
+  let rul='';
+  for(let h=WK_S;h<WK_E;h++)rul+=`<i style="top:${(h-WK_S)*WK_H+3}px">${h>12?h-12:h}</i>`;
+  c.push(`<div class="wkc f wkrul" style="height:${H}px">${rul}</div>`);
+  days.forEach(d=>{
+    let hr=''; for(let h=WK_S+1;h<WK_E;h++)hr+=`<div class="wkhr" style="top:${(h-WK_S)*WK_H}px"></div>`;
+    const bs=wkBlocks(d);
+    const bl=bs.map(b=>{
+      const top=Math.max(0,(b.sm-WK_S*60)/60*WK_H), hh=Math.max(9,(b.em-b.sm)/60*WK_H-1);
+      const w=100/(b.cols||1), left=(b.col||0)*w;
+      const cc=blockColors(b.c,!!b.dn);
+      return `<div class="wkb" data-tk="${b.tk||''}" onclick="openDay('${d}')"
+        style="top:${top}px;height:${hh}px;left:calc(${left}% + 1px);width:calc(${w}% - 2px);
+        background:${cc.bg};color:${cc.fg};border-left-color:${b.c}" title="${esc(b.t)}">${esc(b.t)}</div>`;}).join('');
+    c.push(`<div class="wkc wklane" style="height:${H}px">${hr}${bl}</div>`);});
+  /* 5행 — 정리 */
+  c.push(`<div class="wkc f wklab">정리</div>`);
+  days.forEach(d=>{const ts=dayTasks(d).filter(t=>t.text&&t.status!=='drop');
+    const st=ts.filter(t=>isStarted(t)).length, dn=ts.filter(t=>t.status==='done').length;
+    c.push(`<div class="wkc wkft">착수 <b>${st}</b>/${ts.length}<br>완료 ${dn}</div>`);});
+
+  const wk=ensureWeek(ws), mk=monthKey(ws), m=(S.months||{})[mk]||{};
+  const rocks=(S.profile.roles||[]).filter(r=>((wk.rocks||{})[r.id]||'').trim());
+  return `<h3>주간 개요 <span class="hint">(종이 플래너 «1주» 양식 — 일간 계획의 우선순위 과제·시간표가 그대로 올라옵니다)</span></h3>
+    ${(m.focus||'').trim()?`<div class="hint" style="margin:-4px 0 6px"><b>${mk} 중점</b> · ${esc((m.focus||'').replace(/\n/g,' / ').slice(0,120))}</div>`:''}
+    ${rocks.length?`<div class="wkrock">${rocks.map(r=>`<span><b style="background:${r.color||'#5b53b0'}">${esc(roleAbbr(r.id))}</b>${esc(wk.rocks[r.id])}</span>`).join('')}</div>`:''}
+    <div class="wkw"><div class="wkgrid">${c.join('')}</div></div>
+    <div class="synchint" style="margin-top:7px">날짜를 누르면 그날 <b>일간 계획</b>으로 · 과제를 누르면 <b>○ 아직 → ◐ 착수 → ✓ 완료</b> ·
+      빈 칸에 바로 적으면 그날 과제가 됩니다 · 블록에 마우스를 올리면 신호·첫 행동·메모가 보입니다.</div>`;}
+function wkRepaint(ws){const el=document.getElementById('wkov');
+  if(el)el.innerHTML=wkOverview(ws); else vWeek(document.getElementById('view'));}
+function wkCycle(d,id){const t=findTask(d,id);if(!t)return;
+  if(t.status==='done'){t.status='todo';delete t.startedAt;}
+  else if(isStarted(t))t.status='done';
+  else {t.status='prog';t.startedAt=new Date().toISOString();}
+  save();wkRepaint(S.ui.week||weekStart(d));}
+function wkAddTask(ws,d,inp){const v=(inp.value||'').trim();if(!v)return;
+  ensureDay(d);const role=(S.profile.roles[0]||{}).id||'';
+  S.days[d].tasks.push({id:uid(),text:v,priority:'B',role:role,impact:3,status:'todo'});
+  inp.value='';save();wkRepaint(ws);
+  setTimeout(()=>{const e=document.querySelector('.wkadd[data-d="'+d+'"]');if(e)e.focus();},20);}
+
+
+/* ============================================================
+   ⑳ 반복 과제·일정 — 주기에 맞춰 '실제로' 만들어 기록한다
+   ------------------------------------------------------------
+   왜 가상 표시가 아니라 실체화인가:
+   · 가상으로 겹쳐 보여주면 그 날짜의 착수·완료·메모·핵심 성공 요인을 따로 저장할 곳이 없다.
+   · 반복되는 일일수록 «했는가»의 기록이 쌓여야 의미가 있다(습관·수업·회의).
+   언제 만들어지는가:
+   · `ensureDay(d)` 가 불릴 때 그 날짜분만 만든다(게으른 실체화).
+     날짜를 열거나 주간 개요가 7일을 훑는 순간 생긴다 — 미래 전체를 미리 만들지 않는다.
+   · 한 번 만든 날짜는 `S.days[d].rgen` 에 규칙 id 를 남긴다.
+     → 사용자가 그 날 것을 지워도 다시 살아나지 않는다.
+   ============================================================ */
+const WDN=['일','월','화','수','목','금','토'];
+const REC_RULES=[['none','반복 없음'],['daily','매일'],['weekday','평일(월~금)'],['weekly','매주'],
+  ['biweekly','격주'],['monthly','매월 같은 날짜'],['nthdow','매월 n번째 요일']];
+let RECDRAFT=null;
+function recOf(rid){ if(!rid)return null; return (S.recurring||[]).find(x=>x.id===rid)||null; }
+function recDays(r){ if(Array.isArray(r.days)&&r.days.length)return r.days;
+  return [(r.byday==null?1:r.byday)]; }
+function recHits(r,d){
+  if(!r||r.off)return false;
+  if(r.from&&d<r.from)return false;
+  if(r.until&&d>r.until)return false;
+  const D=parseD(d), w=D.getDay();
+  switch(r.rule){
+    case 'daily':   return true;
+    case 'weekday': return w>=1&&w<=5;
+    case 'weekly':  return recDays(r).indexOf(w)>=0;
+    case 'biweekly':{
+      if(recDays(r).indexOf(w)<0)return false;
+      const a=weekStart(r.anchor||r.from||d), b=weekStart(d);
+      const n=Math.round((parseD(b)-parseD(a))/604800000);
+      return n>=0 && n%2===0; }
+    case 'monthly': return D.getDate()===(r.dom||(r.from?+r.from.slice(8):1));
+    case 'nthdow':{
+      const nd=(r.ndow==null?1:r.ndow); if(w!==nd)return false;
+      const day=D.getDate();
+      if((r.nth|0)===-1){const last=new Date(D.getFullYear(),D.getMonth()+1,0).getDate();return day>last-7;}
+      return Math.ceil(day/7)===(r.nth||1); }
+  }
+  return false;}
+function recLabel(r){ if(!r)return '';
+  const dz=recDays(r).slice().sort().map(x=>WDN[x]).join('·');
+  let t='';
+  switch(r.rule){
+    case 'daily':   t='매일'; break;
+    case 'weekday': t='평일(월~금)'; break;
+    case 'weekly':  t='매주 '+dz+'요일'; break;
+    case 'biweekly':t='격주 '+dz+'요일'; break;
+    case 'monthly': t='매월 '+(r.dom||1)+'일'; break;
+    case 'nthdow':  t='매월 '+((r.nth|0)===-1?'마지막':(r.nth||1)+'번째')+' '+WDN[r.ndow==null?1:r.ndow]+'요일'; break;
+    default: t='반복';
+  }
+  if(r.until)t+=' ('+r.until+'까지)';
+  if(r.off)t+=' · 일시중지';
+  return t;}
+function recFirstOn(r){ let d=(r.from&&r.from>today())?r.from:today();
+  for(let i=0;i<800;i++){ if(recHits(r,d))return d; d=addDays(d,1);} return today();}
+function recRRULE(r){
+  const C=['SU','MO','TU','WE','TH','FR','SA'];
+  const dz=recDays(r).map(x=>C[x]).join(',');
+  let t;
+  switch(r.rule){
+    case 'daily':   t='FREQ=DAILY'; break;
+    case 'weekday': t='FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR'; break;
+    case 'weekly':  t='FREQ=WEEKLY;BYDAY='+dz; break;
+    case 'biweekly':t='FREQ=WEEKLY;INTERVAL=2;BYDAY='+dz; break;
+    case 'monthly': t='FREQ=MONTHLY;BYMONTHDAY='+(r.dom||1); break;
+    case 'nthdow':  t='FREQ=MONTHLY;BYDAY='+(((r.nth|0)===-1)?'-1':(r.nth||1))+C[r.ndow==null?1:r.ndow]; break;
+    default:        t='FREQ=WEEKLY;BYDAY='+dz;
+  }
+  if(r.until)t+=';UNTIL='+r.until.replace(/-/g,'')+'T235900Z';
+  return t;}
+
+/* ── 게으른 실체화 (ensureDay 가 호출) ── */
+function recFill(d,x){
+  const list=S.recurring; if(!list||!list.length)return;
+  const t=today();
+  if(d<addDays(t,-400)||d>addDays(t,400))return;      /* 터무니없이 먼 날짜는 만들지 않는다 */
+  if(!Array.isArray(x.rgen))x.rgen=[];
+  for(let i=0;i<list.length;i++){
+    const r=list[i];
+    if(!r||!r.id||r.off)continue;
+    if(x.rgen.indexOf(r.id)>=0)continue;              /* 이 날짜는 이미 만들었다(지웠어도 재생성 안 함) */
+    if(!recHits(r,d))continue;
+    x.rgen.push(r.id);
+    if((r.kind||'event')==='task'){
+      const o={id:uid(),text:r.text||r.title||'',priority:r.priority||'B',role:r.role||'',
+        impact:r.impact||3,status:'todo',start:r.start||'',end:r.end||'',rid:r.id};
+      if(r.cueRef)o.cueRef=r.cueRef;
+      if(r.first)o.first=r.first;
+      if(r.csf)o.csf=r.csf;
+      if(r.type)o.type=r.type;
+      x.tasks.push(o);
+    }else{
+      const st=r.start||'09:00';
+      const o={id:uid(),start:st,end:r.end||addMinStr(st,60),title:r.title||r.text||'',role:r.role||'',rid:r.id};
+      if(r.csf)o.csf=r.csf;
+      x.events.push(o);
+    }
+  }}
+function recStrip(rid){                                /* 연결만 끊고 기록은 남긴다 */
+  Object.keys(S.days||{}).forEach(dd=>{const x=S.days[dd]; if(!x)return;
+    (x.tasks||[]).forEach(t=>{if(t.rid===rid)delete t.rid;});
+    (x.events||[]).forEach(e=>{if(e.rid===rid)delete e.rid;});});}
+function recRemoveFrom(rid,from){                      /* from 이후 날짜에서 실제로 지운다 */
+  Object.keys(S.days||{}).forEach(dd=>{ if(from&&dd<from)return;
+    const x=S.days[dd]; if(!x)return;
+    if(x.tasks)x.tasks=x.tasks.filter(t=>t.rid!==rid);
+    if(x.events)x.events=x.events.filter(e=>e.rid!==rid);});}
+
+/* ── 반복 설정 창 ── */
+function openRecur(d,kind,id){
+  const o=findItem(d,kind,id); if(!o){toast('항목을 찾지 못했습니다');return;}
+  MEMO={d:d,kind:kind,id:id};
+  const r=recOf(o.rid), w=parseD(d).getDay(), dm=+d.slice(8);
+  RECDRAFT={ rule:(r?r.rule:'none'),
+    days:(r&&r.days&&r.days.length?r.days.slice():[w]),
+    from:(r&&r.from)||d, until:(r&&r.until)||'',
+    dom:(r&&r.dom)||dm, nth:(r&&r.nth)||Math.ceil(dm/7),
+    ndow:(r&&r.ndow!=null)?r.ndow:w, anchor:(r&&r.anchor)||weekStart(d) };
+  recModal(d,kind,id);}
+function recTogDay(i,d,kind,id){
+  const a=RECDRAFT.days, k=a.indexOf(i);
+  if(k>=0){ if(a.length>1)a.splice(k,1); } else a.push(i);
+  a.sort(); recModal(d,kind,id);}
+function recPreview(){
+  const R=RECDRAFT; if(!R||R.rule==='none')return '';
+  const out=[]; let x=R.from||today();
+  for(let i=0;i<900&&out.length<6;i++){ if(recHits(R,x))out.push(x.slice(5)+'('+wd(x)+')'); x=addDays(x,1); }
+  return out.length?('만들어질 날짜: '+out.join(' · ')+(R.until?(' … '+R.until+' 까지'):' …')):'해당하는 날짜가 없습니다';}
+function recModal(d,kind,id){
+  const o=findItem(d,kind,id); if(!o){closeModal();return;}
+  const R=RECDRAFT, has=!!recOf(o.rid);
+  const reload=`recModal('${d}','${kind}','${id}')`;
+  modalBox(`<h3 style="margin:0 0 4px">🔁 반복 설정</h3>
+    <div class="hint" style="margin-bottom:10px"><b>${esc(itemLabel(o,kind))}</b> · ${d} (${wd(d)})${o.start?' · '+o.start+(o.end?'–'+o.end:''):''}</div>
+    <label class="fld"><span class="lb">주기</span>
+      <select onchange="RECDRAFT.rule=this.value;${reload}">
+        ${REC_RULES.map(x=>`<option value="${x[0]}" ${R.rule===x[0]?'selected':''}>${x[1]}</option>`).join('')}</select></label>
+    ${(R.rule==='weekly'||R.rule==='biweekly')?`<label class="fld"><span class="lb">요일 <span class="hint">(여러 개 고를 수 있습니다)</span></span>
+      <div class="chips">${WDN.map((w,i)=>`<span class="chip ${R.days.indexOf(i)>=0?'on':''}" onclick="recTogDay(${i},'${d}','${kind}','${id}')">${w}</span>`).join('')}</div></label>`:''}
+    ${R.rule==='monthly'?`<label class="fld"><span class="lb">매월 며칠</span>
+      <input type="number" min="1" max="31" style="max-width:110px" value="${R.dom}" oninput="RECDRAFT.dom=Math.max(1,Math.min(31,+this.value||1))">
+      <span class="hint">31일처럼 없는 달은 건너뜁니다.</span></label>`:''}
+    ${R.rule==='nthdow'?`<label class="fld"><span class="lb">매월 몇 번째 무슨 요일 <span class="hint">(예: 둘째 주 화요일 연구회)</span></span>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        <select style="max-width:110px" onchange="RECDRAFT.nth=+this.value;${reload}">
+          ${[[1,'첫째'],[2,'둘째'],[3,'셋째'],[4,'넷째'],[-1,'마지막']].map(x=>`<option value="${x[0]}" ${(R.nth|0)===x[0]?'selected':''}>${x[1]} 주</option>`).join('')}</select>
+        <select style="max-width:110px" onchange="RECDRAFT.ndow=+this.value;${reload}">
+          ${WDN.map((w,i)=>`<option value="${i}" ${(+R.ndow)===i?'selected':''}>${w}요일</option>`).join('')}</select></div></label>`:''}
+    ${R.rule!=='none'?`<div class="grid2">
+      <label class="fld"><span class="lb">시작일</span>
+        <input type="date" value="${R.from}" onchange="RECDRAFT.from=this.value;RECDRAFT.anchor=weekStart(this.value||'${d}');${reload}"></label>
+      <label class="fld"><span class="lb">종료일 <span class="hint">(비우면 계속)</span></span>
+        <input type="date" value="${R.until}" onchange="RECDRAFT.until=this.value;${reload}"></label></div>
+      <div class="callout co-brand" style="margin:0 0 10px;font-size:12.5px">${esc(recPreview())}</div>`:''}
+    <div class="hint">반복으로 만들면 그 날짜에 <b>항목이 실제로 생깁니다</b> —
+      날짜마다 착수·완료·메모·핵심 성공 요인을 따로 기록할 수 있습니다.
+      미래 전체를 미리 만들지 않고, <b>그 날짜를 열 때</b> 만들어집니다.</div>
+    <div style="display:flex;gap:8px;justify-content:space-between;margin-top:12px;flex-wrap:wrap">
+      ${has?`<button class="btn ghost" onclick="recDetach('${d}','${kind}','${id}')">반복 해제</button>`:'<span></span>'}
+      <span style="display:flex;gap:8px"><button class="btn ghost" onclick="closeModal()">닫기</button>
+      <button class="btn" onclick="recApply('${d}','${kind}','${id}')">${has?'반복 수정':'반복 만들기'}</button></span></div>`);}
+function recApply(d,kind,id){
+  const o=findItem(d,kind,id); if(!o){closeModal();return;}
+  const R=RECDRAFT;
+  if(!R||R.rule==='none'){ recDetach(d,kind,id,true); return; }
+  if(!S.recurring)S.recurring=[];
+  let r=recOf(o.rid);
+  if(!r){ r={id:uid()}; S.recurring.push(r); }
+  Object.assign(r,{kind:kind,rule:R.rule,days:R.days.slice(),byday:R.days[0],
+    dom:R.dom,nth:R.nth,ndow:R.ndow,from:R.from,until:R.until,
+    anchor:weekStart(R.from||d),off:false,
+    start:o.start||'',end:o.end||'',role:o.role||'',
+    title:(kind==='event'?(o.title||''):''),
+    text:(kind==='task'?(o.text||''):''),
+    priority:o.priority||'B',impact:o.impact||3,type:o.type||'',
+    cueRef:o.cueRef||'',first:o.first||'',csf:o.csf||''});
+  o.rid=r.id;
+  ensureDay(d); const x=S.days[d];
+  if(!Array.isArray(x.rgen))x.rgen=[];
+  if(x.rgen.indexOf(r.id)<0)x.rgen.push(r.id);        /* 오늘 것은 이미 있으니 다시 만들지 않는다 */
+  save(); closeModal();
+  toast('반복을 설정했습니다 — '+recLabel(r));
+  repaintDay(d);}
+function recDetach(d,kind,id,quiet){
+  const o=findItem(d,kind,id); if(!o){closeModal();return;}
+  const rid=o.rid;
+  if(rid&&!quiet&&!confirm('이 항목의 반복을 해제할까요?\n\n앞으로 새로 만들어지지 않습니다.\n이미 만들어진 날짜의 기록은 그대로 남습니다.'))return;
+  if(rid){ S.recurring=(S.recurring||[]).filter(x=>x.id!==rid); recStrip(rid); }
+  delete o.rid;
+  save(); closeModal(); toast('반복을 해제했습니다');
+  repaintDay(d);}
+
+/* ── 반복 항목 삭제 범위 ── */
+function openRecDel(d,kind,id){
+  const o=findItem(d,kind,id); if(!o)return;
+  if(!o.rid){ if(kind==='task')delTaskId(id,d); else delEvent(d,id); return; }
+  modalBox(`<h3 style="margin:0 0 4px">🔁 반복 항목 삭제</h3>
+    <div class="hint" style="margin-bottom:12px"><b>${esc(itemLabel(o,kind))}</b> · ${d} (${wd(d)}) · ${esc(recLabel(recOf(o.rid)))}</div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <button class="btn ghost" style="text-align:left" onclick="recDel('${d}','${kind}','${id}','one')">
+        이 날만 삭제 <span class="hint">— 다른 날짜는 그대로 둡니다</span></button>
+      <button class="btn ghost" style="text-align:left" onclick="recDel('${d}','${kind}','${id}','after')">
+        이 날부터 앞으로 전부 <span class="hint">— 지난 기록은 남깁니다</span></button>
+      <button class="btn ghost" style="text-align:left" onclick="recDel('${d}','${kind}','${id}','all')">
+        모든 날에서 삭제 <span class="hint">— 지난 기록까지 지웁니다</span></button>
+    </div>
+    <div style="text-align:right;margin-top:12px"><button class="btn" onclick="closeModal()">취소</button></div>`);}
+function recDel(d,kind,id,scope){
+  const o=findItem(d,kind,id); if(!o){closeModal();return;}
+  const rid=o.rid;
+  if(scope==='one'){ closeModal(); if(kind==='task')delTaskId(id,d); else delEvent(d,id); return; }
+  if(scope==='all'&&!confirm('지난 기록까지 모두 지울까요? 되돌릴 수 없습니다.')){return;}
+  const r=recOf(rid);
+  if(scope==='after'){
+    if(r){ r.until=addDays(d,-1);
+      if(r.from&&r.until<r.from)S.recurring=(S.recurring||[]).filter(x=>x.id!==rid); }
+    recRemoveFrom(rid,d);
+  }else{
+    S.recurring=(S.recurring||[]).filter(x=>x.id!==rid);
+    recRemoveFrom(rid,'');
+  }
+  save(); closeModal();
+  toast(scope==='after'?'이 날부터 반복을 끝냈습니다':'반복을 모두 삭제했습니다');
+  repaintDay(d);}
+
+/* ── 반복 항목 관리 (일정 알림 화면) ── */
+function recListCard(){
+  const list=(S.recurring||[]);
+  return `<div class="card"><h3>🔁 반복 과제 · 일정 <span class="hint">(주기에 맞춰 그 날짜에 자동으로 만들어 둡니다)</span></h3>
+    <p class="hint" style="margin-top:-4px">일간 계획에서 과제의 <b>🎯</b> 또는 일정의 <b>🗒</b> 를 누르고 <b>«🔁 반복»</b> 에서 설정합니다.
+      새 일정을 만들 때는 시간표 추가 줄의 <b>반복 선택</b>으로도 됩니다.
+      반복으로 지정하면 항목이 <b>실제로 생기므로</b> 날짜마다 착수·완료·메모를 따로 기록할 수 있습니다.</p>
+    ${list.length? list.map(r=>`<div class="recrow ${r.off?'off':''}">
+      <span class="tag" style="flex:none;background:${(r.kind==='task')?'var(--brand)':'var(--accent)'}">${(r.kind==='task')?'과제':'일정'}</span>
+      <b style="flex:1;min-width:130px;font-size:13px">${esc(r.title||r.text||'(제목 없음)')}</b>
+      <span class="hint" style="flex:none">${r.start?esc(r.start+(r.end?'–'+r.end:'')):'시간 없음'}</span>
+      <span style="flex:none;font-size:12px;font-weight:700;color:var(--brand-d)">${esc(recLabel(r))}</span>
+      <button class="btn ghost sm no-print" onclick="recToggleOff('${r.id}')">${r.off?'▶ 다시 켜기':'⏸ 일시중지'}</button>
+      <button class="btn ghost sm no-print" onclick="recDropAll('${r.id}')">삭제</button></div>`).join('')
+     : '<p class="hint">아직 반복으로 지정한 항목이 없습니다.</p>'}
+    ${list.length?`<p class="hint" style="margin-top:8px">일시중지하면 <b>앞으로만</b> 만들어지지 않습니다 — 이미 만든 기록은 그대로입니다.</p>`:''}
+  </div>`;}
+function recToggleOff(rid){const r=recOf(rid); if(!r)return;
+  r.off=!r.off; save(); render();
+  toast(r.off?'일시중지했습니다 — 새로 만들어지지 않습니다':'다시 켰습니다');}
+function recDropAll(rid){const r=recOf(rid); if(!r)return;
+  if(!confirm('«'+(r.title||r.text||'')+'» 반복을 삭제할까요?\n\n앞으로 만들어지지 않습니다.\n이미 만들어진 날짜의 기록은 그대로 둡니다.'))return;
+  S.recurring=(S.recurring||[]).filter(x=>x.id!==rid); recStrip(rid);
+  save(); render(); toast('반복을 삭제했습니다');}
 
 /* ============ INIT ============ */
 (function init(){const had=load();if(!S.view)S.view='dash';
