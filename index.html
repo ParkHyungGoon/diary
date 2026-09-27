@@ -689,7 +689,49 @@
   .kapp .kw{flex:none;font-size:10.5px;color:var(--gold);font-weight:800}
   .kquick{flex:none;border:none;background:transparent;color:#9aa1b0;font-size:13px;cursor:pointer;
     padding:0 4px;line-height:1;font-family:inherit}
-  .kquick:hover{color:var(--brand)}
+  .kquick:hover{color:var(--brand)}  .li-m.jl{margin-top:3px;line-height:1.5;word-break:break-word;white-space:pre-wrap}
+  /* ── 큰 바위 (주간) ── */
+  .rkgrp{display:flex;border-top:1px solid var(--line)}
+  .rkgrp:first-child{border-top:none}
+  .rklab{flex:none;width:26px;color:#fff;font-size:10.5px;font-weight:800;writing-mode:vertical-rl;
+    text-orientation:upright;letter-spacing:-1.5px;display:flex;align-items:center;justify-content:center;
+    padding:5px 0;overflow:hidden;text-align:center}
+  .rkrows{flex:1;min-width:0;padding:6px 9px;display:flex;flex-direction:column;gap:6px}
+  .rkrow{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+  .rkchk{flex:none;width:21px;height:21px;border-radius:7px;border:1px solid var(--line);background:#fff;
+    color:#b9bfcc;font-size:11px;cursor:pointer;padding:0;line-height:1;font-family:inherit}
+  .rkchk:hover{border-color:var(--brand);color:var(--brand)}
+  .rkchk.on{background:var(--done);border-color:var(--done);color:#fff}
+  .rkin{flex:1 1 190px;min-width:0;border:1px solid transparent;background:transparent;font-size:13px;
+    padding:4px 7px;border-radius:7px;font-family:inherit;color:inherit;outline:none}
+  .rkin:hover{background:#f7f8fc}
+  .rkin:focus{background:#fff;border-color:var(--brand);box-shadow:0 0 0 2px rgba(91,83,176,.12)}
+  .rkrow.done .rkin{color:var(--brand-d);font-weight:800;text-decoration:underline;
+    text-decoration-color:var(--done);text-decoration-thickness:2.5px;text-underline-offset:3px}
+  .rkst{flex:none;font-size:11px;font-weight:700;color:#5b6070;background:#f2f4fa;border-radius:6px;padding:2px 8px;white-space:nowrap}
+  .rkst.warn{background:#fdf0d8;color:#8a5a00}
+  .rkst.ok{background:var(--accent-soft);color:#12796f}
+  .rkday{display:inline-flex;gap:3px;flex-wrap:wrap}
+  .rkday i{font-style:normal;font-size:10px;font-weight:700;background:#eef0f6;color:#5b6070;
+    border-radius:5px;padding:2px 6px;cursor:pointer}
+  .rkday i.st{background:#e8f0fa;color:var(--prog)}
+  .rkday i.dn{background:var(--done);color:#fff}
+  .rkday i:hover{outline:1px solid var(--brand)}
+  .rkin.newrk{border:1px dashed var(--line);flex:0 0 auto;align-self:stretch}
+  .rkrows>.rkin{flex:0 0 auto}
+  /* ── 월간 중점 줄 ── */
+  .fcrow{display:flex;gap:6px;align-items:center;flex-wrap:wrap;padding:4px 0;border-bottom:1px dotted var(--line)}
+  .fcrow:last-of-type{border-bottom:none}
+  .fcin{flex:1 1 190px;min-width:0;border:1px solid transparent;background:transparent;font-size:13px;
+    padding:4px 7px;border-radius:7px;font-family:inherit;color:inherit;outline:none}
+  .fcin:hover{background:#f7f8fc}
+  .fcin:focus{background:#fff;border-color:var(--brand);box-shadow:0 0 0 2px rgba(91,83,176,.12)}
+  .fcin.newfc{border:1px dashed var(--line);flex:0 0 auto;display:block;width:100%}
+  .fcw{display:flex;gap:3px;flex-wrap:wrap}
+  .fcw button{border:1px solid var(--line);background:#fff;border-radius:6px;font-size:10.5px;font-weight:800;
+    padding:3px 8px;cursor:pointer;font-family:inherit;color:var(--muted)}
+  .fcw button:hover{border-color:var(--brand);color:var(--brand)}
+  .fcw button.on{background:var(--brand);border-color:var(--brand);color:#fff}
 </style>
 </head>
 <body>
@@ -802,7 +844,7 @@ function blank(){return{
   klass:null,                      /* 교사용 수업 기록 모듈 — kFix()가 채운다 */
   view:"dash", ui:{month:"", week:"", day:"", book:"", navOpen:{}, lcYear:0, taskSort:"role"}
 };}
-function save(){ try{ S.meta.savedAt=new Date().toLocaleString('ko-KR'); localStorage.setItem(KEY,JSON.stringify(S)); setSave("자동저장됨 "+S.meta.savedAt);}catch(e){ setSave("자동저장 불가 — 백업을 사용하세요"); } try{stampSchedule();}catch(e){} }
+function save(){ RSEQ++; try{ S.meta.savedAt=new Date().toLocaleString('ko-KR'); localStorage.setItem(KEY,JSON.stringify(S)); setSave("자동저장됨 "+S.meta.savedAt);}catch(e){ setSave("자동저장 불가 — 백업을 사용하세요"); } try{stampSchedule();}catch(e){} }
 /* 얕은 병합(Object.assign) 때문에 새로 추가된 하위 키는 기존 사용자 데이터에서 사라집니다.
    아래 migrate()가 그 구멍을 메웁니다. load()와 importJSON() 두 곳 모두에서 호출해야 합니다. */
 function migrate(){
@@ -1137,11 +1179,7 @@ function vMonth(v){
      <p class="hint" style="margin-top:8px">날짜를 클릭하면 그날의 일간 계획으로 이동합니다.</p>
    </div>
    <div class="grid2">
-     <div class="card"><h3>이 달의 중점 3</h3>
-       ${(m.goalIds||[]).length?`<div class="hint" style="margin-top:-4px;margin-bottom:6px">이 달에 진척시킬 올해 목표:
-         ${(m.goalIds||[]).map(gid=>{const g=(S.annual.goals||[]).find(x=>x.id===gid);return g?`<b>${esc(g.text)}</b>`:'';}).filter(Boolean).join(' · ')}</div>`:''}
-       <textarea oninput="setMonth('${mk}','focus',this.value)" placeholder="이 달 가장 중요한 3가지">${esc(m.focus)}</textarea>
-       <button class="btn ghost sm no-print" style="margin-top:8px" onclick="pushMonthPlan('${mk}')">☁ 이 달 계획 구글 캘린더에 추가(종일)</button></div>
+     ${focusCard(mk)}
      <div class="card"><h3>월 성찰</h3>
        <label class="fld"><span class="lb">잘된 점</span><textarea oninput="setMonth('${mk}','good',this.value)">${esc(m.good)}</textarea></label>
        <label class="fld"><span class="lb">아쉬운 점 · 다음 달 조정</span><textarea oninput="setMonth('${mk}','next',this.value)">${esc(m.next)}</textarea></label></div>
@@ -1174,11 +1212,7 @@ function vWeek(v){
      <button class="btn ghost sm" onclick="shiftWeek(-7)">‹ 지난주</button>
      <b>${ws} ~ ${addDays(ws,6)}</b>
      <button class="btn ghost sm" onclick="shiftWeek(7)">다음주 ›</button></div></div>
-   <div class="card"><h3>역할별 큰 바위 (이번 주 꼭 할 중요한 일)</h3>
-     ${S.profile.roles.map(r=>`<div class="row-item"><div style="flex:none;width:150px;font-weight:700;font-size:12.5px;padding-top:8px">${esc(r.name)}</div>
-       <input type="text" value="${esc((wk.rocks||{})[r.id]||'')}" placeholder="이번 주 이 역할의 큰 바위" oninput="setRock('${ws}','${r.id}',this.value)"></div>`).join('')}
-     <button class="btn ghost sm no-print" style="margin-top:6px" onclick="pushWeekPlan('${ws}')">☁ 이 주 계획 구글 캘린더에 추가(월~일 종일)</button>
-   </div>
+   ${rockCard(ws)}
    <div class="card" id="wkov">${wkOverview(ws)}</div>
    <div class="card"><h3>주 성찰</h3>
      <label class="fld"><span class="lb">이번 주 잘된 점 · 배움</span><textarea oninput="setWeek('${ws}','good',this.value)">${esc(wk.good)}</textarea></label>
@@ -1188,7 +1222,7 @@ function vWeek(v){
      <button class="btn" onclick="go('day')">다음: 일간 →</button></span></div>`;
 }
 function shiftWeek(n){S.ui.week=addDays(S.ui.week,n);save();vWeek(document.getElementById('view'));}
-function setRock(ws,rid,val){const wk=ensureWeek(ws);if(!wk.rocks)wk.rocks={};wk.rocks[rid]=val;save();}
+/* setRock(문자열 한 줄) 은 addRock/setRockText(항목 배열)로 대체되었습니다 — 22절 참고 */
 
 /* ============ 일간 ============ */
 function vDay(v){
@@ -1717,10 +1751,14 @@ function alignPanels(){const t=document.getElementById('tasks'),g=document.getEl
 
 /* ============ 기록: 일상/독서/구상 ============ */
 function vJournal(v){
-  const entries=Object.keys(S.days).filter(d=>S.days[d].journal||S.days[d].reflect||dayMemos(d).length).sort().reverse();
+  /* 하루의 성찰은 네 칸 모두 «기록»이다 — 칭찬만 적은 날도 목록에 올라와야 한다 */
+  const jHas=d=>{const x=S.days[d]||{};
+    return !!(x.journal||x.praise||x.gratitude||x.reflect||x.negot||dayMemos(d).length);};
+  const entries=Object.keys(S.days).filter(jHas).sort().reverse();
   v.innerHTML=`
    <h2 class="vh">📝 일상 기록</h2>
-   <p class="vsub">날짜별 일상·성찰 기록 모음입니다. 일간 계획에서 작성한 내용과 <b>시간표 메모(일자·시각 포함)</b>가 함께 모입니다.</p>
+   <p class="vsub">날짜별 일상·성찰 기록 모음입니다. 일간 계획의 <b>👏 칭찬 · 🙏 감사 · 🔎 성찰·다짐</b>,
+     저녁 리추얼의 <b>💭 미룬 순간의 생각</b>, 그리고 <b>시간표 메모(일자·시각 포함)</b>가 모두 여기로 모입니다.</p>
    <div class="card"><button class="btn sm" onclick="openDay(today())">오늘 기록 쓰기 →</button></div>
    ${entries.length? entries.map(d=>{const day=S.days[d];return `<div class="list-item"><div class="li-h"><span class="li-t">${d} (${wd(d)})</span><span class="li-m no-print"><button class="btn ghost sm" onclick="openDay('${d}')">열기</button></span></div>
      ${dayMemos(d).length?`<div style="margin-top:6px">${dayMemos(d).map(m=>`<div class="memoline">
@@ -1728,8 +1766,10 @@ function vJournal(v){
         <span class="mh" style="border-color:${m.color||(m.role?roleColor(m.role):'var(--brand)')}">${esc(m.title)}</span>
         <span class="mm">${esc(m.memo)}</span></div>`).join('')}</div>`:''}
      ${day.journal?`<div style="font-size:13px;margin-top:6px;white-space:pre-wrap">${esc(day.journal)}</div>`:''}
-     ${day.reflect?`<div class="li-m" style="margin-top:6px">🔎 ${esc(day.reflect)}</div>`:''}
-     ${day.gratitude?`<div class="li-m">🙏 ${esc(day.gratitude)}</div>`:''}</div>`;}).join('') : '<p class="hint">아직 기록이 없습니다.</p>'}`;
+     ${day.praise?`<div class="li-m jl" style="margin-top:6px">👏 ${esc(day.praise)}</div>`:''}
+     ${day.gratitude?`<div class="li-m jl">🙏 ${esc(day.gratitude)}</div>`:''}
+     ${day.reflect?`<div class="li-m jl">🔎 ${esc(day.reflect)}</div>`:''}
+     ${day.negot?`<div class="li-m jl" title="저녁 리추얼 — 미룬 순간의 생각">💭 ${esc(day.negot)}</div>`:''}</div>`;}).join('') : '<p class="hint">아직 기록이 없습니다.</p>'}`;
 }
 /* ================= 📚 AI 독서법 — 읽고 · 남기고 · 말하기 =================
    6단계 · 산출물 중심. 기간은 자유 — 4주에 나눠도, 하루에 몰아 해도 된다.
@@ -2623,7 +2663,16 @@ function ensureDay(d){if(!S.days[d])S.days[d]={tasks:[],sched:{},events:[],habit
 function ensureMonth(mk){if(!S.months[mk])S.months[mk]={focus:"",good:"",next:""};
   const m=S.months[mk];if(!Array.isArray(m.goalIds))m.goalIds=[];if(m.focus==null)m.focus="";return m;}
 function ensureWeek(ws){if(!S.weeks[ws])S.weeks[ws]={rocks:{},good:"",next:""};
-  const w=S.weeks[ws];if(!w.rocks||typeof w.rocks!=='object')w.rocks={};return w;}
+  const w=S.weeks[ws];if(!w.rocks||typeof w.rocks!=='object')w.rocks={};
+  /* 큰 바위: 문자열 한 줄 → 항목 배열. 구버전의 "a / b" 는 두 개로 갈라 준다. */
+  Object.keys(w.rocks).forEach(k=>{const v=w.rocks[k];
+    if(typeof v==='string'){
+      w.rocks[k]=v.split(/\s*\/\s*/).map(x=>x.trim()).filter(Boolean).slice(0,2)
+        .map(t=>({id:uid(),text:t,done:false}));}
+    else if(!Array.isArray(v))w.rocks[k]=[];
+    else w.rocks[k]=v.filter(x=>x&&typeof x==='object').map(x=>{
+      if(!x.id)x.id=uid(); if(x.done==null)x.done=false; if(x.text==null)x.text=''; return x;});});
+  return w;}
 function setDay(d,k,val){ensureDay(d);S.days[d][k]=val;save();}
 function setMonth(mk,k,val){ensureMonth(mk)[k]=val;save();}
 function setWeek(ws,k,val){ensureWeek(ws)[k]=val;save();}
@@ -2777,7 +2826,8 @@ async function pushMonthPlan(mk){ if(!gTokenValid()){toast('구글 로그인이 
   const m=ensureMonth(mk); const txt=(m.focus||'').trim(); if(!txt){toast('이 달의 중점을 먼저 적어주세요');return;}
   try{const r=await gcalInsertAllDay('📅 [이달 중점] '+txt.split('\n')[0].slice(0,40),mk+'-01',1,txt); if(r&&r.id){m.gEventId=r.id;save();} toast('이 달 계획을 구글 캘린더(종일)에 추가했습니다');}catch(e){gReport('추가 실패',e);} }
 async function pushWeekPlan(ws){ if(!gTokenValid()){toast('구글 로그인이 필요합니다 (구글 연동 탭)');return;}
-  const wk=ensureWeek(ws); const rocks=S.profile.roles.map(r=>{const v=(wk.rocks||{})[r.id]; return v?('• '+r.name+': '+v):'';}).filter(Boolean);
+  ensureWeek(ws); const rocks=[];
+  (S.profile.roles||[]).forEach(r=>rocksOf(ws,r.id).forEach(k=>{if(k.text)rocks.push('• '+r.name+': '+k.text+(k.done?' ✓':''));}));
   if(!rocks.length){toast('이 주의 큰 바위를 먼저 적어주세요');return;}
   try{const r=await gcalInsertAllDay('🧩 [주간 목표] '+ws,ws,7,rocks.join('\n')); if(r&&r.id){wk.gEventId=r.id;save();} toast('이 주 계획을 구글 캘린더(월~일 종일)에 추가했습니다');}catch(e){gReport('추가 실패',e);} }
 async function pushDayTasks(d){ if(!gTokenValid()){toast('구글 로그인이 필요합니다 (구글 연동 탭)');return;}
@@ -3370,6 +3420,7 @@ function vReview(v){
        ${x.a.length?`<div class="lz">${x.a.map(a=>`<button class="btn sm" onclick="${a.f}">${a.l}</button>`).join('')}</div>`:''}</div>`).join('')}
    </div>
 
+   ${rockReviewCard(ws)}
    ${kReviewCard()}
    <div class="card"><h3>역할 균형 <span class="hint">(최근 4주 과제 수)</span></h3>
      ${rt.length?rt.map(r=>`<div class="balrow"><div class="bn" title="${esc(r.name)}">${esc(r.name)}</div>
@@ -3561,7 +3612,7 @@ function chainBox(title,sub,items,foot){
     <div class="ch-b">${items.map(it=>`<div class="ch-i">
       ${it.tag?`<span class="ch-g" style="background:${it.color||'var(--brand)'}">${esc(it.tag)}</span>`:''}
       <span class="ch-t">${esc(it.t)}</span>
-      ${(it.btns||[]).map(b=>`<button class="btn ghost sm" onclick="${b.f}">${b.l}</button>`).join('')}</div>`).join('')}
+      ${(it.btns||[]).map(b=>`<button class="btn ghost sm" onclick="${esc(b.f)}">${b.l}</button>`).join('')}</div>`).join('')}
     </div>${foot?`<div class="ch-f">${foot}</div>`:''}</div>`;}
 
 /* 인생 설계 → 연간 */
@@ -3604,34 +3655,38 @@ function addMonthFocus(mk,text){const m=ensureMonth(mk);
 function chainToWeek(ws){
   const mk=monthKey(ws), m=ensureMonth(mk), wk=ensureWeek(ws), items=[];
   (m.focus||'').split('\n').map(s=>s.replace(/^[·\-\s]+/,'').trim()).filter(Boolean).slice(0,6)
-    .forEach(t=>items.push({tag:mk+' 중점',color:'var(--brand)',t:t,btns:[{l:'→ 큰 바위로',f:`rockFrom('${ws}','',${JSON.stringify(t)})`}]}));
+    .forEach(t=>items.push({tag:mk+' 중점',color:'var(--brand)',t:t,
+      btns:[{l:'→ 큰 바위로',f:`rockFrom('${ws}','',${JSON.stringify(t)},{k:'focus',mk:'${mk}'})`}]}));
   (m.goalIds||[]).forEach(gid=>{const g=(S.annual.goals||[]).find(x=>x.id===gid);if(!g)return;
     items.push({tag:g.role?roleName(g.role):'올해 목표',color:g.role?roleColor(g.role):'var(--gold)',t:g.text,
-      btns:[{l:'→ 큰 바위로',f:`rockFrom('${ws}','${g.role||''}',${JSON.stringify(g.text)})`}]});});
+      btns:[{l:'→ 큰 바위로',f:`rockFrom('${ws}','${g.role||''}',${JSON.stringify(g.text)},{k:'goal',gid:'${g.id}'})`}]});});
   return chainBox('월간 계획에서 내려온 것','이 달의 중점 · 이 달에 진척시킬 올해 목표',items,
     '<b>5 월간</b>에서 중점을 적거나 올해 목표를 고르면 여기로 내려옵니다.');}
-function rockFrom(ws,role,text){const wk=ensureWeek(ws);
+function rockFrom(ws,role,text,from){
+  ensureWeek(ws);
+  const roles=S.profile.roles||[];
   let rid=role;
-  if(!rid||!(S.profile.roles||[]).some(r=>r.id===rid)){
-    const empty=(S.profile.roles||[]).find(r=>!(wk.rocks[r.id]||'').trim());
-    rid=(empty||S.profile.roles[0]||{}).id;}
+  if(!rid||!roles.some(r=>r.id===rid)||rocksOf(ws,rid).length>=ROCK_MAX){
+    const free=roles.find(r=>rocksOf(ws,r.id).length<ROCK_MAX);
+    rid=(free||roles[0]||{}).id;}
   if(!rid){toast('먼저 역할을 등록하세요');return;}
-  wk.rocks[rid]=((wk.rocks[rid]||'').trim()?wk.rocks[rid]+' / ':'')+text;
-  save();toast(roleName(rid)+' 역할의 큰 바위로 놓았습니다');vWeek(document.getElementById('view'));}
+  if(addRock(ws,rid,text,from)){
+    toast(roleName(rid)+' 역할의 큰 바위로 놓았습니다');
+    if(S.view==='week')vWeek(document.getElementById('view'));else render();}}
 
 /* 주간 → 일간 */
 function chainToDay(d){
-  const ws=weekStart(d), wk=ensureWeek(ws), items=[];
-  (S.profile.roles||[]).forEach(r=>{const t=(wk.rocks[r.id]||'').trim();if(!t)return;
-    const already=(S.days[d].tasks||[]).some(x=>x.text===t);
-    items.push({tag:r.name,color:r.color,t:t,
-      btns:already?[{l:'✓ 오늘 과제에 있음',f:`toast('이미 오늘 과제에 있습니다')`}]
-                  :[{l:'→ 오늘 과제로',f:`rockToTask('${d}','${ws}','${r.id}')`}]});});
+  const ws=weekStart(d); ensureWeek(ws); const items=[];
+  (S.profile.roles||[]).forEach(r=>{
+    rocksOf(ws,r.id).forEach(k=>{ if(!k.text||k.done)return;
+      const st=rockStat(k.id);
+      const here=st.items.filter(x=>x.d===d).length;
+      items.push({tag:r.name,color:r.color,
+        t:k.text+(st.n?'   — 내려간 것 '+st.n+' · 착수 '+st.st+(here?' · 오늘 '+here+'건':''):'   — 아직 내려간 것이 없습니다'),
+        btns:[{l:'＋ 다음 행동',f:`openRockNext('${ws}','${r.id}','${k.id}')`}]});});});
   return chainBox('주간 계획에서 내려온 것','이번 주 역할별 큰 바위 ('+ws+' ~ '+addDays(ws,6)+')',items,
-    '<b>6 주간</b>에서 역할별 큰 바위를 놓으면 여기로 내려옵니다. 급한 일이 아니라 <b>중요한 일</b>이 하루에 자리를 얻는 통로입니다.');}
-function rockToTask(d,ws,rid){const wk=ensureWeek(ws);const t=(wk.rocks[rid]||'').trim();if(!t)return;
-  ensureDay(d);S.days[d].tasks.push({id:uid(),text:t,priority:'A',role:rid,impact:4,status:'todo',src:{k:'rock',ws:ws,role:rid}});
-  save();toast('오늘의 A 과제로 내렸습니다');vDay(document.getElementById('view'));}
+    '<b>6 주간</b>에서 큰 바위를 놓으면 여기로 내려옵니다. 큰 바위를 그대로 옮기지 말고 <b>＋ 다음 행동</b>으로 3분 안에 시작할 행동 하나를 내려보내세요.');}
+function rockToTask(d,ws,rid){const a=rocksOf(ws,rid); if(!a.length)return; openRockNext(ws,rid,a[0].id);}
 
 /* ============================================================
    ⑩ 시간표 메모 → 일상 기록 연결
@@ -4935,6 +4990,7 @@ function tipTask(d,t){
      ${T_TYPES[t.type]?`<span class="tchip">${T_TYPES[t.type].e} ${T_TYPES[t.type].l}</span>`:''}
      ${recOf(t.rid)?`<span class="tchip">↻ ${esc(recLabel(recOf(t.rid)))}</span>`:''}
      ${isStarted(t)&&t.status!=='done'?'<span class="tchip">◐ 착수함</span>':''}
+     ${(()=>{const c=rockChain(t);return c?`<div class="tsec"><span class="tlab">어디서 내려왔는가</span><div class="twrap">${esc(c.join('\n  ↓ '))}</div></div>`:'';})()}
      ${tipSec('신호 (IF)',cueText(d,t))}
      ${tipSec('첫 행동 (THEN)',t.first)}
      ${tipSec('핵심 성공 요인 (CSF)',t.csf,'tcsf')}
@@ -5336,7 +5392,7 @@ function cycleMode(){const m=(S.settings.mode||'auto');
        :(S.settings.mode==='do'?'⚡ 실행 모드로 고정했습니다':'🧭 설계 모드로 고정했습니다'));}
 function chainFold(d){
   const ws=weekStart(d), wk=ensureWeek(ws);
-  const n=(S.profile.roles||[]).filter(r=>(wk.rocks[r.id]||'').trim()).length;
+  const n=(S.profile.roles||[]).reduce((a,r)=>a+rocksOf(ws,r.id).filter(k=>k.text).length,0);
   return `<div class="calib no-print" style="margin:0 0 4px">
     <span>⚡ <b>실행 모드</b> — 설계 단계는 접어 두었습니다</span>
     <span>· 이번 주 큰 바위 <b>${n}개</b></span>
@@ -5427,10 +5483,11 @@ function wkOverview(ws){
     c.push(`<div class="wkc wkft">착수 <b>${st}</b>/${ts.length}<br>완료 ${dn}</div>`);});
 
   const wk=ensureWeek(ws), mk=monthKey(ws), m=(S.months||{})[mk]||{};
-  const rocks=(S.profile.roles||[]).filter(r=>((wk.rocks||{})[r.id]||'').trim());
+  const rocks=[]; (S.profile.roles||[]).forEach(r=>rocksOf(ws,r.id).forEach(k=>{if(k.text)rocks.push({r:r,k:k});}));
   return `<h3>주간 개요 <span class="hint">(종이 플래너 «1주» 양식 — 일간 계획의 우선순위 과제·시간표가 그대로 올라옵니다)</span></h3>
     ${(m.focus||'').trim()?`<div class="hint" style="margin:-4px 0 6px"><b>${mk} 중점</b> · ${esc((m.focus||'').replace(/\n/g,' / ').slice(0,120))}</div>`:''}
-    ${rocks.length?`<div class="wkrock">${rocks.map(r=>`<span><b style="background:${r.color||'#5b53b0'}">${esc(roleAbbr(r.id))}</b>${esc(wk.rocks[r.id])}</span>`).join('')}</div>`:''}
+    ${rocks.length?`<div class="wkrock">${rocks.map(o=>{const st=rockStat(o.k.id);
+      return `<span title="${esc(o.r.name)}"><b style="background:${o.r.color||'#5b53b0'}">${esc(roleAbbr(o.r.id))}</b>${o.k.done?'✓ ':''}${esc(o.k.text)}${st.n?` <i style="font-style:normal;color:var(--muted);font-weight:700">${st.st}/${st.n}</i>`:''}</span>`;}).join('')}</div>`:''}
     <div class="wkw"><div class="wkgrid">${c.join('')}</div></div>
     <div class="synchint" style="margin-top:7px">날짜를 누르면 그날 <b>일간 계획</b>으로 · 과제를 누르면 <b>○ 아직 → ◐ 착수 → ✓ 완료</b> ·
       빈 칸에 바로 적으면 그날 과제가 됩니다 · 블록에 마우스를 올리면 신호·첫 행동·메모가 보입니다.</div>`;}
@@ -5700,6 +5757,285 @@ function recDropAll(rid){const r=recOf(rid); if(!r)return;
   if(!confirm('«'+(r.title||r.text||'')+'» 반복을 삭제할까요?\n\n앞으로 만들어지지 않습니다.\n이미 만들어진 날짜의 기록은 그대로 둡니다.'))return;
   S.recurring=(S.recurring||[]).filter(x=>x.id!==rid); recStrip(rid);
   save(); render(); toast('반복을 삭제했습니다');}
+
+
+/* ============================================================
+   ㉒ 목표를 «계획»으로 — 큰 바위 · 다음 행동 · 월간 중점의 주차 배분
+   ------------------------------------------------------------
+   «A goal without a plan is just a wish.»
+   여기서 plan 은 계획서가 아니라 «다음에 무엇을 하는가» 입니다.
+
+   문제였던 것: rockToTask 가 src:{k:'rock',...} 를 붙여 두었는데
+   그 값을 읽는 코드가 한 줄도 없었습니다 — 출처를 적어만 두고 아무도 보지 않아
+   큰 바위는 일주일 내내 체크도 진척도 없는 문장 한 줄로 남았습니다.
+
+   고친 방향(새 메뉴 없이 잇기):
+     ① 큰 바위를 항목으로(완료 체크·역할당 최대 2개) 하고 src 를 읽어 진척을 집계
+     ② «→ 오늘 과제로»(문장 복사)를 «＋ 다음 행동»(첫 행동+신호+날짜)으로
+     ③ 월간 중점을 줄 단위로 두고 주차에 배분 — 한 달을 4~5주로 나누면 그게 일정이다
+     ④ 과제 말풍선에 계보(올해 목표 → 이 달 중점 → 큰 바위)
+     ⑤ 주간 회고는 «완료»가 아니라 «손을 댔는가»로 본다
+   일부러 만들지 않은 것: 프로젝트 메뉴·하위 과제 트리·간트·수동 진척률 %.
+   ============================================================ */
+const ROCK_MAX=2;
+let RSEQ=0, RIDX={k:-1,m:null};
+function rocksOf(ws,rid){const wk=ensureWeek(ws);const a=wk.rocks[rid];return Array.isArray(a)?a:[];}
+function rockFind(ws,id){ if(!ws||!id)return null;
+  const wk=(S.weeks||{})[ws]; if(!wk||!wk.rocks)return null;
+  let f=null;
+  Object.keys(wk.rocks).forEach(k=>{const a=wk.rocks[k];
+    if(Array.isArray(a))a.forEach(r=>{if(r&&r.id===id)f=r;});});
+  return f;}
+function rockRoleOf(ws,id){const wk=(S.weeks||{})[ws]; if(!wk||!wk.rocks)return '';
+  let g=''; Object.keys(wk.rocks).forEach(k=>{const a=wk.rocks[k];
+    if(Array.isArray(a)&&a.some(r=>r&&r.id===id))g=k;});
+  return g;}
+function addRock(ws,rid,text,from){
+  const wk=ensureWeek(ws); if(!Array.isArray(wk.rocks[rid]))wk.rocks[rid]=[];
+  if(wk.rocks[rid].length>=ROCK_MAX){
+    toast('한 역할의 큰 바위는 '+ROCK_MAX+'개까지입니다 — 하나를 끝내거나 놓아주세요');return null;}
+  const r={id:uid(),text:String(text||'').trim(),done:false};
+  if(from)r.from=from;
+  wk.rocks[rid].push(r); save(); return r;}
+function addRockIn(ws,rid,inp){const v=(inp.value||'').trim(); if(!v)return;
+  if(addRock(ws,rid,v))inp.value='';
+  vWeek(document.getElementById('view'));}
+function setRockText(ws,rid,id,v){
+  const r=rocksOf(ws,rid).find(x=>x.id===id); if(!r)return;
+  const t=(v||'').trim();
+  if(!t){ if(!confirm('내용을 비우면 이 큰 바위가 사라집니다. 삭제할까요?')){rkPaint(ws);return;} return delRock(ws,rid,id); }
+  r.text=t; save(); rkPaint(ws);}
+function delRock(ws,rid,id){const wk=ensureWeek(ws);
+  wk.rocks[rid]=rocksOf(ws,rid).filter(x=>x.id!==id); save(); rkPaint(ws);}
+function toggleRockDone(ws,rid,id){const r=rocksOf(ws,rid).find(x=>x.id===id); if(!r)return;
+  r.done=!r.done; if(r.done)r.at=today(); else delete r.at;
+  save(); rkPaint(ws);}
+function rkPaint(ws){
+  if(S.view==='week')vWeek(document.getElementById('view'));
+  else if(S.view==='review')vReview(document.getElementById('view'));
+  else render();}
+/* 역할 옮기기 */
+function openRockRole(ws,rid,id){
+  const r=rockFind(ws,id); if(!r)return;
+  modalBox(`<h3 style="margin:0 0 4px">⇄ 큰 바위의 역할 바꾸기</h3>
+    <div class="hint" style="margin-bottom:10px"><b>${esc(r.text)}</b> · ${ws} 주</div>
+    <div class="chips">${(S.profile.roles||[]).map(x=>{
+      const full=rocksOf(ws,x.id).length>=ROCK_MAX&&x.id!==rid;
+      return `<span class="chip ${x.id===rid?'on':''}" style="border-color:${x.color||'#5b53b0'}${x.id===rid?';background:'+(x.color||'#5b53b0')+';color:#fff':''}${full?';opacity:.4':''}"
+        onclick="${full?`toast('그 역할은 이미 ${ROCK_MAX}개입니다')`:`moveRockRole('${ws}','${rid}','${id}','${x.id}')`}">${esc(x.name)}${full?' (꽉 참)':''}</span>`;}).join('')}</div>
+    <div style="text-align:right;margin-top:12px"><button class="btn" onclick="closeModal()">닫기</button></div>`);}
+function moveRockRole(ws,from,id,to){
+  if(from===to){closeModal();return;}
+  const wk=ensureWeek(ws); const r=rockFind(ws,id); if(!r){closeModal();return;}
+  if(rocksOf(ws,to).length>=ROCK_MAX){toast('그 역할은 이미 '+ROCK_MAX+'개입니다');return;}
+  wk.rocks[from]=rocksOf(ws,from).filter(x=>x.id!==id);
+  if(!Array.isArray(wk.rocks[to]))wk.rocks[to]=[];
+  wk.rocks[to].push(r);
+  /* 이미 내려간 과제들의 역할도 따라 옮긴다 */
+  (rockStat(id).items||[]).forEach(x=>{x.t.role=to; if(x.t.src)x.t.src.role=to;});
+  save(); closeModal(); toast(roleName(to)+' 역할로 옮겼습니다'); rkPaint(ws);}
+
+/* ── src 를 읽는다 — 큰 바위에서 내려간 과제 집계 ── */
+function rockIndex(){
+  if(RIDX.k===RSEQ&&RIDX.m)return RIDX.m;
+  const m={};
+  Object.keys(S.days||{}).forEach(d=>{
+    ((S.days[d]||{}).tasks||[]).forEach(t=>{
+      const sc=t.src; if(!sc||sc.k!=='rock'||!sc.rid)return;
+      (m[sc.rid]=m[sc.rid]||[]).push({d:d,t:t});});});
+  Object.keys(m).forEach(k=>m[k].sort((a,b)=>a.d.localeCompare(b.d)));
+  RIDX={k:RSEQ,m:m}; return m;}
+function rockStat(id){
+  const arr=rockIndex()[id]||[];
+  return {n:arr.length, st:arr.filter(x=>isStarted(x.t)).length,
+          dn:arr.filter(x=>x.t.status==='done').length, items:arr};}
+/* 큰 바위는 한 주에 안 끝나는 게 정상 — 보는 것은 완료가 아니라 «손을 댔는가» */
+function rockTouched(r){ if(!r)return false; if(r.done)return true; return rockStat(r.id).st>0; }
+
+/* ── ② 다음 행동 내리기 ── */
+let RNEXT={ws:'',rid:'',id:''};
+function openRockNext(ws,rid,id){
+  const r=rockFind(ws,id); if(!r){toast('큰 바위를 찾지 못했습니다');return;}
+  RNEXT={ws:ws,rid:rid,id:id};
+  const t0=today(), d0=(t0>=ws&&t0<=addDays(ws,6))?t0:ws;
+  modalBox(`<h3 style="margin:0 0 4px">🪨 다음 행동 내리기</h3>
+    <div class="hint" style="margin-bottom:10px">큰 바위 — <b>${esc(r.text)}</b> · ${ws} 주</div>
+    <div class="callout co-brand" style="margin:0 0 12px;font-size:12.5px">
+      «A goal without a plan is just a wish.»<br>
+      큰 바위를 그대로 옮기지 말고 <b>3분 안에 시작할 수 있는 물리적 행동 하나</b>로 쪼개 내려보내세요.
+      «글 완성»이 아니라 «초안을 열고 결론 첫 문장을 다시 쓴다».</div>
+    <label class="fld"><span class="lb">▶ 다음 행동 <span class="hint">— 이 문장이 과제 제목이 됩니다</span></span>
+      <input type="text" id="rnT" placeholder="${esc(r.text)} → 무엇부터?"></label>
+    <label class="fld"><span class="lb">⏱ 신호 (IF) <span class="hint">— 시각이 아니라 «무엇을 하고 나면»</span></span>
+      <select id="rnCue">${cueSelOpts(d0,null)}</select></label>
+    <div class="grid2">
+      <label class="fld"><span class="lb">📅 언제</span><input type="date" id="rnD" value="${d0}"></label>
+      <label class="fld"><span class="lb">🧩 오늘의 약속 유형</span>
+        <select id="rnTy"><option value="">지정 안 함</option>
+          ${T_ORDER.map(x=>`<option value="${x}" ${x==='start'?'selected':''}>${T_TYPES[x].e} ${T_TYPES[x].l}</option>`).join('')}</select></label>
+    </div>
+    <div class="hint">내려간 과제는 이 큰 바위에 <b>계속 연결</b>됩니다 — 주간 계획에서 진척이 보이고,
+      과제에 마우스를 올리면 «어디서 내려왔는가»가 뜹니다. 한 바위에서 여러 번 내릴 수 있습니다.</div>
+    <div style="display:flex;gap:8px;justify-content:space-between;margin-top:12px;flex-wrap:wrap">
+      <button class="btn ghost" onclick="closeModal()">닫기</button>
+      <button class="btn" onclick="rockNextApply()">내리기</button></div>`);
+  setTimeout(()=>{const e=document.getElementById('rnT');if(e)e.focus();},60);}
+function rockNextApply(){
+  const ws=RNEXT.ws, rid=RNEXT.rid, id=RNEXT.id;
+  const r=rockFind(ws,id); if(!r){closeModal();return;}
+  const g=x=>{const e=document.getElementById(x);return e?String(e.value||'').trim():''};
+  const txt=g('rnT')||r.text, d=g('rnD')||today(), cue=g('rnCue'), ty=g('rnTy');
+  ensureDay(d);
+  const t={id:uid(),text:txt,priority:'A',role:rid||'',impact:4,status:'todo',
+           src:{k:'rock',ws:ws,role:rid||'',rid:id}};
+  if(cue)t.cueRef=cue;
+  if(ty)t.type=ty;
+  S.days[d].tasks.push(t);
+  if(ty==='end')S.days[d].one=t.id;
+  save(); closeModal();
+  toast(d+' ('+wd(d)+') 에 내렸습니다 — '+txt);
+  rkPaint(ws);}
+
+/* ── ④ 계보 — 이 과제가 어디서 내려왔는가 ── */
+function rockChain(t){
+  const sc=t&&t.src; if(!sc||sc.k!=='rock')return null;
+  const r=sc.rid?rockFind(sc.ws,sc.rid):null, out=[];
+  const fr=r&&r.from;
+  if(fr&&fr.k==='goal'){const g=((S.annual||{}).goals||[]).find(x=>x.id===fr.gid);
+    if(g&&g.text)out.push('🎯 올해 목표 · '+g.text);}
+  if(fr&&fr.k==='focus')out.push('📅 '+fr.mk+' 이 달의 중점');
+  out.push('🪨 '+sc.ws+' 주 큰 바위 · '+((r&&r.text)||'(지워짐)')+(r&&r.done?' ✓':''));
+  return out;}
+
+/* ── ③ 월간 중점 — 줄 단위(데이터는 문자열 그대로 유지) ── */
+function focusLines(mk){const m=ensureMonth(mk);
+  return (m.focus||'').split('\n').map(x=>x.replace(/^[·\-\s]+/,'').trim());}
+function focusSet(mk,arr){const m=ensureMonth(mk);
+  m.focus=arr.map(x=>String(x||'').trim()).filter(Boolean).map(x=>'· '+x).join('\n'); save();}
+function setFocusLine(mk,i,v){const a=focusLines(mk); a[i]=v; focusSet(mk,a);
+  if(S.view==='month')vMonth(document.getElementById('view'));}
+function delFocusLine(mk,i){const a=focusLines(mk); a.splice(i,1); focusSet(mk,a);
+  if(S.view==='month')vMonth(document.getElementById('view'));}
+function addFocusLine(mk,inp){const v=(inp.value||'').trim(); if(!v)return;
+  const a=focusLines(mk).filter(Boolean); a.push(v); focusSet(mk,a); inp.value='';
+  if(S.view==='month')vMonth(document.getElementById('view'));}
+function monthWeeks(mk){
+  const parts=String(mk||'').split('-'), Y=+parts[0], M=+parts[1];
+  if(!Y||!M)return [];
+  const dim=new Date(Y,M,0).getDate();
+  const last=mk+'-'+String(dim).padStart(2,'0');
+  const out=[]; let w=weekStart(mk+'-01');
+  while(w<=last&&out.length<6){out.push(w); w=addDays(w,7);}
+  return out;}
+function focusHasRock(ws,text){
+  const wk=(S.weeks||{})[ws]; if(!wk||!wk.rocks)return false;
+  let f=false; Object.keys(wk.rocks).forEach(k=>{const a=wk.rocks[k];
+    if(Array.isArray(a))a.forEach(r=>{if(r&&r.text===text)f=true;});});
+  return f;}
+function focusToWeek(mk,i,ws){
+  const t=focusLines(mk)[i]; if(!t)return;
+  if(focusHasRock(ws,t)){toast('이미 '+ws+' 주의 큰 바위에 있습니다');return;}
+  const roles=S.profile.roles||[];
+  const free=roles.find(r=>rocksOf(ws,r.id).length<ROCK_MAX);
+  const rid=(free||roles[0]||{}).id;
+  if(!rid){toast('먼저 «1 인생 설계»에서 역할을 등록하세요');return;}
+  if(addRock(ws,rid,t,{k:'focus',mk:mk})){
+    toast(ws+' 주 «'+roleName(rid)+'» 큰 바위로 놓았습니다 — 주간 계획에서 ⇄ 로 역할을 바꿀 수 있습니다');
+    if(S.view==='month')vMonth(document.getElementById('view'));}}
+
+/* ── ⑤ 주간 회고 — 완료가 아니라 «손을 댔는가» ── */
+function moveRockNext(ws,rid,id){
+  const r=rockFind(ws,id); if(!r)return;
+  const nw=addDays(ws,7);
+  if(!addRock(nw,rid,r.text,r.from))return;
+  const wk=ensureWeek(ws); wk.rocks[rid]=rocksOf(ws,rid).filter(x=>x.id!==id);
+  save(); toast(nw+' 주로 옮겼습니다'); rkPaint(ws);}
+function dropRock(ws,rid,id){
+  const r=rockFind(ws,id); if(!r)return;
+  if(!confirm('«'+r.text+'» 을 놓아줄까요?\n\n모든 일을 하는 것이 실행력이 아닙니다.\n중요한 일을 실제로 하기 위해 중요하지 않은 일을 하지 않는 것도 실행력입니다.'))return;
+  const wk=ensureWeek(ws); wk.rocks[rid]=rocksOf(ws,rid).filter(x=>x.id!==id);
+  save(); toast('놓아주었습니다'); rkPaint(ws);}
+function rockRows(ws){
+  const out=[];
+  (S.profile.roles||[]).forEach(r=>rocksOf(ws,r.id).forEach(k=>{
+    if(k.text)out.push({r:r,k:k,s:rockStat(k.id)});}));
+  return out;}
+function rockReviewCard(ws){
+  const rows=rockRows(ws);
+  if(!rows.length)return `<div class="card"><h3>🪨 이번 주 큰 바위</h3>
+    <p class="hint" style="margin-top:-4px">이번 주에는 큰 바위를 놓지 않으셨습니다.
+      <button class="btn ghost sm" onclick="go('week')">주간 계획에서 놓기 →</button></p></div>`;
+  const un=rows.filter(x=>!x.k.done&&x.s.st===0);
+  return `<div class="card"><h3>🪨 이번 주 큰 바위 <span class="hint">(완료가 아니라 «손을 댔는가»로 봅니다)</span></h3>
+    <p class="hint" style="margin-top:-4px">큰 바위는 한 주에 끝나지 않는 것이 정상입니다.
+      완료율로 재면 매주 실패로 기록되고, 그러면 다음 주에 더 작게 적게 됩니다.</p>
+    ${rows.map(x=>`<div class="recrow">
+      <span class="tag" style="flex:none;background:${x.r.color||'#5b53b0'}" title="${esc(x.r.name)}">${esc(roleAbbr(x.r.id))}</span>
+      <b style="flex:1;min-width:140px;font-size:13px">${x.k.done?'✓ ':''}${esc(x.k.text)}</b>
+      <span class="rkst ${(x.k.done||x.s.st)?'ok':'warn'}">${x.k.done?'끝냄':(x.s.st?('손댐 · 착수 '+x.s.st+'/'+x.s.n):'손대지 않음')}</span>
+      ${(!x.k.done&&x.s.st===0)?`<button class="btn ghost sm no-print" onclick="moveRockNext('${ws}','${x.r.id}','${x.k.id}')">다음 주로</button>
+        <button class="btn ghost sm no-print" onclick="dropRock('${ws}','${x.r.id}','${x.k.id}')">놓아주기</button>`
+       :`<button class="btn ghost sm no-print" onclick="openRockNext('${ws}','${x.r.id}','${x.k.id}')">＋ 다음 행동</button>`}
+    </div>`).join('')}
+    ${un.length?`<div class="callout co-gold" style="margin-top:10px">손대지 않은 큰 바위가 <b>${un.length}개</b> 있습니다.
+      계획이 틀린 것이 아니라 <b>한 주에 담을 수 있는 양</b>이 달랐던 것입니다 — 다음 주로 옮기거나 지금 놓아주세요.</div>`
+     :`<div class="callout co-acc" style="margin-top:10px">이번 주 큰 바위 모두에 손을 댔습니다. 끝내지 못했어도 <b>그것이 진척</b>입니다.</div>`}
+  </div>`;}
+
+/* ── 주간 계획의 큰 바위 카드 ── */
+function rockRow(ws,rid,k){
+  const st=rockStat(k.id);
+  const tag = k.done?'<span class="rkst ok">✓ 끝냄</span>'
+    : (st.n===0?'<span class="rkst warn">아직 내려간 것이 없습니다</span>'
+      :`<span class="rkst ${st.st?'ok':''}">내려간 것 ${st.n} · 착수 ${st.st} · 완료 ${st.dn}</span>`);
+  return `<div class="rkrow ${k.done?'done':''}">
+    <button class="rkchk ${k.done?'on':''}" onclick="toggleRockDone('${ws}','${rid}','${k.id}')" title="끝냄으로 표시">${k.done?'✓':'○'}</button>
+    <input class="rkin" value="${esc(k.text)}" onchange="setRockText('${ws}','${rid}','${k.id}',this.value)"
+      onkeydown="if(event.key==='Enter')this.blur()">
+    ${tag}
+    ${st.n?`<span class="rkday">${st.items.slice(0,8).map(x=>`<i class="${x.t.status==='done'?'dn':(isStarted(x.t)?'st':'')}"
+      title="${esc(x.t.text)}" onclick="openDay('${x.d}')">${x.d.slice(5)}</i>`).join('')}</span>`:''}
+    <button class="btn sm no-print" onclick="openRockNext('${ws}','${rid}','${k.id}')">＋ 다음 행동</button>
+    <button class="rkchk no-print" onclick="openRockRole('${ws}','${rid}','${k.id}')" title="다른 역할로 옮기기">⇄</button>
+    <button class="del-x no-print" onclick="delRock('${ws}','${rid}','${k.id}')" title="삭제">✕</button>
+  </div>`;}
+function rockCard(ws){
+  const roles=S.profile.roles||[];
+  return `<div class="card"><h3>역할별 큰 바위 <span class="hint">(이번 주 꼭 할 중요한 일 · 역할당 최대 ${ROCK_MAX}개)</span></h3>
+    <p class="hint" style="margin-top:-4px">급한 일은 스스로 자리를 만들지만 중요한 일은 그러지 않습니다.
+      큰 바위는 한 주에 끝나지 않아도 됩니다 — <b>«＋ 다음 행동»</b> 으로 3분 안에 시작할 행동 하나를 하루에 내려보내세요.
+      그것이 <b>목표를 계획으로 바꾸는 자리</b>입니다.</p>
+    <div class="onegrid" style="margin-top:10px">
+      ${roles.map(r=>{const arr=rocksOf(ws,r.id);
+        return `<div class="rkgrp"><div class="rklab" style="background:${r.color||'#5b53b0'}" title="${esc(r.name)}">${esc(r.name)}</div>
+          <div class="rkrows">
+            ${arr.map(k=>rockRow(ws,r.id,k)).join('')}
+            ${arr.length<ROCK_MAX?`<input class="rkin newrk" placeholder="＋ 이 역할의 큰 바위"
+               onchange="addRockIn('${ws}','${r.id}',this)" onkeydown="if(event.key==='Enter')this.blur()">`:''}
+          </div></div>`;}).join('')||'<p class="hint" style="padding:10px">먼저 «1 인생 설계»에서 역할을 등록하세요.</p>'}
+    </div>
+    <button class="btn ghost sm no-print" style="margin-top:10px" onclick="pushWeekPlan('${ws}')">☁ 이 주 계획 구글 캘린더에 추가(월~일 종일)</button>
+  </div>`;}
+
+/* ── 월간 중점 카드 ── */
+function focusCard(mk){
+  const m=ensureMonth(mk), lines=focusLines(mk).filter(Boolean), wks=monthWeeks(mk);
+  return `<div class="card"><h3>이 달의 중점 <span class="hint">(줄마다 주차에 배분하면 그것이 계획이 됩니다)</span></h3>
+    ${(m.goalIds||[]).length?`<div class="hint" style="margin-top:-4px;margin-bottom:6px">이 달에 진척시킬 올해 목표:
+      ${(m.goalIds||[]).map(gid=>{const g=((S.annual||{}).goals||[]).find(x=>x.id===gid);return g?`<b>${esc(g.text)}</b>`:'';}).filter(Boolean).join(' · ')}</div>`:''}
+    ${lines.map((t,i)=>`<div class="fcrow">
+      <input class="fcin" value="${esc(t)}" onchange="setFocusLine('${mk}',${i},this.value)"
+        onkeydown="if(event.key==='Enter')this.blur()">
+      <span class="fcw">${wks.map((w,j)=>`<button class="${focusHasRock(w,t)?'on':''}"
+        title="${w} ~ ${addDays(w,6)} 주의 큰 바위로" onclick="focusToWeek('${mk}',${i},'${w}')">${j+1}주</button>`).join('')}</span>
+      <button class="del-x no-print" onclick="delFocusLine('${mk}',${i})" title="삭제">✕</button>
+    </div>`).join('')}
+    <input class="fcin newfc" style="margin-top:6px" placeholder="＋ 이 달의 중점 (3개 안팎이 적당합니다)"
+      onchange="addFocusLine('${mk}',this)" onkeydown="if(event.key==='Enter')this.blur()">
+    <div class="hint" style="margin-top:9px">주차 단추를 누르면 그 주의 <b>큰 바위</b>로 내려갑니다 —
+      한 달을 4~5주에 나누는 것만으로 «계획»이 됩니다. 이미 놓인 주는 색이 찹니다.</div>
+    <button class="btn ghost sm no-print" style="margin-top:8px" onclick="pushMonthPlan('${mk}')">☁ 이 달 계획 구글 캘린더에 추가(종일)</button>
+  </div>`;}
 
 /* ============ INIT ============ */
 (function init(){const had=load();if(!S.view)S.view='dash';
