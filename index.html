@@ -631,6 +631,61 @@
   .recrow{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:7px 0;border-bottom:1px dotted var(--line)}
   .recrow:last-child{border-bottom:none}
   .recrow.off{opacity:.5}
+  /* ── 상단바: 이름 대신 사명 ── */
+  .topbar .who{flex:1 1 300px;min-width:0}
+  .who .msn{display:block;font-size:13.5px;font-weight:700;color:var(--brand-d);line-height:1.35;
+    cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .who .msn:hover{text-decoration:underline;text-decoration-color:#cfc9ef}
+  .who .whoset{cursor:pointer;color:var(--muted);font-size:12.5px}
+  .who .whoset:hover{color:var(--brand)}
+  @media(max-width:820px){.who .msn{white-space:normal;font-size:12.5px}}
+
+  /* ── 일간 계획: 얇게 고정되는 날짜 바 ── */
+  .daybar::before{content:'';position:absolute;left:-26px;right:-26px;top:-42px;height:42px;
+    background:var(--bg);pointer-events:none}
+  .daybar{position:sticky;top:var(--tbh,52px);z-index:20;display:flex;gap:7px;align-items:center;flex-wrap:wrap;
+    background:#fff;border:1px solid var(--line);border-radius:11px;padding:6px 10px;margin:-4px 0 12px;
+    box-shadow:0 2px 12px rgba(30,25,60,.08)}
+  .daybar .btn.sm{padding:4px 9px;font-size:11.5px}
+  .daybar input.dbin{flex:none;width:148px;font-size:12.5px;padding:4px 7px;border:1px solid var(--line);
+    border-radius:7px;font-family:inherit;color:var(--ink);background:#fff}
+  .daybar input.dbin:focus{border-color:var(--brand);box-shadow:0 0 0 2px rgba(91,83,176,.13);outline:none}
+  .dbw{font-size:13px;font-weight:800;color:var(--ink)}
+  .dbw.sun{color:#b23a55}.dbw.sat{color:#2f6db3}
+  .dbtoday{flex:none;border:1px solid var(--line);background:#fff;color:var(--muted);border-radius:8px;
+    padding:4px 12px;font-size:11.5px;font-weight:800;cursor:pointer;font-family:inherit}
+  .dbtoday:hover{background:#f2f4fa;color:var(--ink)}
+  .dbtoday.on{background:var(--accent);border-color:var(--accent);color:#fff;box-shadow:0 0 0 2px var(--accent-soft)}
+  .dbrel{font-size:11px;font-weight:700;color:var(--muted);background:#f2f4fa;border-radius:6px;padding:3px 8px}
+  .dbsum{font-size:11.5px;font-weight:700;color:var(--muted);margin-left:auto;white-space:nowrap}
+  @media(max-width:720px){.daybar{gap:5px;padding:5px 8px}.daybar input.dbin{width:130px}.dbsum{display:none}}
+  /* ── 수업 내용 불러오기 · 다른 반에 적용 ── */
+  .klist{max-height:330px;overflow:auto;padding-right:4px;margin-top:4px}
+  .klist::-webkit-scrollbar{width:5px}.klist::-webkit-scrollbar-thumb{background:#dfe3ec;border-radius:3px}
+  .ksrc{display:flex;gap:8px;align-items:flex-start;padding:7px 9px;border:1px solid var(--line);
+    border-radius:10px;margin-bottom:6px;background:#fff}
+  .ksrc.hide{display:none}
+  .ksrc .kt{flex:none;font-size:9.5px;font-weight:800;color:#fff;border-radius:5px;padding:2px 5px;white-space:nowrap}
+  .ksrc .kb{flex:1;min-width:0;font-size:12px;line-height:1.45}
+  .ksrc .kh{font-size:11px;color:var(--muted);font-weight:700}
+  .ksrc .kp{color:var(--ink);word-break:break-word;font-weight:600}
+  .ksrc .kn{color:var(--muted);font-size:11.5px;word-break:break-word}
+  .ksrc .kbtn{flex:none;align-self:center}
+  .kseg{display:flex;gap:4px;flex-wrap:wrap}
+  .kseg button{border:1px solid var(--line);background:#fff;border-radius:8px;padding:4px 11px;font-size:11.5px;
+    font-weight:700;cursor:pointer;font-family:inherit;color:var(--muted)}
+  .kseg button.on{background:var(--brand);border-color:var(--brand);color:#fff}
+  .kchk{display:flex;gap:10px;flex-wrap:wrap;font-size:12px;font-weight:600}
+  .kchk label{display:flex;gap:4px;align-items:center;cursor:pointer}
+  .kchk input{width:auto;flex:none}
+  .kapp{display:flex;gap:8px;align-items:center;padding:6px 4px;border-bottom:1px dotted var(--line);font-size:12px}
+  .kapp:last-child{border-bottom:none}
+  .kapp input[type=checkbox]{width:auto;flex:none}
+  .kapp .kx{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .kapp .kw{flex:none;font-size:10.5px;color:var(--gold);font-weight:800}
+  .kquick{flex:none;border:none;background:transparent;color:#9aa1b0;font-size:13px;cursor:pointer;
+    padding:0 4px;line-height:1;font-family:inherit}
+  .kquick:hover{color:var(--brand)}
 </style>
 </head>
 <body>
@@ -850,10 +905,26 @@ function renderNav(){
   try{const ms=document.getElementById('modeslot'); if(ms)ms.innerHTML=modeChipHtml();}catch(e){}
 }
 function go(v){ try{utSwitch(v);}catch(e){} S.view=v; save(); renderNav(); render(); window.scrollTo(0,0); try{utPaint();}catch(e){} }
-function refreshWho(){ document.getElementById('who').innerHTML = S.profile.name? `<b>${esc(S.profile.name)}</b> 님의 다이어리` : '이름을 설정하세요 (인생 설계 →)'; }
+/* 상단바에는 이름이 아니라 «사명»을 둔다 — 화면을 열 때마다 보이는 한 줄이
+   오늘의 선택을 가늠하는 기준이 되도록. 누르면 사명서·가치 화면으로 간다. */
+function refreshWho(){
+  const el=document.getElementById('who'); if(!el)return;
+  const ms=((S.mission&&S.mission.statement)||'').replace(/\s+/g,' ').trim();
+  const nm=((S.profile&&S.profile.name)||'').trim();
+  el.innerHTML = ms
+    ? `<span class="msn" title="${esc(ms)}\n\n누르면 «2 사명서·가치»로 갑니다" onclick="go('mission')">🎯 ${esc(ms)}</span>`
+    : `<span class="whoset" onclick="go('mission')">${nm?esc(nm)+' 님 — ':''}사명을 한 줄로 적어보세요 (2 사명서·가치 →)</span>`;
+  try{syncTopbarH();}catch(e){}
+}
+/* 상단바 높이를 재서 날짜 바가 그 아래에 정확히 붙도록 한다 (사명 길이·창 폭에 따라 달라진다) */
+function syncTopbarH(){
+  const t=document.querySelector('.topbar'); if(!t)return;
+  document.documentElement.style.setProperty('--tbh', Math.round(t.getBoundingClientRect().height)+'px');
+}
 
 /* ============ RENDER DISPATCH ============ */
 function render(){
+  try{syncTopbarH();}catch(e){}
   const v=document.getElementById('view');
   ({dash:vDash,day:vDay,life:vLife,mission:vMission,vision:vVision,annual:vAnnual,month:vMonth,week:vWeek,
     journal:vJournal,reading:vReading,ideas:vIdeas,habits:vHabits,timer:vTimer,quotes:vQuotes,remind:vRemind,gsync:vGSync,stats:vStats,
@@ -972,7 +1043,7 @@ function vMission(v){
      <textarea oninput="setV('mission.affirmation',this.value)" style="font-size:15px;min-height:70px">${esc(m.affirmation)}</textarea>
      <p class="hint" style="margin:6px 0 0">매일 아침 소리 내어 읽으면 좋습니다.</p></div>
    <div class="card co-brand" style="border-radius:15px"><div class="tag">나의 사명 · MISSION</div>
-     <textarea oninput="setV('mission.statement',this.value)" style="font-size:16px;font-weight:600;min-height:70px">${esc(m.statement)}</textarea>
+     <textarea oninput="setV('mission.statement',this.value);refreshWho()" style="font-size:16px;font-weight:600;min-height:70px">${esc(m.statement)}</textarea>
      <p class="hint" style="margin:6px 0 0">"나는 왜 사는가? 무엇에 기여하는가?"를 한두 문장으로.</p></div>
    <div class="card"><h3>실천 원칙</h3>
      <textarea oninput="setV('mission.principles',this.value)">${esc(m.principles)}</textarea></div>
@@ -1117,12 +1188,8 @@ function vDay(v){
   if(!S.ui.day)S.ui.day=today();
   const d=S.ui.day; ensureDay(d); const day=S.days[d];
   v.innerHTML=`
-   <h2 class="vh">📆 일간 계획 · 실천</h2>
-   <div class="card"><div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-     <button class="btn ghost sm" onclick="shiftDay(-1)">‹ 어제</button>
-     <input type="date" value="${d}" onchange="S.ui.day=this.value;save();vDay(document.getElementById('view'))" style="max-width:170px">
-     <button class="btn ghost sm" onclick="shiftDay(1)">내일 ›</button>
-     <b>${wd(d)}요일</b> ${d===today()?'<span class="tag" style="background:var(--accent)">오늘</span>':''}</div></div>
+   <h2 class="vh">📆 일간 계획 · 실천 <span class="hint" style="font-weight:600">${d} (${wd(d)})</span></h2>
+   ${dayBar(d)}
    ${curMode()==='do'?chainFold(d):chainToDay(d)}
    ${quoteCard(d)}
    <div id="oneslot" style="margin-top:16px"></div>
@@ -1173,6 +1240,23 @@ function vDay(v){
    </div>`;
   renderOne(d); renderTasks(d); renderSchedule(d);
 }
+/* 스크롤해도 위에 남는 얇은 날짜 바 — 어제/내일·직접 선택·오늘 버튼 */
+function dayBar(d){
+  const t=today(), g=parseD(d).getDay(), n=dayDiff(t,d);
+  const all=dayTasks(d).filter(x=>x.text&&x.status!=='drop');
+  const st=all.filter(x=>isStarted(x)).length, dn=all.filter(x=>x.status==='done').length;
+  return `<div class="daybar no-print">
+    <button class="btn ghost sm" onclick="shiftDay(-1)" title="어제로">‹ 어제</button>
+    <input type="date" class="dbin" value="${d}"
+      onchange="S.ui.day=this.value||today();save();vDay(document.getElementById('view'))">
+    <button class="btn ghost sm" onclick="shiftDay(1)" title="내일로">내일 ›</button>
+    <b class="dbw ${g===0?'sun':(g===6?'sat':'')}">${wd(d)}요일</b>
+    <button class="dbtoday ${d===t?'on':''}" onclick="goToday()"
+      title="${d===t?'오늘을 보고 있습니다':'오늘로 돌아가기'}">오늘</button>
+    ${n!==0?`<span class="dbrel">${n>0?'+':''}${n}일</span>`:''}
+    <span class="dbsum">착수 ${st}/${all.length} · 완료 ${dn}</span>
+  </div>`;}
+function goToday(){ if(S.ui.day===today())return; S.ui.day=today(); save(); vDay(document.getElementById('view')); window.scrollTo(0,0); }
 function shiftDay(n){S.ui.day=addDays(S.ui.day,n);save();vDay(document.getElementById('view'));}
 function openDay(ds){S.ui.day=ds;S.view='day';save();renderNav();render();window.scrollTo(0,0);}
 const STATUSES=[["todo","○ 예정"],["prog","→ 진행"],["done","✓ 완료"],["hold","‖ 연기"],["deleg","» 위임"],["drop","✗ 취소"]];
@@ -3027,6 +3111,7 @@ function ritPM(d,day){
               <b style="color:${kColor(x.g)}">${esc(x.g)}</b> ${x.no}차시</span>
             <input type="text" style="flex:1;min-width:160px" value="${esc(l.prog||'')}"
               placeholder="진도 한 줄" oninput="kSetLog('${esc(x.key)}','prog',this.value)">
+            <button class="btn ghost sm" onclick="openLessonPick('${esc(x.key)}')" title="다른 반에서 같은 내용 가져오기">↧ 불러오기</button>
             <button class="btn ghost sm" onclick="openLesson('${esc(x.key)}')">자세히</button>
           </div>`;}).join('')}
       </div>
@@ -4153,19 +4238,195 @@ function openLesson(key){
       <textarea id="klNote" rows="3" placeholder="어떻게 했고, 무엇이 보였는가">${esc(l.note||'')}</textarea></label>
     <label class="fld"><span class="lb">결시 · 비고</span>
       <input type="text" id="klAbs" value="${esc(l.absent||'')}" placeholder="결시생, 전달사항"></label>
+    <div style="display:flex;gap:7px;flex-wrap:wrap;margin:0 0 9px">
+      <button class="btn ghost sm" onclick="klCapture('${esc(key)}');openLessonPick('${esc(key)}')"
+        title="같은 차시를 이미 적은 반에서 내용을 가져옵니다">↧ 수업 내용 불러오기</button>
+      <button class="btn ghost sm" onclick="klCapture('${esc(key)}');openLessonApply('${esc(key)}')"
+        title="지금 적은 내용을 다른 반의 같은 차시에 한 번에 넣습니다">↗ 다른 반에도 적용</button>
+    </div>
     <div class="hint">저장하면 <b>일자·시각과 함께 일상 기록</b>에도 함께 쌓입니다.</div>
     <div style="display:flex;gap:8px;justify-content:space-between;margin-top:12px;flex-wrap:wrap">
       <button class="btn ghost" onclick="kSaveLesson('${esc(key)}',true)">${l.done?'↺ 완료 해제하고 저장':'✓ 완료로 저장'}</button>
       <span><button class="btn ghost" onclick="closeModal()">닫기</button>
       <button class="btn" onclick="kSaveLesson('${esc(key)}',false)">저장</button></span></div>`);
   setTimeout(()=>{const e=document.getElementById('klProg');if(e)e.focus();},60);}
+/* ============================================================
+   ㉑ 같은 수업을 여러 반에 — «수업 내용 불러오기» · «다른 반에도 적용»
+   ------------------------------------------------------------
+   과학탐구실험 9개 반, 역학과 에너지 3개 반처럼 같은 내용을 여러 번 적는 일이
+   기록을 포기하게 만드는 가장 큰 마찰입니다. 그렇다고 자동으로 똑같이 채우면
+   반마다 진도가 달라지는 실제를 담지 못합니다. 그래서 «자동»이 아니라
+   «한 번 고르면 한 번에 들어가는» 방식으로 만들었습니다.
+   ============================================================ */
+let KPICK={key:'',mode:'over',f:{prog:true,note:true,absent:false},q:''};
+function kAfter(){
+  if(S.view==='day'){renderSchedule(S.ui.day);vDay(document.getElementById('view'));}
+  else if(S.view==='checkin'){vCheckin(document.getElementById('view'));}
+  else render();}
+/* 모달을 갈아끼우기 전에 지금 입력한 값을 잃지 않도록 먼저 거둬들인다 */
+function klCapture(key){
+  const l=kLog(key), g=x=>{const e=document.getElementById(x);return e?e.value.trim():null};
+  const p=g('klProg'), n=g('klNote'), a=g('klAbs');
+  if(p!==null)l.prog=p; if(n!==null)l.note=n; if(a!==null)l.absent=a;
+  save(); return l;}
+
+/* 반 이름에서 숫자·기호를 뺀 부분을 «과목»으로 본다.
+   «과탐실 1~9» 와 «역학 1~3» 은 차시 번호가 같아도 다른 수업이므로 갈라서 보여준다.
+   «2-1 · 2-3» 처럼 숫자만인 이름은 모두 빈 문자열이 되어 한 과목으로 묶인다(한 과목만 가르치는 경우). */
+function kSubj(g){return String(g||'').replace(/[0-9\s\-_.·]+/g,'').trim();}
+
+/* 불러올 후보 — 같은 차시 → 같은 날 → 이 반 이전 차시 → 다른 과목 → 최근 기록 */
+function kSources(key){
+  const x=kFind(key); if(!x)return [];
+  const k=K(), out=[], seen={};
+  const push=(y,tag,c)=>{
+    if(!y||y.key===key||seen[y.key])return;
+    const l=k.logs[y.key]||{};
+    if(!(l.prog||l.note||l.absent))return;         /* 내용이 있는 것만 */
+    seen[y.key]=1; out.push({x:y,l:l,tag:tag,c:c});};
+  const sj=kSubj(x.g);
+  kGroups().forEach(g=>{ if(g===x.g||kSubj(g)!==sj)return;
+    kLessons(g).forEach(y=>{ if(y.no===x.no)push(y,'같은 차시','var(--brand)'); }); });
+  kLessonsOn(x.date).forEach(y=>push(y,'같은 날','var(--accent)'));
+  kGroups().forEach(g=>{ if(g===x.g||kSubj(g)===sj)return;
+    kLessons(g).forEach(y=>{ if(y.no===x.no)push(y,'다른 과목','var(--gold)'); }); });
+  kLessons(x.g).filter(y=>y.no<x.no).slice(-4).reverse().forEach(y=>push(y,'이 반 이전','var(--gold)'));
+  const all=[]; kGroups().forEach(g=>kLessons(g).forEach(y=>all.push(y)));
+  all.sort((a,b)=>b.date.localeCompare(a.date)||b.p-a.p);
+  all.slice(0,120).forEach(y=>push(y,'최근','#8792a3'));
+  return out.slice(0,60);}
+
+function kPickFilter(q){
+  KPICK.q=q||'';
+  const s=(q||'').trim().toLowerCase();
+  document.querySelectorAll('#ksrclist .ksrc').forEach(el=>{
+    el.classList.toggle('hide', !!s && (el.getAttribute('data-s')||'').indexOf(s)<0);});
+  const n=document.querySelectorAll('#ksrclist .ksrc:not(.hide)').length;
+  const c=document.getElementById('ksrcn'); if(c)c.textContent=n+'건';}
+function kPickMode(m){KPICK.mode=m;openLessonPick(KPICK.key,true);}
+function kPickField(f,v){KPICK.f[f]=v;openLessonPick(KPICK.key,true);}
+function openLessonPick(key,keepq){
+  const x=kFind(key); if(!x){toast('수업을 찾지 못했습니다');return;}
+  if(!keepq)KPICK={key:key,mode:'over',f:{prog:true,note:true,absent:false},q:''};
+  KPICK.key=key;
+  const l=kLog(key), src=kSources(key), F=KPICK.f;
+  const has=!!(l.prog||l.note);
+  modalBox(`<h3 style="margin:0 0 4px">↧ 수업 내용 불러오기</h3>
+    <div class="hint" style="margin-bottom:10px">받을 곳 —
+      <b style="color:${kColor(x.g)}">${esc(x.g)}</b> ${x.no}차시 · ${x.date} (${wd(x.date)}) ${x.p}교시
+      ${has?`<br><span style="color:var(--gold);font-weight:700">지금 적혀 있는 내용: ${esc((l.prog||l.note||'').slice(0,40))}…</span>`:''}</div>
+    <label class="fld"><span class="lb">가져올 항목</span>
+      <div class="kchk">
+        <label><input type="checkbox" ${F.prog?'checked':''} onchange="kPickField('prog',this.checked)">진도</label>
+        <label><input type="checkbox" ${F.note?'checked':''} onchange="kPickField('note',this.checked)">수업 방법·특이사항</label>
+        <label><input type="checkbox" ${F.absent?'checked':''} onchange="kPickField('absent',this.checked)">결시·비고 <span class="hint">(반마다 다릅니다)</span></label>
+      </div></label>
+    <label class="fld"><span class="lb">넣는 방법</span>
+      <div class="kseg">
+        <button class="${KPICK.mode==='over'?'on':''}" onclick="kPickMode('over')">덮어쓰기</button>
+        <button class="${KPICK.mode==='add'?'on':''}" onclick="kPickMode('add')">뒤에 붙이기</button>
+      </div></label>
+    <label class="fld"><span class="lb">찾기 <span class="hint">(반 이름 · 진도 내용으로)</span></span>
+      <input type="text" id="ksrcq" value="${esc(KPICK.q)}" placeholder="예: 운동량 · 2-3"
+        oninput="kPickFilter(this.value)"></label>
+    <div class="hint">기록이 있는 수업만 보입니다 · <b id="ksrcn">${src.length}건</b></div>
+    <div class="klist" id="ksrclist">
+      ${src.length? src.map(o=>{
+        const sx=(o.x.g+' '+o.x.no+'차시 '+o.x.date+' '+(o.l.prog||'')+' '+(o.l.note||'')).toLowerCase();
+        return `<div class="ksrc" data-s="${esc(sx)}">
+          <span class="kt" style="background:${o.c}">${o.tag}</span>
+          <span class="kb">
+            <span class="kh"><b style="color:${kColor(o.x.g)}">${esc(o.x.g)}</b> · ${o.x.no}차시 · ${o.x.date.slice(5)}(${wd(o.x.date)}) ${o.x.p}교시</span>
+            ${o.l.prog?`<div class="kp">${esc(o.l.prog)}</div>`:''}
+            ${o.l.note?`<div class="kn">${esc(o.l.note)}</div>`:''}
+            ${o.l.absent?`<div class="kn">· ${esc(o.l.absent)}</div>`:''}
+          </span>
+          <button class="btn sm kbtn" onclick="kPullFrom('${esc(key)}','${esc(o.x.key)}')">${KPICK.mode==='over'?'불러오기':'＋ 붙이기'}</button>
+        </div>`;}).join('')
+       :'<p class="hint">아직 불러올 기록이 없습니다. 한 반을 먼저 적으면 나머지 반에서 여기로 불러올 수 있습니다.</p>'}
+    </div>
+    <div style="display:flex;gap:8px;justify-content:space-between;margin-top:12px;flex-wrap:wrap">
+      <button class="btn ghost" onclick="openLessonApply('${esc(key)}')">↗ 반대로 — 이 내용을 다른 반에</button>
+      <button class="btn ghost" onclick="openLesson('${esc(key)}')">← 기록 창으로</button></div>`);
+  if(KPICK.q)setTimeout(()=>kPickFilter(KPICK.q),0);}
+function kPullFrom(key,srcKey){
+  const l=kLog(key), sl=K().logs[srcKey]||{}, F=KPICK.f;
+  const put=(f)=>{ if(!F[f])return;
+    const v=(sl[f]||'').trim(); if(!v)return;
+    if(KPICK.mode==='add'&&(l[f]||'').trim())l[f]=(l[f].trim()+' / '+v);
+    else l[f]=v; };
+  put('prog'); put('note'); put('absent');
+  if(!l.done&&(l.prog||l.note)){l.done=true;l.at=today();}
+  save(); toast('불러왔습니다 — 필요하면 고쳐서 저장하세요');
+  openLesson(key);}
+
+/* 반대 방향 — 지금 쓴 내용을 다른 반의 같은 차시에 한 번에 넣기 */
+function kTargets(key){
+  const x=kFind(key); if(!x)return [];
+  const k=K(), out=[], seen={};
+  const push=(y,tag,c,same)=>{ if(!y||y.key===key||seen[y.key])return; seen[y.key]=1;
+    const l=k.logs[y.key]||{};
+    out.push({x:y,l:l,tag:tag,c:c,empty:!(l.prog||l.note),same:!!same});};
+  const sj=kSubj(x.g);
+  kGroups().forEach(g=>{ if(g===x.g||kSubj(g)!==sj)return;
+    kLessons(g).forEach(y=>{ if(y.no===x.no)push(y,'같은 차시','var(--brand)',true); }); });
+  kLessonsOn(x.date).forEach(y=>push(y,'같은 날','var(--accent)',kSubj(y.g)===sj));
+  kGroups().forEach(g=>{ if(g===x.g||kSubj(g)===sj)return;
+    kLessons(g).forEach(y=>{ if(y.no===x.no)push(y,'다른 과목','var(--gold)',false); }); });
+  return out;}
+function openLessonApply(key){
+  const x=kFind(key); if(!x)return;
+  const l=kLog(key), tg=kTargets(key), F=KPICK.f||{prog:true,note:true,absent:false};
+  modalBox(`<h3 style="margin:0 0 4px">↗ 이 내용을 다른 반에도</h3>
+    <div class="hint" style="margin-bottom:10px">보낼 내용 —
+      <b style="color:${kColor(x.g)}">${esc(x.g)}</b> ${x.no}차시
+      ${l.prog?`<div class="csfline" style="margin-top:5px">${esc(l.prog)}</div>`:'<span style="color:var(--del);font-weight:700"> · 진도가 비어 있습니다</span>'}</div>
+    <label class="fld"><span class="lb">보낼 항목</span>
+      <div class="kchk">
+        <label><input type="checkbox" id="kaP" ${F.prog?'checked':''}>진도</label>
+        <label><input type="checkbox" id="kaN" ${F.note?'checked':''}>수업 방법·특이사항</label>
+        <label><input type="checkbox" id="kaA">결시·비고</label>
+        <label><input type="checkbox" id="kaOver">이미 적힌 반도 덮어쓰기</label>
+      </div></label>
+    <div class="hint">기본은 <b>같은 과목이면서 아직 비어 있는 반</b>만 선택됩니다 —
+      «다른 과목»은 차시 번호만 같을 뿐이니 직접 확인하고 고르세요.</div>
+    <div class="klist">
+      ${tg.length? tg.map(o=>`<div class="kapp">
+        <input type="checkbox" class="katg" value="${esc(o.x.key)}" ${(o.empty&&o.same)?'checked':''}>
+        <span class="kt" style="background:${o.c};color:#fff;font-size:9.5px;font-weight:800;border-radius:5px;padding:2px 5px">${o.tag}</span>
+        <span class="kx"><b style="color:${kColor(o.x.g)}">${esc(o.x.g)}</b> ${o.x.no}차시 · ${o.x.date.slice(5)}(${wd(o.x.date)}) ${o.x.p}교시
+          ${o.l.prog?`<span class="hint"> — ${esc(o.l.prog.slice(0,26))}</span>`:''}</span>
+        ${o.empty?'':'<span class="kw">이미 적힘</span>'}
+      </div>`).join('') : '<p class="hint">같은 차시나 같은 날의 다른 반이 없습니다.</p>'}
+    </div>
+    <div style="display:flex;gap:8px;justify-content:space-between;margin-top:12px;flex-wrap:wrap">
+      <button class="btn ghost" onclick="openLesson('${esc(key)}')">← 기록 창으로</button>
+      <button class="btn" onclick="kApplyTo('${esc(key)}')">선택한 반에 넣기</button></div>`);}
+function kApplyTo(key){
+  const l=kLog(key), k=K();
+  const gf=i=>{const e=document.getElementById(i);return !!(e&&e.checked)};
+  const F={prog:gf('kaP'),note:gf('kaN'),absent:gf('kaA')}, over=gf('kaOver');
+  const keys=[...document.querySelectorAll('.katg:checked')].map(e=>e.value);
+  if(!keys.length){toast('넣을 반을 고르세요');return;}
+  let n=0,skip=0;
+  keys.forEach(tk=>{
+    const t=kLog(tk);
+    if(!over&&(t.prog||t.note)){skip++;return;}
+    let put=false;
+    ['prog','note','absent'].forEach(f=>{ if(!F[f])return;
+      const v=(l[f]||'').trim(); if(!v)return; t[f]=v; put=true;});
+    if(put){ if(!t.done){t.done=true;t.at=today();} n++; }});
+  save(); closeModal();
+  toast(n+'개 반에 넣었습니다'+(skip?' (이미 적힌 '+skip+'개는 건너뜀)':''));
+  kAfter();}
+
 function kSaveLesson(key,toggle){
   const l=kLog(key), g=x=>{const e=document.getElementById(x);return e?e.value.trim():'';};
   l.prog=g('klProg'); l.note=g('klNote'); l.absent=g('klAbs');
   if(toggle){l.done=!l.done; if(l.done&&!l.at)l.at=today();}
   else if(!l.done&&(l.prog||l.note)){l.done=true;l.at=today();}   /* 적었으면 한 것이다 */
   save(); closeModal(); toast('차시 기록을 저장했습니다');
-  if(S.view==='day'){renderSchedule(S.ui.day);vDay(document.getElementById('view'));} else render();}
+  kAfter();}
 
 /* ── 화면: 수업 기록 (오늘 / 반별 / 설정 탭) ── */
 function kTab(t){K().ui.tab=t;save();render();window.scrollTo(0,0);}
@@ -4194,7 +4455,9 @@ function kRow(x,showG){
     ${showG?`<td class="c"><b style="color:${kColor(x.g)}">${esc(x.g)}</b></td>`:''}
     <td>${l.prog?esc(l.prog):'<span class="hint">—</span>'}</td>
     <td>${l.note?esc(l.note):''}${l.absent?`<span class="hint"> · ${esc(l.absent)}</span>`:''}</td>
-    <td class="c no-print"><button class="chk ${l.done?'on':''}" onclick="openLesson('${esc(x.key)}')" title="차시 기록">${l.done?'✓':'✎'}</button></td>
+    <td class="c no-print" style="white-space:nowrap">
+      <button class="kquick" onclick="openLessonPick('${esc(x.key)}')" title="수업 내용 불러오기 (다른 반에서)">↧</button>
+      <button class="chk ${l.done?'on':''}" onclick="openLesson('${esc(x.key)}')" title="차시 기록">${l.done?'✓':'✎'}</button></td>
   </tr>`;}
 function kvToday(el){
   const d=today(), ls=kLessonsOn(d), off=kOffMap()[d], sp=kSwapMap()[d], k=K();
@@ -4210,7 +4473,9 @@ function kvToday(el){
      ${ls.length?`<div class="tblwrap"><table class="log">
        <thead><tr><th>차시</th><th>날짜</th><th>교시</th><th>반·강좌</th><th>진도</th><th>수업 방법·특이사항</th><th class="no-print">기록</th></tr></thead>
        <tbody>${ls.map(x=>kRow(x,true)).join('')}</tbody></table></div>
-       <p class="hint" style="margin-top:8px">✎ 를 눌러 그 자리에서 진도를 적으세요. <b>일간 계획 시간표에서도</b> 같은 창이 열립니다.</p>`
+       <p class="hint" style="margin-top:8px">✎ 를 눌러 그 자리에서 진도를 적으세요. <b>일간 계획 시간표에서도</b> 같은 창이 열립니다.<br>
+         여러 반에서 같은 수업을 할 때는 한 반만 적고 나머지는 <b>↧</b> 로 불러오거나,
+         기록 창의 <b>«↗ 다른 반에도 적용»</b> 으로 한 번에 넣으세요.</p>`
       :'<p class="hint">오늘은 수업이 없습니다.</p>'}
    </div>
    <div class="card"><h3>다음 수업</h3>
@@ -4590,6 +4855,7 @@ function kTodayCard(){                            /* 대시보드·일간 계획
         <span class="mt">${x.p}교시 ${x.start}</span>
         <span class="mh" style="border-color:${kColor(x.g)}"><b style="color:${kColor(x.g)}">${esc(x.g)}</b> ${x.no}차시</span>
         <span class="mm">${l.prog?esc(l.prog):'<span class="hint">진도를 적어주세요</span>'}</span>
+        <button class="kquick" onclick="event.stopPropagation();openLessonPick('${esc(x.key)}')" title="다른 반에서 불러오기">↧</button>
         <span class="chk ${l.done?'on':''}" style="pointer-events:none">${l.done?'✓':'✎'}</span></div>`;}).join('')}
     <div style="margin-top:8px" class="no-print"><button class="btn ghost sm" onclick="go('klass')">수업 기록 열기 →</button></div>
   </div>`;}
@@ -5441,12 +5707,17 @@ function recDropAll(rid){const r=recOf(rid); if(!r)return;
     }
   }catch(e){}
   renderNav();render();refreshWho();setSave(had?'불러옴 · '+(S.meta.savedAt||''):'자동저장 켜짐');
+  try{syncTopbarH();setTimeout(syncTopbarH,120);setTimeout(syncTopbarH,600);}catch(e){}
+  /* 상단바는 사명 길이·창 폭에 따라 높이가 달라진다 — 스크롤 중에도 한 프레임에 한 번만 다시 잰다 */
+  let tbRaf=0;
+  window.addEventListener('scroll',()=>{ if(tbRaf)return;
+    tbRaf=requestAnimationFrame(()=>{tbRaf=0;try{syncTopbarH();}catch(e){}}); },{passive:true});
   try{stampTick();}catch(e){}          /* 도장 캐시 초기화 (첫 호출은 기록만) */
   try{utInit();}catch(e){}
   try{tipInit();}catch(e){}
   try{paintCloud();cloudAutoOpen();}catch(e){}
   checkReminders();setInterval(checkReminders,30000);
-  let rz=null;window.addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(alignPanels,120);});})();
+  let rz=null;window.addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(()=>{try{syncTopbarH();}catch(e){}alignPanels();},120);});})();
 </script>
 </body>
 </html>
