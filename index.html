@@ -691,12 +691,13 @@
     padding:0 4px;line-height:1;font-family:inherit}
   .kquick:hover{color:var(--brand)}  .li-m.jl{margin-top:3px;line-height:1.5;word-break:break-word;white-space:pre-wrap}
   /* ── 큰 바위 (주간) ── */
-  .rkgrp{display:flex;border-top:1px solid var(--line)}
+  /* 세로 역할 라벨은 절대배치 — 그러지 않으면 긴 역할명이 칸 높이를 끌어올린다 */
+  .rkgrp{position:relative;padding-left:26px;border-top:1px solid var(--line);min-height:34px}
   .rkgrp:first-child{border-top:none}
-  .rklab{flex:none;width:26px;color:#fff;font-size:10.5px;font-weight:800;writing-mode:vertical-rl;
-    text-orientation:upright;letter-spacing:-1.5px;display:flex;align-items:center;justify-content:center;
-    padding:5px 0;overflow:hidden;text-align:center}
-  .rkrows{flex:1;min-width:0;padding:6px 9px;display:flex;flex-direction:column;gap:6px}
+  .rklab{position:absolute;left:0;top:0;bottom:0;width:26px;color:#fff;font-size:12px;font-weight:800;
+    display:flex;align-items:center;justify-content:center;padding:4px 1px;overflow:hidden;
+    text-align:center;letter-spacing:-.5px;line-height:1.1}
+  .rkrows{min-width:0;padding:6px 9px;display:flex;flex-direction:column;gap:6px}
   .rkrow{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
   .rkchk{flex:none;width:21px;height:21px;border-radius:7px;border:1px solid var(--line);background:#fff;
     color:#b9bfcc;font-size:11px;cursor:pointer;padding:0;line-height:1;font-family:inherit}
@@ -717,6 +718,10 @@
   .rkday i.st{background:#e8f0fa;color:var(--prog)}
   .rkday i.dn{background:var(--done);color:#fff}
   .rkday i:hover{outline:1px solid var(--brand)}
+  @keyframes rkflash{0%{background:#fff3cf;box-shadow:inset 0 0 0 2px #e8c96a}
+    72%{background:#fff7e0;box-shadow:inset 0 0 0 2px #f0dfae}
+    100%{background:transparent;box-shadow:none}}
+  .rkrow.flash{animation:rkflash 2.4s ease-out;border-radius:9px}
   .rkin.newrk{border:1px dashed var(--line);flex:0 0 auto;align-self:stretch}
   .rkrows>.rkin{flex:0 0 auto}
   /* ── 월간 중점 줄 ── */
@@ -3661,18 +3666,13 @@ function chainToWeek(ws){
     items.push({tag:g.role?roleName(g.role):'올해 목표',color:g.role?roleColor(g.role):'var(--gold)',t:g.text,
       btns:[{l:'→ 큰 바위로',f:`rockFrom('${ws}','${g.role||''}',${JSON.stringify(g.text)},{k:'goal',gid:'${g.id}'})`}]});});
   return chainBox('월간 계획에서 내려온 것','이 달의 중점 · 이 달에 진척시킬 올해 목표',items,
-    '<b>5 월간</b>에서 중점을 적거나 올해 목표를 고르면 여기로 내려옵니다.');}
+    '<b>5 월간</b>에서 중점을 적거나 올해 목표를 고르면 여기로 내려옵니다. <b>«→ 큰 바위로»</b> 를 누르면 '
+    +'어느 역할에 놓을지 고른 뒤 아래 <b>«역할별 큰 바위»</b> 칸으로 내려갑니다.');}
 function rockFrom(ws,role,text,from){
   ensureWeek(ws);
   const roles=S.profile.roles||[];
-  let rid=role;
-  if(!rid||!roles.some(r=>r.id===rid)||rocksOf(ws,rid).length>=ROCK_MAX){
-    const free=roles.find(r=>rocksOf(ws,r.id).length<ROCK_MAX);
-    rid=(free||roles[0]||{}).id;}
-  if(!rid){toast('먼저 역할을 등록하세요');return;}
-  if(addRock(ws,rid,text,from)){
-    toast(roleName(rid)+' 역할의 큰 바위로 놓았습니다');
-    if(S.view==='week')vWeek(document.getElementById('view'));else render();}}
+  const pref=(role&&roles.some(r=>r.id===role))?role:'';
+  openRockPlace(ws,text,from,pref);}
 
 /* 주간 → 일간 */
 function chainToDay(d){
@@ -5852,6 +5852,47 @@ function rockStat(id){
 /* 큰 바위는 한 주에 안 끝나는 게 정상 — 보는 것은 완료가 아니라 «손을 댔는가» */
 function rockTouched(r){ if(!r)return false; if(r.done)return true; return rockStat(r.id).st>0; }
 
+/* ── «→ 큰 바위로» 는 어느 역할로 갈지 직접 고르게 한다 ──────────────
+   전에는 «자리가 빈 첫 역할»에 말없이 넣었습니다. 동작은 했지만
+   어디로 갔는지 알 수 없어 «눌러도 반응이 없다»로 보였습니다.
+   → 역할을 고르게 하고, 놓인 줄로 스크롤해 잠깐 깜빡이게 합니다. */
+let RKPLACE=null, RKFLASH='';
+function openRockPlace(ws,text,from,pref){
+  const roles=S.profile.roles||[];
+  if(!roles.length){toast('먼저 «1 인생 설계»에서 역할을 등록하세요');return;}
+  const t=String(text||'').trim();
+  if(!t){toast('내용이 비어 있습니다');return;}
+  RKPLACE={ws:ws,text:t,from:from||null};
+  const free=roles.filter(r=>rocksOf(ws,r.id).length<ROCK_MAX);
+  modalBox(`<h3 style="margin:0 0 4px">🪨 어느 역할의 큰 바위로?</h3>
+    <div class="hint" style="margin-bottom:10px"><b>${esc(t)}</b><br>
+      ${ws} ~ ${addDays(ws,6)} 주 · 역할당 최대 ${ROCK_MAX}개</div>
+    ${free.length?`<div class="chips">${roles.map(r=>{
+        const cur=rocksOf(ws,r.id), full=cur.length>=ROCK_MAX, on=(!full&&pref===r.id);
+        return `<span class="chip ${on?'on':''}" title="${esc(r.name)} — 지금 ${cur.length}/${ROCK_MAX}"
+          style="border-color:${r.color||'#5b53b0'}${on?';background:'+(r.color||'#5b53b0')+';color:#fff':''}${full?';opacity:.35;cursor:not-allowed':''}"
+          onclick="${full?`toast('그 역할은 이미 꽉 찼습니다')`:`placeRock('${r.id}')`}">${esc(r.name)} ${cur.length}/${ROCK_MAX}${full?' · 꽉 참':''}</span>`;}).join('')}</div>
+      <div class="hint" style="margin-top:10px">놓으면 아래 <b>«역할별 큰 바위»</b> 칸으로 내려가고, 그 줄이 잠깐 노랗게 깜빡입니다.</div>`
+     :`<div class="callout co-gold">모든 역할의 큰 바위가 ${ROCK_MAX}개씩 찼습니다.<br>
+        <b>«역할별 큰 바위»</b> 에서 하나를 <b>✓ 끝냄</b>으로 표시하거나 <b>✕</b> 로 놓아주면 자리가 생깁니다.
+        <div style="margin-top:5px">큰 바위가 많아지면 주간 나침반이 아니라 또 하나의 할 일 목록이 됩니다.</div></div>`}
+    <div style="text-align:right;margin-top:12px"><button class="btn ghost" onclick="closeModal()">닫기</button></div>`);}
+function placeRock(rid){
+  if(!RKPLACE)return;
+  const ws=RKPLACE.ws, text=RKPLACE.text, from=RKPLACE.from;
+  const r=addRock(ws,rid,text,from); if(!r)return;
+  closeModal();
+  toast('«'+roleName(rid)+'» 역할 · '+ws+' 주 큰 바위로 놓았습니다');
+  if(S.view==='month'){vMonth(document.getElementById('view'));return;}
+  RKFLASH=r.id;
+  if(S.view==='week')vWeek(document.getElementById('view'));
+  else {S.ui.week=ws;go('week');}
+  rkFlashScroll();}
+function rkFlashScroll(){ if(!RKFLASH)return;
+  setTimeout(()=>{const el=document.querySelector('.rkrow.flash');
+    if(el)try{el.scrollIntoView({block:'center',behavior:'smooth'});}catch(e){el.scrollIntoView();}
+    RKFLASH='';},50);}
+
 /* ── ② 다음 행동 내리기 ── */
 let RNEXT={ws:'',rid:'',id:''};
 function openRockNext(ws,rid,id){
@@ -5934,14 +5975,8 @@ function focusHasRock(ws,text){
   return f;}
 function focusToWeek(mk,i,ws){
   const t=focusLines(mk)[i]; if(!t)return;
-  if(focusHasRock(ws,t)){toast('이미 '+ws+' 주의 큰 바위에 있습니다');return;}
-  const roles=S.profile.roles||[];
-  const free=roles.find(r=>rocksOf(ws,r.id).length<ROCK_MAX);
-  const rid=(free||roles[0]||{}).id;
-  if(!rid){toast('먼저 «1 인생 설계»에서 역할을 등록하세요');return;}
-  if(addRock(ws,rid,t,{k:'focus',mk:mk})){
-    toast(ws+' 주 «'+roleName(rid)+'» 큰 바위로 놓았습니다 — 주간 계획에서 ⇄ 로 역할을 바꿀 수 있습니다');
-    if(S.view==='month')vMonth(document.getElementById('view'));}}
+  if(focusHasRock(ws,t)){toast('이미 '+ws+' 주의 큰 바위에 있습니다 — 주간 계획에서 확인하세요');return;}
+  openRockPlace(ws,t,{k:'focus',mk:mk},'');}
 
 /* ── ⑤ 주간 회고 — 완료가 아니라 «손을 댔는가» ── */
 function moveRockNext(ws,rid,id){
@@ -5988,7 +6023,7 @@ function rockRow(ws,rid,k){
   const tag = k.done?'<span class="rkst ok">✓ 끝냄</span>'
     : (st.n===0?'<span class="rkst warn">아직 내려간 것이 없습니다</span>'
       :`<span class="rkst ${st.st?'ok':''}">내려간 것 ${st.n} · 착수 ${st.st} · 완료 ${st.dn}</span>`);
-  return `<div class="rkrow ${k.done?'done':''}">
+  return `<div class="rkrow ${k.done?'done':''}${RKFLASH===k.id?' flash':''}">
     <button class="rkchk ${k.done?'on':''}" onclick="toggleRockDone('${ws}','${rid}','${k.id}')" title="끝냄으로 표시">${k.done?'✓':'○'}</button>
     <input class="rkin" value="${esc(k.text)}" onchange="setRockText('${ws}','${rid}','${k.id}',this.value)"
       onkeydown="if(event.key==='Enter')this.blur()">
@@ -6007,7 +6042,7 @@ function rockCard(ws){
       그것이 <b>목표를 계획으로 바꾸는 자리</b>입니다.</p>
     <div class="onegrid" style="margin-top:10px">
       ${roles.map(r=>{const arr=rocksOf(ws,r.id);
-        return `<div class="rkgrp"><div class="rklab" style="background:${r.color||'#5b53b0'}" title="${esc(r.name)}">${esc(r.name)}</div>
+        return `<div class="rkgrp"><div class="rklab" style="background:${r.color||'#5b53b0'}" title="${esc(r.name)}">${esc(roleAbbr(r.id))}</div>
           <div class="rkrows">
             ${arr.map(k=>rockRow(ws,r.id,k)).join('')}
             ${arr.length<ROCK_MAX?`<input class="rkin newrk" placeholder="＋ 이 역할의 큰 바위"
