@@ -758,6 +758,36 @@
   .vcmd b{flex:none;min-width:96px;color:var(--brand-d)}
   @media(max-width:720px){.vbar{bottom:10px;padding:5px 8px 5px 5px}.vmic{width:34px;height:34px;font-size:15px}}
   @media print{.vbar{display:none!important}}
+  /* ── 브리핑(읽어주기) 바 ── */
+  .tbar{position:fixed;left:50%;transform:translateX(-50%);bottom:18px;z-index:61;display:none;
+    align-items:center;gap:7px;background:var(--brand-d);color:#fff;border-radius:999px;
+    padding:6px 10px 6px 6px;box-shadow:0 10px 32px rgba(30,25,60,.3);max-width:min(94vw,680px)}
+  .tbar.on{display:flex}
+  body.ttson .vbar{bottom:74px}
+  .tico{flex:none;width:36px;height:36px;border-radius:50%;border:none;background:rgba(255,255,255,.18);
+    color:#fff;font-size:15px;cursor:pointer;font-family:inherit;line-height:1;padding:0}
+  .tico:hover{background:rgba(255,255,255,.3)}
+  .ttx{flex:1 1 auto;min-width:120px;font-size:12.5px;font-weight:600;overflow:hidden;
+    text-overflow:ellipsis;white-space:nowrap;opacity:.95}
+  .tbtn{flex:none;border:1px solid rgba(255,255,255,.35);background:transparent;color:#fff;border-radius:999px;
+    font-size:11.5px;font-weight:800;padding:5px 9px;cursor:pointer;font-family:inherit;line-height:1}
+  .tbtn:hover{background:rgba(255,255,255,.18)}
+  .trate{flex:0 0 auto;width:auto!important;max-width:64px;min-width:0;
+    border:1px solid rgba(255,255,255,.35);background:transparent;color:#fff;border-radius:999px;
+    font-size:11.5px;font-weight:700;padding:4px 4px;font-family:inherit;cursor:pointer;
+    appearance:none;-webkit-appearance:none;text-align:center;height:auto}
+  .trate option{color:var(--ink)}
+  /* 선택한 부분 읽기 단추 */
+  .tpick{position:fixed;z-index:62;display:none;background:var(--brand-d);color:#fff;border:none;
+    border-radius:999px;padding:6px 12px;font-size:12px;font-weight:800;cursor:pointer;font-family:inherit;
+    box-shadow:0 6px 20px rgba(30,25,60,.3)}
+  .tpick.on{display:block}
+  .brf{flex:none;border:1px solid var(--line);background:#fff;color:var(--brand-d);border-radius:8px;
+    font-size:11.5px;font-weight:800;padding:4px 10px;cursor:pointer;font-family:inherit}
+  .brf:hover{background:var(--brand-soft);border-color:#ddd8f5}
+  .brf.sm2{padding:3px 8px;font-size:11px}
+  @media(max-width:720px){.tbar{bottom:10px}body.ttson .vbar{bottom:64px}}
+  @media print{.tbar,.tpick{display:none!important}}
 </style>
 </head>
 <body>
@@ -865,7 +895,7 @@ function blank(){return{
   focusLog:{},
   settings:{gClientId:"",gcalId:"primary",autoCloud:false,cloudSyncedAt:"",ai:{prov:"copy",key:"",model:""},
     autoRitual:true, amTime:"07:00", pmTime:"21:30", amUntil:12, pmFrom:18,
-    restDay:-1, reviewDay:0, dailyCap:0, utShow:true, utOpen:true, hideDupG:true, mode:"auto", voice:true, voiceLang:"ko-KR"},
+    restDay:-1, reviewDay:0, dailyCap:0, utShow:true, utOpen:true, hideDupG:true, mode:"auto", voice:true, voiceLang:"ko-KR", tts:true, ttsRate:1, ttsVoice:""},
   usage:{total:0, byView:{}, byDay:{}},
   klass:null,                      /* 교사용 수업 기록 모듈 — kFix()가 채운다 */
   view:"dash", ui:{month:"", week:"", day:"", book:"", navOpen:{}, lcYear:0, taskSort:"role"}
@@ -1153,7 +1183,8 @@ function vAnnual(v){
   v.innerHTML=`
    <span class="step-badge">4단계 · 실행</span>
    <h2 class="vh">🗓️ 연간 계획</h2>
-   <p class="vsub">비전을 올해의 목표로 내려받습니다. 역할별로, 측정 가능하게.</p>
+   <p class="vsub">비전을 올해의 목표로 내려받습니다. 역할별로, 측정 가능하게.
+     <button class="brf no-print" style="margin-left:6px" onclick="briefAnnual()">🔊 브리핑</button></p>
    ${chainToAnnual()}
    <div class="card"><div class="grid2">
      <label class="fld"><span class="lb">연도</span><input type="number" value="${a.year}" oninput="setV('annual.year',parseInt(this.value)||${a.year})"></label>
@@ -1194,7 +1225,8 @@ function vMonth(v){
   v.innerHTML=`
    <span class="step-badge">5단계 · 실행</span>
    <h2 class="vh">📅 월간 계획</h2>
-   <p class="vsub">올해 목표 중 <b>이 달에 진척시킬 것</b>을 고르고, 그것을 이 달의 중점으로 내려놓습니다.</p>
+   <p class="vsub">올해 목표 중 <b>이 달에 진척시킬 것</b>을 고르고, 그것을 이 달의 중점으로 내려놓습니다.
+     <button class="brf no-print" style="margin-left:6px" onclick="briefMonth('${mk}')">🔊 브리핑</button></p>
    ${chainToMonth(mk)}
    <div class="card"><div style="display:flex;gap:10px;align-items:center;margin-bottom:12px">
      <button class="btn ghost sm" onclick="shiftMonth(-1)">‹ 이전달</button>
@@ -1232,7 +1264,8 @@ function vWeek(v){
   v.innerHTML=`
    <span class="step-badge">6단계 · 실행</span>
    <h2 class="vh">🧩 주간 계획 (주간 나침반)</h2>
-   <p class="vsub">각 역할의 ‘큰 바위’ 1~2개를 먼저 놓습니다. 급한 일보다 중요한 일 먼저. (프랭클린)</p>
+   <p class="vsub">각 역할의 ‘큰 바위’ 1~2개를 먼저 놓습니다. 급한 일보다 중요한 일 먼저. (프랭클린)
+     <button class="brf no-print" style="margin-left:6px" onclick="briefWeek('${ws}')">🔊 브리핑</button></p>
    ${chainToWeek(ws)}
    <div class="card"><div style="display:flex;gap:10px;align-items:center">
      <button class="btn ghost sm" onclick="shiftWeek(-7)">‹ 지난주</button>
@@ -1322,6 +1355,8 @@ function dayBar(d){
     <button class="dbtoday ${d===t?'on':''}" onclick="goToday()"
       title="${d===t?'오늘을 보고 있습니다':'오늘로 돌아가기'}">오늘</button>
     ${n!==0?`<span class="dbrel">${n>0?'+':''}${n}일</span>`:''}
+    <button class="brf no-print" onclick="briefDayNow('${d}')" title="지금 이후 일정을 읽어 줍니다">🔊 브리핑</button>
+    <button class="brf sm2 no-print" onclick="briefDayPick('${d}')" title="시작 시각 고르기">▾</button>
     <span class="dbsum">착수 ${st}/${all.length} · 완료 ${dn}</span>
   </div>`;}
 function goToday(){ if(S.ui.day===today())return; S.ui.day=today(); save(); vDay(document.getElementById('view')); window.scrollTo(0,0); }
@@ -1615,7 +1650,7 @@ const SC_START=5,SC_END=24,SC_H=40;
 const EVCOL=['#5b53b0','#2f6db3','#1f9d8f','#c98a1a','#b23a55','#6a5acd'];
 let gDayCache={};
 function dayEvents(d){ensureDay(d);return S.days[d].events;}
-function toMin(t){const p=t.split(':');return (+p[0])*60+(+p[1]);}
+function toMin(t){const p=String(t==null?'':t).split(':');return (+p[0]||0)*60+(+p[1]||0);}
 function addMinStr(t,mins){let m=Math.min(23*60+59,toMin(t)+mins);return String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0');}
 function priColor(p){return p==='A'?'#d1495b':(p==='B'?'#e0a52f':'#2fa36b');}
 const ROLE_COLOR_MAP={"교사·수업(물리)":"#2f6db3","수업":"#6a4fbb","학습공동체·연구":"#d1495b","가족·관계":"#2fa36b","자기계발·독서":"#e0552e","건강·자기돌봄":"#3aa76d"};
@@ -1732,7 +1767,7 @@ function renderSchedule(d){const el=document.getElementById('gcal');if(!el)retur
     const tog=isRec?`toggleRecDone('${d}','${ev.id}')`:`toggleEventDone('${d}','${ev.id}')`;
     const del=ev.rid?`openRecDel('${d}','event','${ev.id}')`:`delEvent('${d}','${ev.id}')`;
     const dg=isRec?'':` draggable="true" ondragstart="blockDrag(event,'${ev.id}','event')" ondragend="hideDropLine()"`;
-    blocks.push({sm:toMin(ev.start),em:toMin(ev.end),build:st=>`<div class="ev${isRec?' rec':' grab'}"${dg} data-tk="${tipEvent(d,ev,isRec)}" style="${st};background:${c.bg};color:${c.fg};border:${done?'4px':'2px'} solid ${base}">
+    blocks.push({sm:toMin(ev.start),em:toMin(ev.end||addMinStr(ev.start,60)),build:st=>`<div class="ev${isRec?' rec':' grab'}"${dg} data-tk="${tipEvent(d,ev,isRec)}" style="${st};background:${c.bg};color:${c.fg};border:${done?'4px':'2px'} solid ${base}">
       ${isRec?'':`<button class="evx" style="color:${c.fg};right:57px" onclick="openEvEdit('${d}','${ev.id}')" title="수정${ev.gEventId?' (구글에도 반영)':''}">✏</button>`}
       ${isRec?'':`<button class="evx" style="color:${c.fg};right:38px;${ev.memo?'background:rgba(0,0,0,.34)':''}" onclick="openMemo('${d}','event','${ev.id}')" title="${ev.memo?'메모 있음 — 수정':'메모 남기기'}">🗒</button>`}
       <button class="evx" style="color:${c.fg};right:19px" onclick="${tog}" title="완료">${done?'↺':'✓'}</button>
@@ -2567,6 +2602,7 @@ function vRemind(v){
    </div>
 
    ${voiceCard()}
+   ${ttsCard()}
    ${recListCard()}
 
    <div class="card"><h3>② 홈 화면에 앱으로 설치</h3>
@@ -6281,6 +6317,333 @@ function voiceCard(){
         +'<b>iPhone·iPad</b> 는 사파리 대신 <b>키보드의 🎤 받아쓰기</b>를 쓰시면 같은 칸에 그대로 들어갑니다.</div>')
     +'</div>';}
 
+
+/* ============================================================
+   ㉔ 브리핑(읽어주기) — 브라우저 내장 음성 합성, 외부 의존 없음
+   ------------------------------------------------------------
+   음성 «입력»(23절)과 달리 «출력»은 iPhone·iPad 사파리에서도 됩니다.
+   쓰임: 아침에 하루를 귀로 듣기 / 운전·이동 중 주간·월간·연간 점검 /
+         긴 기록을 눈 대신 귀로 확인하기.
+   구현 주의:
+     · 긴 문장을 한 번에 넣으면 크롬이 15초쯤에서 끊습니다 → 문장 단위로 큐에 넣습니다.
+     · 크롬은 재생이 길어지면 멈추는 버그가 있어 pause/resume 심장박동을 겁니다.
+     · 목소리 목록은 비동기로 옵니다 → onvoiceschanged 로 다시 고릅니다.
+   ============================================================ */
+let TTS={sup:null,on:false,lines:[],i:0,title:'',hb:0,voices:null};
+function ttsSupported(){
+  if(TTS.sup===null)TTS.sup=!!(window.speechSynthesis&&window.SpeechSynthesisUtterance);
+  return TTS.sup;}
+function ttsVoices(){
+  if(!ttsSupported())return [];
+  try{TTS.voices=window.speechSynthesis.getVoices()||[];}catch(e){TTS.voices=[];}
+  return TTS.voices;}
+function ttsPickVoice(){
+  const vs=TTS.voices||ttsVoices(); if(!vs.length)return null;
+  const want=(S.settings&&S.settings.ttsVoice)||'';
+  if(want){const f=vs.find(v=>v.voiceURI===want||v.name===want); if(f)return f;}
+  return vs.find(v=>/^ko/i.test(v.lang))||vs.find(v=>/ko[-_]KR/i.test(v.lang))||null;}
+/* 읽기 좋은 문장으로 자르기 */
+function ttsSplit(text){
+  const out=[];
+  String(text||'').split(/\n+/).forEach(function(raw){
+    const l=raw.replace(/\s+/g,' ').trim(); if(!l)return;
+    if(l.length<=170){out.push(l);return;}
+    const parts=l.split(/([.!?…]+\s*)/); let buf='';
+    for(let i=0;i<parts.length;i+=2){
+      const seg=(parts[i]||'')+(parts[i+1]||''); if(!seg)continue;
+      if((buf+seg).length>170&&buf){out.push(buf.trim());buf=seg;} else buf+=seg;}
+    if(buf.trim())out.push(buf.trim());});
+  /* 마침표 없이 길게 이어지는 글(한국어 기록에서 흔합니다)은 낱말·글자 단위로 끊는다 */
+  const fin=[];
+  out.forEach(function(l){
+    while(l.length>170){
+      let cut=l.lastIndexOf(' ',170); if(cut<80)cut=l.lastIndexOf(',',170);
+      if(cut<80)cut=170;
+      fin.push(l.slice(0,cut).trim()); l=l.slice(cut).trim();}
+    if(l)fin.push(l);});
+  return fin;}
+function tbarEl(){
+  let e=document.getElementById('tbar');
+  if(!e){
+    e=document.createElement('div'); e.id='tbar'; e.className='tbar';
+    e.innerHTML='<button class="tico" id="tplay" title="일시정지 · 계속">⏸</button>'
+      +'<span class="ttx" id="ttx">브리핑</span>'
+      +'<button class="tbtn" id="tprev" title="이전 문장">⏮</button>'
+      +'<button class="tbtn" id="tnext" title="다음 문장">⏭</button>'
+      +'<select class="trate" id="trate" title="읽는 속도">'
+      +[0.8,0.9,1,1.1,1.2,1.4].map(function(r){return '<option value="'+r+'">'+r.toFixed(1)+'×</option>';}).join('')
+      +'</select>'
+      +'<button class="tbtn" id="tstop" title="정지">⏹</button>';
+    document.body.appendChild(e);
+    e.addEventListener('mousedown',function(ev){ if(ev.target.tagName!=='SELECT')ev.preventDefault(); });
+    e.querySelector('#tplay').onclick=ttsPlayPause;
+    e.querySelector('#tprev').onclick=function(){ttsJump(-1);};
+    e.querySelector('#tnext').onclick=function(){ttsJump(1);};
+    e.querySelector('#tstop').onclick=function(){ttsStop();};
+    const sel=e.querySelector('#trate');
+    sel.value=String((S.settings&&S.settings.ttsRate)||1);
+    sel.onchange=function(){S.settings.ttsRate=parseFloat(this.value)||1;save();ttsJump(0);};
+  }
+  return e;}
+function tSet(txt){
+  const e=tbarEl(), t=e.querySelector('#ttx'); if(t)t.textContent=txt;
+  const p=e.querySelector('#tplay'); if(p)p.textContent=(TTS.on&&!ttsPaused())?'⏸':'▶';}
+function ttsPaused(){try{return !!window.speechSynthesis.paused;}catch(e){return false;}}
+function tbarShow(){tbarEl().classList.add('on');document.body.classList.add('ttson');}
+function tbarHide(){const e=document.getElementById('tbar');if(e)e.classList.remove('on');
+  document.body.classList.remove('ttson');}
+/* 본체 */
+function ttsSay(title,text){
+  if(!ttsSupported()){toast('이 브라우저는 읽어주기를 지원하지 않습니다');return;}
+  if(S.settings&&S.settings.tts===false){toast('읽어주기가 꺼져 있습니다 (일정 알림 화면에서 켜세요)');return;}
+  const lines=ttsSplit(text);
+  if(!lines.length){toast('읽을 내용이 없습니다');return;}
+  ttsStop(true);
+  TTS.lines=lines; TTS.i=0; TTS.title=title||'브리핑'; TTS.on=true;
+  tbarShow(); ttsStep();
+  if(TTS.hb)clearInterval(TTS.hb);
+  TTS.hb=setInterval(function(){                    /* 크롬이 길게 읽다 멈추는 것 방지 */
+    try{const sp=window.speechSynthesis;
+      if(TTS.on&&sp.speaking&&!sp.paused){sp.pause();sp.resume();}}catch(e){}},9000);}
+function ttsStep(){
+  if(!TTS.on)return;
+  if(TTS.i>=TTS.lines.length){ttsStop();toast('브리핑을 마쳤습니다');return;}
+  const line=TTS.lines[TTS.i];
+  tSet(TTS.title+' · '+(TTS.i+1)+'/'+TTS.lines.length+' — '+line);
+  const u=new SpeechSynthesisUtterance(line);
+  const v=ttsPickVoice(); if(v){u.voice=v;u.lang=v.lang;} else u.lang='ko-KR';
+  u.rate=(S.settings&&S.settings.ttsRate)||1; u.pitch=1; u.volume=1;
+  u.onend=function(){ if(!TTS.on)return; TTS.i++; ttsStep(); };
+  u.onerror=function(){ if(!TTS.on)return; TTS.i++; setTimeout(ttsStep,120); };
+  try{window.speechSynthesis.speak(u);}catch(e){ttsStop();toast('읽어주기를 시작하지 못했습니다');}}
+function ttsPlayPause(){
+  if(!TTS.on)return;
+  try{const sp=window.speechSynthesis;
+    if(sp.paused){sp.resume();} else {sp.pause();}}catch(e){}
+  setTimeout(function(){tSet(TTS.title+' · '+(TTS.i+1)+'/'+TTS.lines.length);},60);}
+function ttsJump(n){
+  if(!TTS.on)return;
+  TTS.i=Math.max(0,Math.min(TTS.lines.length-1,TTS.i+n));
+  try{window.speechSynthesis.cancel();}catch(e){}
+  setTimeout(ttsStep,80);}
+function ttsStop(quiet){
+  TTS.on=false;
+  if(TTS.hb){clearInterval(TTS.hb);TTS.hb=0;}
+  try{window.speechSynthesis.cancel();}catch(e){}
+  if(!quiet)tbarHide();}
+
+/* ── 읽기 좋은 표현 ── */
+function sayTime(hm){
+  if(!hm)return '';
+  const p=String(hm).split(':'), h=+p[0]||0, m=+p[1]||0;
+  const ap=h<12?'오전':'오후'; let hh=h%12; if(hh===0)hh=12;
+  return ap+' '+hh+'시'+(m?' '+m+'분':'');}
+function sayDate(d){const p=String(d).split('-');return (+p[1])+'월 '+(+p[2])+'일 '+wd(d)+'요일';}
+function sayList(a){a=(a||[]).filter(Boolean);
+  if(!a.length)return '';
+  if(a.length===1)return a[0];
+  return a.slice(0,-1).join(', ')+' 그리고 '+a[a.length-1];}
+
+/* ── 일간 브리핑 (고른 시각 이후) ── */
+function briefDayText(d,fromMin){
+  ensureDay(d);
+  const L=[], t0=(fromMin==null?-1:fromMin);
+  L.push(sayDate(d)+' 브리핑입니다.');
+  /* 오늘의 약속 */
+  const pr=[];
+  T_ORDER.forEach(function(ty){const t=promiseOf(d,ty); if(!t)return;
+    const c=cueText(d,t), st=(t.status==='done')?'이미 끝냈습니다':(isStarted(t)?'착수했습니다':'');
+    pr.push(T_TYPES[ty].l+'은 '+t.text+'.'+(c?' 신호는 '+c+'.':'')+(t.first?' 첫 행동은 '+t.first+'.':'')+(st?' '+st+'.':''));});
+  if(pr.length){L.push('오늘의 약속입니다.');pr.forEach(function(x){L.push(x);});}
+  else L.push('오늘의 약속을 아직 정하지 않으셨습니다. 끝낼 것 하나, 시작할 것 하나, 바로 할 것 하나만 정해 보세요.');
+  /* 시각이 있는 일정·수업·과제 */
+  const blocks=[];
+  try{ if(kOn())kLessonsOn(d).forEach(function(x){
+    const l=(K().logs[x.key]||{});
+    blocks.push({m:toMin(x.start),s:sayTime(x.start)+', '+x.g+' 수업, '+x.no+'차시입니다.'
+      +(l.prog?' 진도는 '+l.prog+'.':'')});});}catch(e){}
+  dayEvents(d).forEach(function(e){ if(!e.start)return;
+    blocks.push({m:toMin(e.start),s:sayTime(e.start)+', '+e.title+'.'+(e.done?' 완료했습니다.':'')});});
+  dayTasks(d).forEach(function(t){ if(!t.start||!t.text)return;
+    blocks.push({m:toMin(t.start),s:sayTime(t.start)+', '+t.text+'.'
+      +(t.status==='done'?' 완료했습니다.':(isStarted(t)?' 착수했습니다.':''))});});
+  blocks.sort(function(a,b){return a.m-b.m;});
+  const rest=blocks.filter(function(b){return b.m>=t0;});
+  if(t0>=0)L.push(sayTime(m2s(t0))+' 이후 일정은 '+(rest.length?rest.length+'건입니다.':'없습니다.'));
+  else L.push('오늘 시간표에 '+(blocks.length?blocks.length+'건이 있습니다.':'등록된 일정이 없습니다.'));
+  rest.forEach(function(b){L.push(b.s);});
+  /* 마감 */
+  const due=dayTasks(d).filter(function(t){return t.text&&t.due&&t.status!=='done'&&t.status!=='drop';})
+    .map(function(t){const i=dueInfo(t.due);return i?{i:i,t:t}:null;}).filter(Boolean)
+    .sort(function(a,b){return a.i.n-b.i.n;});
+  const over=due.filter(function(x){return x.i.over;});
+  const soon=due.filter(function(x){return !x.i.over&&x.i.n<=2;});
+  if(over.length)L.push('마감이 지난 과제가 '+over.length+'건 있습니다. '+sayList(over.slice(0,3).map(function(x){return x.t.text;}))+'. 만회하려 하지 말고 다음 신호로 다시 예약하세요.');
+  if(soon.length)L.push('마감이 임박한 과제는 '+sayList(soon.slice(0,3).map(function(x){return x.t.text+', '+x.i.txt;}))+'.');
+  /* 마무리 */
+  const all=dayTasks(d).filter(function(t){return t.text&&t.status!=='drop';});
+  const st=all.filter(isStarted).length;
+  L.push('지금까지 '+all.length+'건 중 '+st+'건에 손을 댔습니다. 완성이 아니라 착수가 오늘의 성공입니다.');
+  return L.join('\n');}
+function briefDay(d,fromMin){ttsSay('일간 브리핑',briefDayText(d,fromMin));}
+function briefDayNow(d){
+  const n=new Date();
+  const from=(d===today())?(n.getHours()*60+n.getMinutes()):0;
+  briefDay(d,from);}
+function briefDayPick(d){
+  const n=new Date(), cur=m2s(snap5(n.getHours()*60+n.getMinutes()));
+  modalBox('<h3 style="margin:0 0 4px">🔊 어디서부터 들을까요?</h3>'
+    +'<div class="hint" style="margin-bottom:10px">'+sayDate(d)+'</div>'
+    +'<div style="display:flex;flex-direction:column;gap:8px">'
+    +'<button class="btn" onclick="closeModal();briefDayNow(\''+d+'\')">지금('+sayTime(cur)+') 이후 일정만</button>'
+    +'<button class="btn ghost" onclick="closeModal();briefDay(\''+d+'\',-1)">하루 전체</button>'
+    +'<div style="display:flex;gap:6px;align-items:center">'
+    +'<input type="time" id="brfT" class="tmin" style="max-width:130px" value="'+cur+'">'
+    +'<button class="btn ghost" onclick="briefFromInput(\''+d+'\')">이 시각 이후</button></div>'
+    +'</div>'
+    +'<div style="text-align:right;margin-top:12px"><button class="btn ghost" onclick="closeModal()">닫기</button></div>');}
+function briefFromInput(d){
+  const e=document.getElementById('brfT'), v=e?e.value:'';
+  closeModal(); briefDay(d, v?toMin(v):-1);}
+
+/* ── 주간 · 월간 · 연간 브리핑 ── */
+function briefWeekText(ws){
+  const L=[], wk=ensureWeek(ws);
+  L.push(ws.slice(5).replace('-','월 ')+'일부터 '+addDays(ws,6).slice(5).replace('-','월 ')+'일까지, 주간 브리핑입니다.');
+  const rows=rockRows(ws);
+  if(rows.length){
+    L.push('이번 주 큰 바위는 '+rows.length+'개입니다.');
+    rows.forEach(function(x){
+      const st=x.k.done?'끝냈습니다':(x.s.st>0?('손을 댔습니다. 내려간 것 '+x.s.n+'건 가운데 '+x.s.st+'건 착수'):'아직 손대지 않았습니다');
+      L.push(x.r.name+' 역할, '+x.k.text+'. '+st+'.');});
+    const un=rows.filter(function(x){return !x.k.done&&x.s.st===0;});
+    if(un.length)L.push('손대지 않은 큰 바위가 '+un.length+'개 있습니다. 한 주에 담을 수 있는 양이 달랐던 것일 수 있습니다.');
+  } else L.push('이번 주 큰 바위를 아직 놓지 않으셨습니다. 역할마다 하나씩만 먼저 놓아 보세요.');
+  /* 요일별 일감 */
+  const days=[]; for(let i=0;i<7;i++)days.push(addDays(ws,i));
+  const busy=days.map(function(d){ensureDay(d);
+    let n=(S.days[d].events||[]).length+dayTasks(d).filter(function(t){return t.text&&t.start;}).length;
+    try{ if(kOn())n+=kLessonsOn(d).length; }catch(e){}
+    return {d:d,n:n};}).filter(function(x){return x.n>0;});
+  if(busy.length)L.push('요일별로는 '+sayList(busy.map(function(x){return wd(x.d)+'요일 '+x.n+'건';}))+'입니다.');
+  const rd=(S.settings&&S.settings.reviewDay)|0;
+  L.push('주간 회고는 '+WDN[rd]+'요일입니다. 완료가 아니라 손을 댔는지로 봅니다.');
+  return L.join('\n');}
+function briefWeek(ws){ttsSay('주간 브리핑',briefWeekText(ws));}
+function briefMonthText(mk){
+  const L=[], m=ensureMonth(mk);
+  L.push(mk.split('-')[0]+'년 '+(+mk.split('-')[1])+'월, 월간 브리핑입니다.');
+  const f=focusLines(mk).filter(Boolean);
+  if(f.length){L.push('이 달의 중점은 '+f.length+'가지입니다.');f.forEach(function(x,i){L.push((i+1)+'. '+x);});}
+  else L.push('이 달의 중점을 아직 적지 않으셨습니다. 세 가지 안팎이 적당합니다.');
+  const gs=(m.goalIds||[]).map(function(g){const x=((S.annual||{}).goals||[]).find(function(y){return y.id===g;});return x?x.text:'';}).filter(Boolean);
+  if(gs.length)L.push('이 달에 진척시킬 올해 목표는 '+sayList(gs)+'입니다.');
+  const wks=monthWeeks(mk), t=today();
+  const left=wks.filter(function(w){return addDays(w,6)>=t;}).length;
+  L.push('이 달은 '+wks.length+'주로 나뉘고, 남은 주는 '+left+'주입니다.');
+  let rec=0; Object.keys(S.days||{}).forEach(function(d){ if(d.indexOf(mk)!==0)return;
+    const x=S.days[d]; if(x&&(x.journal||x.praise||x.gratitude||x.reflect))rec++;});
+  L.push('이 달에 기록을 남긴 날은 '+rec+'일입니다.');
+  if((m.good||'').trim())L.push('잘된 점으로 적어 두신 것은, '+m.good+'.');
+  return L.join('\n');}
+function briefMonth(mk){ttsSay('월간 브리핑',briefMonthText(mk));}
+function briefAnnualText(){
+  const L=[], a=S.annual||{goals:[]};
+  L.push((a.year||new Date().getFullYear())+'년, 연간 브리핑입니다.');
+  if((a.word||'').trim())L.push('올해의 단어는 '+a.word+'입니다.');
+  const gs=(a.goals||[]).filter(function(g){return g.text;});
+  if(gs.length){
+    const dn=gs.filter(function(g){return g.done;}).length;
+    L.push('올해 목표는 '+gs.length+'개이고 '+dn+'개를 이뤘습니다.');
+    gs.forEach(function(g){L.push((g.role?roleName(g.role)+' 역할, ':'')+g.text+'.'+(g.done?' 완료했습니다.':''));});
+  } else L.push('올해 목표를 아직 적지 않으셨습니다.');
+  const n=new Date(), left=12-(n.getMonth()+1);
+  L.push('올해는 '+left+'개월 남았습니다.');
+  if((S.mission&&S.mission.statement||'').trim())L.push('사명은, '+S.mission.statement);
+  return L.join('\n');}
+function briefAnnual(){ttsSay('연간 브리핑',briefAnnualText());}
+
+/* ── 선택한 부분 읽기 ── */
+function ttsSelText(){
+  const a=document.activeElement;
+  if(a&&isTextField(a)&&a.selectionStart!=null&&a.selectionEnd>a.selectionStart)
+    return a.value.slice(a.selectionStart,a.selectionEnd);
+  try{return String(window.getSelection?window.getSelection().toString():'');}catch(e){return '';}}
+function tpickEl(){
+  let e=document.getElementById('tpick');
+  if(!e){e=document.createElement('button'); e.id='tpick'; e.className='tpick';
+    e.textContent='🔊 읽기';
+    e.addEventListener('mousedown',function(ev){ev.preventDefault();});
+    e.onclick=function(){const t=ttsSelText().trim(); tpickHide();
+      if(t)ttsSay('선택한 부분',t); else toast('읽을 부분을 먼저 선택하세요');};
+    document.body.appendChild(e);}
+  return e;}
+function tpickHide(){const e=document.getElementById('tpick');if(e)e.classList.remove('on');}
+function tpickShow(){
+  if(!ttsSupported())return;
+  if(S.settings&&S.settings.tts===false)return;
+  const t=ttsSelText().trim();
+  if(t.length<2){tpickHide();return;}
+  let r=null;
+  try{const sel=window.getSelection();
+    if(sel&&sel.rangeCount&&!sel.isCollapsed)r=sel.getRangeAt(0).getBoundingClientRect();}catch(e){}
+  if(!r||(!r.width&&!r.height)){
+    const a=document.activeElement;
+    if(a&&a.getBoundingClientRect)r=a.getBoundingClientRect(); else return;}
+  const e=tpickEl(); e.classList.add('on');
+  const w=e.offsetWidth||86, h=e.offsetHeight||30;
+  let x=r.left+r.width/2-w/2, y=r.top-h-8;
+  if(y<6)y=r.bottom+8;
+  x=Math.max(6,Math.min(window.innerWidth-w-6,x));
+  e.style.left=Math.round(x)+'px'; e.style.top=Math.round(y)+'px';}
+function ttsInit(){
+  if(!ttsSupported())return;
+  ttsVoices();
+  try{window.speechSynthesis.onvoiceschanged=function(){ttsVoices();};}catch(e){}
+  document.addEventListener('mouseup',function(){setTimeout(tpickShow,10);});
+  document.addEventListener('keyup',function(e){ if(e.shiftKey||e.key==='Shift')setTimeout(tpickShow,10);});
+  document.addEventListener('selectionchange',function(){
+    if(!ttsSelText().trim())tpickHide();});
+  document.addEventListener('scroll',tpickHide,true);
+  document.addEventListener('keydown',function(e){
+    if((e.ctrlKey||e.metaKey)&&e.shiftKey&&(e.key==='R'||e.key==='r')){
+      const t=ttsSelText().trim(); if(t){e.preventDefault();tpickHide();ttsSay('선택한 부분',t);}}
+    if(e.key==='Escape'&&TTS.on){e.preventDefault();ttsStop();}});
+  window.addEventListener('beforeunload',function(){try{window.speechSynthesis.cancel();}catch(e){}});}
+
+/* ── 설정 카드 ── */
+function ttsCard(){
+  const sup=ttsSupported(), on=!(S.settings&&S.settings.tts===false);
+  const vs=(TTS.voices&&TTS.voices.length)?TTS.voices:ttsVoices();
+  const ko=vs.filter(function(v){return /^ko/i.test(v.lang);});
+  const list=(ko.length?ko:vs).slice(0,12);
+  return '<div class="card"><h3>🔊 읽어주기 · 브리핑 <span class="hint">('+(sup?'이 브라우저에서 사용할 수 있습니다':'지원하지 않습니다')+')</span></h3>'
+    +'<p class="hint" style="margin-top:-4px">일간·주간·월간·연간 화면의 <b>🔊 브리핑</b> 단추를 누르면 중요한 내용을 읽어 줍니다. '
+    +'아무 글이나 <b>드래그로 선택</b>하면 <b>«🔊 읽기»</b> 단추가 떠서 그 부분만 들을 수도 있습니다. '
+    +'음성 «입력»과 달리 <b>아이폰·아이패드에서도</b> 됩니다.</p>'
+    +(sup
+      ? '<label style="font-size:13px;font-weight:600;display:block;margin-top:8px">'
+        +'<input type="checkbox" '+(on?'checked':'')+' onchange="S.settings.tts=this.checked;save();if(!this.checked){ttsStop();tpickHide();}" style="width:auto"> '
+        +'<b>읽어주기</b> 사용</label>'
+        +'<div class="row-item" style="align-items:center;margin-top:8px">'
+        +'<div style="flex:none;width:110px;font-weight:700;font-size:13px">읽는 속도</div>'
+        +'<select style="max-width:130px" onchange="S.settings.ttsRate=parseFloat(this.value)||1;save()">'
+        +[0.8,0.9,1,1.1,1.2,1.4].map(function(r){return '<option value="'+r+'" '+((((S.settings&&S.settings.ttsRate)||1)===r)?'selected':'')+'>'+r.toFixed(1)+'×</option>';}).join('')
+        +'</select></div>'
+        +(list.length?'<div class="row-item" style="align-items:center">'
+          +'<div style="flex:none;width:110px;font-weight:700;font-size:13px">목소리</div>'
+          +'<select style="max-width:260px" onchange="S.settings.ttsVoice=this.value;save()">'
+          +'<option value="">자동 (한국어 우선)</option>'
+          +list.map(function(v){return '<option value="'+esc(v.voiceURI)+'" '+(((S.settings&&S.settings.ttsVoice)===v.voiceURI)?'selected':'')+'>'+esc(v.name+' · '+v.lang)+'</option>';}).join('')
+          +'</select></div>':'<p class="hint">목소리 목록을 불러오는 중입니다 — 화면을 다시 열면 나타납니다.</p>')
+        +'<div style="margin-top:10px;display:flex;gap:7px;flex-wrap:wrap">'
+        +'<button class="btn ghost sm" onclick="ttsSay(\'시험 재생\',\'안녕하세요. 나의 인생 실천 다이어리입니다. 오늘의 약속 세 가지를 정하고, 신호가 오면 첫 행동만 합니다.\')">▶ 시험 재생</button>'
+        +'<button class="btn ghost sm" onclick="briefDayNow(today())">🔊 오늘 브리핑 들어보기</button></div>'
+        +'<p class="hint" style="margin-top:8px">선택한 부분 읽기 단축키 <b>Ctrl(⌘)+Shift+R</b> · 멈춤 <b>Esc</b>. '
+        +'목소리는 기기에 설치된 것을 씁니다 — 안드로이드·윈도우에 한국어 음성이 없으면 설정에서 먼저 추가해 주세요.</p>'
+      : '<div class="callout co-gold" style="margin-top:8px">이 브라우저에는 음성 합성기가 없습니다.</div>')
+    +'</div>';}
+
 /* ============ INIT ============ */
 (function init(){const had=load();if(!S.view)S.view='dash';
   (S.profile.roles||[]).forEach((r,i)=>{if(!r.color)r.color=ROLE_COLOR_MAP[r.name]||ROLE_PALETTE[i%ROLE_PALETTE.length];});
@@ -6304,6 +6667,7 @@ function voiceCard(){
   try{utInit();}catch(e){}
   try{tipInit();}catch(e){}
   try{voiceInit();}catch(e){}
+  try{ttsInit();}catch(e){}
   try{paintCloud();cloudAutoOpen();}catch(e){}
   checkReminders();setInterval(checkReminders,30000);
   let rz=null;window.addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(()=>{try{syncTopbarH();}catch(e){}alignPanels();},120);});})();
