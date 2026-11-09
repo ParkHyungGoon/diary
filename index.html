@@ -446,6 +446,26 @@
   #dtip .tchip.over{background:var(--del);color:#fff}
   #dtip .twrap{white-space:pre-wrap;word-break:break-word}
   /* 과제 행의 핵심 성공 요인 단추 */
+  /* 퓨처 셀프 */
+  .fdecl{display:flex;gap:10px;align-items:center;background:linear-gradient(135deg,#fbf3e2,#eeecfa);border:1px solid #e8dcbc;
+    border-radius:12px;padding:9px 14px;margin:0 0 12px;font-size:14px;cursor:pointer;color:#3a3320;flex-wrap:wrap}
+  .fdecl:hover{filter:brightness(.98)}
+  .fdecl b{flex:1;min-width:0;font-weight:800;color:#2b2618}
+  .fdecl .fdd{flex:none;font-size:11px;font-weight:800;color:var(--brand-d);background:#fff;border-radius:6px;padding:2px 8px}
+  .trow .fsb{flex:none;width:22px;height:22px;border:none;background:transparent;cursor:pointer;font-size:13px;line-height:1;padding:0;opacity:.3;border-radius:6px;color:#c98a1a}
+  .trow .fsb:hover{opacity:.9;background:#fdf6e8}
+  .trow .fsb.on{opacity:1;background:#fff3d6}
+  .btn.fson{color:#c98a1a!important;border-color:#f0dfae!important;background:#fff8e6!important;font-weight:800}
+  .ftab table.log td input,.ftab table.log td select{font-size:12.5px;padding:5px 7px}
+  .fvd{display:inline-flex;gap:3px;flex-wrap:wrap}
+  .fvd button{border:1px solid var(--line);background:#fff;border-radius:6px;font-size:10.5px;font-weight:800;padding:3px 7px;cursor:pointer;font-family:inherit;color:var(--muted)}
+  .fvd button.on{color:#fff}
+  .fwoop{border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:10px;background:#fcfcfe}
+  .fwoop.open{border-color:var(--brand);box-shadow:0 0 0 3px rgba(91,83,176,.08)}
+  .fgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  @media(max-width:720px){.fgrid{grid-template-columns:1fr}}
+  .fscore{display:flex;gap:8px;align-items:center;padding:5px 0;border-bottom:1px dotted var(--line);font-size:13px}
+  .fscore .q{flex:1} .fscore select{max-width:80px}
   .trow .csfb{flex:none;width:22px;height:22px;border:none;background:transparent;cursor:pointer;
     font-size:12px;line-height:1;padding:0;opacity:.3;border-radius:6px}
   .trow .csfb:hover{opacity:.9;background:var(--brand-soft)}
@@ -898,6 +918,7 @@ function blank(){return{
     restDay:-1, reviewDay:0, dailyCap:0, utShow:true, utOpen:true, hideDupG:true, mode:"auto", voice:true, voiceLang:"ko-KR", tts:true, ttsRate:1, ttsVoice:""},
   usage:{total:0, byView:{}, byDay:{}},
   klass:null,                      /* 교사용 수업 기록 모듈 — kFix()가 채운다 */
+  future:null,                     /* 퓨처 셀프 모듈 — fFix()가 채운다 */
   view:"dash", ui:{month:"", week:"", day:"", book:"", navOpen:{}, lcYear:0, taskSort:"role"}
 };}
 function save(){ RSEQ++; try{ S.meta.savedAt=new Date().toLocaleString('ko-KR'); localStorage.setItem(KEY,JSON.stringify(S)); setSave("자동저장됨 "+S.meta.savedAt);}catch(e){ setSave("자동저장 불가 — 백업을 사용하세요"); } try{stampSchedule();}catch(e){} }
@@ -933,6 +954,7 @@ function migrate(){
   ((S.lifemap||{}).dreams||[]).forEach(x=>{if(x&&!x.id)x.id=uid();});
   ((S.annual||{}).goals||[]).forEach(x=>{if(x&&!x.id)x.id=uid();});
   try{kFix();}catch(e){}
+  try{fFix();}catch(e){}
   return S;
 }
 function load(){ try{ const r=localStorage.getItem(KEY); if(r){ S=Object.assign(blank(),JSON.parse(r)); migrate(); return true;} }catch(e){} return false; }
@@ -965,6 +987,7 @@ const NAV=[
  {id:"life",t:"1 인생 설계",e:"🧭"},
  {id:"mission",t:"2 사명서·가치",e:"🎯"},
  {id:"vision",t:"3 비전",e:"🌄"},
+ {id:"future",t:"3+ 3년 후의 나",e:"🔭"},
  {g:"실행 (Plan·Do·See)",k:"do"},
  {id:"annual",t:"4 연간 계획",e:"🗓️"},
  {id:"month",t:"5 월간",e:"📅"},
@@ -1033,7 +1056,7 @@ function render(){
   const v=document.getElementById('view');
   ({dash:vDash,day:vDay,life:vLife,mission:vMission,vision:vVision,annual:vAnnual,month:vMonth,week:vWeek,
     journal:vJournal,reading:vReading,ideas:vIdeas,habits:vHabits,timer:vTimer,quotes:vQuotes,remind:vRemind,gsync:vGSync,stats:vStats,
-    checkin:vCheckin,review:vReview,klass:vKlass}[S.view]||vDash)(v);
+    checkin:vCheckin,review:vReview,klass:vKlass,future:vFuture}[S.view]||vDash)(v);
 }
 function setV(path,val){const p=path.split('.');let o=S;for(let i=0;i<p.length-1;i++)o=o[p[i]];o[p[p.length-1]]=val;save();}
 function roleName(id){const r=S.profile.roles.find(x=>x.id===id);return r?r.name:'';}
@@ -1054,6 +1077,7 @@ function vDash(v){
    ${reviewBanner()}
    ${ritualBanner()}
    ${nudgeCard()}
+   ${fDeclBanner(d)}
    ${promiseMini(d)}
    ${quoteCard(d)}
    <div class="grid2" style="margin-top:16px">
@@ -1173,7 +1197,7 @@ function vVision(v){
    </div>
    <div class="card co-acc"><div class="tag">성취 시각화</div>
      <textarea placeholder="비전이 이루어진 어느 하루를 생생하게 묘사해 보세요 (장면·감정·성취)" oninput="setV('vision.scene',this.value)">${esc(S.vision.scene||'')}</textarea></div>
-   <div class="foot-nav"><button class="btn ghost" onclick="go('mission')">← 사명서</button><button class="btn" onclick="go('annual')">다음: 연간 계획 →</button></div>`;
+   <div class="foot-nav"><button class="btn ghost" onclick="go('mission')">← 사명서</button><span><button class="btn ghost" onclick="go('future')">🔭 3년 후의 나 →</button> <button class="btn" onclick="go('annual')">다음: 연간 계획 →</button></span></div>`;
 }
 function setVision(rid,val){if(!S.vision.text)S.vision.text={};S.vision.text[rid]=val;save();}
 
@@ -1203,6 +1227,7 @@ function renderGoals(){const el=document.getElementById('agoals');if(!el)return;
     <input type="checkbox" style="width:auto;margin-top:9px" ${g.done?'checked':''} onchange="S.annual.goals[${i}].done=this.checked;save();renderGoals()">
     <select style="max-width:150px" onchange="S.annual.goals[${i}].role=this.value;save()">${roleOptions(g.role)}</select>
     <input type="text" value="${esc(g.text)}" oninput="S.annual.goals[${i}].text=this.value;save()" style="${g.done?DONE_TXT:''}">
+    <button class="btn ghost sm" style="flex:none" onclick="openWoop('${g.id}')" title="WOOP 실행 계획 (소망·결과·장애물·계획)">${fWoopOf(g.id)?'✓ WOOP':'WOOP'}</button>
     <button class="del-x" onclick="S.annual.goals.splice(${i},1);save();renderGoals()">✕</button></div>`).join('');}
 function addGoal(){const i=document.getElementById('newgoal');const v=i.value.trim();if(!v)return;S.annual.goals.push({id:uid(),role:'',text:v,done:false});save();renderGoals();i.value='';}
 
@@ -1291,6 +1316,7 @@ function vDay(v){
    <h2 class="vh">📆 일간 계획 · 실천</h2>
    <p class="vsub">${d===today()?'오늘':d+' ('+wd(d)+')'} — 오늘의 약속 세 가지를 정하고, 신호가 오면 첫 행동만 합니다.</p>
    ${dayBar(d)}
+   ${fDeclBanner(d)}
    ${curMode()==='do'?chainFold(d):chainToDay(d)}
    ${quoteCard(d)}
    <div id="oneslot" style="margin-top:16px"></div>
@@ -1494,6 +1520,7 @@ function taskRowG(d,t,showRole){const done=t.status==='done';const isOne=S.days[
     <input class="tmin no-print${t.start?' set':''}" inputmode="numeric" autocomplete="off" placeholder="--:--" value="${t.start||''}"
       onchange="setTaskTimeStr('${d}','${t.id}',this.value)" onkeydown="tminKey(event,'${d}','${t.id}')"
       title="시작 시간 — 숫자만 쳐도 됩니다&#10;9 → 09:00 · 930 → 09:30 · 1430 → 14:30&#10;930-1030 처럼 쓰면 끝 시각까지 지정&#10;↑↓ 키로 5분씩 조정 · 비우면 시간표에서 내려옵니다">
+    <button class="fsb${t.fs?' on':''}" onclick="toggleFS('${d}','${t.id}')" title="★ 미래의 나다운 행동 — 주간 점검의 증거로 쌓입니다">★</button>
     <button class="csfb${(t.csf||t.memo)?' on':''}" onclick="openMemo('${d}','task','${t.id}')" title="핵심 성공 요인 · 메모">🎯</button>
     <button class="onebtn${isOne?' on':''}" onclick="setOneThing('${d}','${t.id}')" title="오늘의 The ONE Thing으로 지정">🁢</button>
     <button class="tdone${done?' on':(started?' mid':'')}" onclick="cycleTask('${t.id}','${d}')"
@@ -2674,6 +2701,7 @@ function vStats(v){
        왼쪽 메뉴에 <b>📚 수업 기록</b> 보이기</label>
    </div>
    ${startCard()}
+   ${fEvidenceCard()}
    ${usageTable()}
    <div class="card"><h3>실천 리듬 설정 <span class="hint">(실천율을 좌우하는 네 가지 규칙)</span></h3>
      <div class="row-item" style="align-items:center">
@@ -3280,6 +3308,9 @@ function ritPMSteps(d,day){
         <div class="why" style="margin-top:8px">여기 쌓인 문장은 <b>성찰·통계 → 착수율 · 협상 문장</b>에서 빈도로 볼 수 있습니다.</div>
         <button class="rbig" style="margin-top:16px" onclick="ritualNext()">다음 →</button>` },
 
+  /* ── 1단 ②' 안 할 일 지킴 (퓨처 셀프 — Not-to-do 목록이 있을 때만) ── */
+  ...fNotdoSteps(d,day),
+
   /* ── 1단 ③ 잘한 것 · 감사한 것 ── */
   { q:'오늘 <u>잘한 것</u>과 <u>감사한 것</u>을 한 줄씩.',
     why:'뇌는 실패를 훨씬 오래 기억합니다. 잘한 것을 말로 옮기는 순간에만 그 경험이 자기효능감으로 남습니다. 미룬 자신을 비난하지 않는 것이, 다음 착수 확률을 가장 크게 올립니다.',
@@ -3485,6 +3516,7 @@ function vReview(v){
 
    ${rockReviewCard(ws)}
    ${kReviewCard()}
+   ${fWeekReviewCard(ws)}
    <div class="card"><h3>역할 균형 <span class="hint">(최근 4주 과제 수)</span></h3>
      ${rt.length?rt.map(r=>`<div class="balrow"><div class="bn" title="${esc(r.name)}">${esc(r.name)}</div>
        <div class="bb"><i style="width:${Math.round(r.n/rmax*100)}%;background:${r.color||'#5b53b0'}"></i></div>
@@ -3682,6 +3714,7 @@ function chainBox(title,sub,items,foot){
 function chainToAnnual(){
   const items=[];
   if(S.mission.statement)items.push({tag:'사명',t:S.mission.statement});
+  try{fChainItems().forEach(x=>items.push(x));}catch(e){}
   const st=lifeCalStats(), ms=S.lifemap.milestones||{};
   Object.keys(ms).map(Number).filter(y=>y>=new Date().getFullYear()).sort().slice(0,2)
     .forEach(y=>items.push({tag:y+'년 이정표',color:'var(--gold)',t:ms[y],
@@ -3693,7 +3726,7 @@ function chainToAnnual(){
     if(w)items.push({tag:a,color:'var(--accent)',t:w,btns:[{l:'→ 올해 목표로',f:`addGoalFrom(${JSON.stringify(w)},'')`}]});});
   (S.lifemap.dreams||[]).filter(x=>!x.done&&x.text).slice(0,3)
     .forEach(x=>items.push({tag:'꿈',color:'#b23a55',t:x.text,btns:[{l:'→ 올해 목표로',f:`addGoalFrom(${JSON.stringify(x.text)},'')`}]}));
-  return chainBox('인생 설계 · 비전에서 내려온 것','사명 · 이정표 · 역할별 비전 · 8영역 소망 · 꿈',items,
+  return chainBox('인생 설계 · 비전 · 3년 후의 나에서 내려온 것','사명 · 3년 후 선언문 · 이정표 · 역할별 비전 · 8영역 소망 · 꿈',items,
     '<b>1 인생 설계</b>와 <b>3 비전</b>을 먼저 채우면 이 칸이 올해 목표의 재료가 됩니다.');}
 function addGoalFrom(text,role){S.annual.goals.push({id:uid(),role:role||'',text:text,done:false});save();
   toast('올해 목표로 가져왔습니다');vAnnual(document.getElementById('view'));}
@@ -4053,7 +4086,7 @@ function stampTick(){
   });
   let rest='';
   try{ rest=JSON.stringify({p:S.profile,m:S.mission,l:S.lifemap,v:S.vision,a:S.annual,
-        h:S.habits,r:S.reading,i:S.ideas,rc:S.recurring,rm:S.reminders,f:S.focusLog,
+        h:S.habits,r:S.reading,i:S.ideas,rc:S.recurring,rm:S.reminders,f:S.focusLog,fu:S.future,
         st:Object.assign({},S.settings,{gClientId:'',gcalId:'',utShow:'',utOpen:'',autoCloud:''})}); }catch(e){}
   if(STAMP.rest!==rest){ if(STAMP.init&&STAMP.rest!=='')changed=true; STAMP.rest=rest; }
   if(!STAMP.init){STAMP.init=true;return;}
@@ -4116,6 +4149,7 @@ function mergeState(L,R){
   base.vision=Object.assign({},localWins?L.vision:R.vision,
     {text:pref((L.vision||{}).text,(R.vision||{}).text)});
   base.profile=localWins?L.profile:R.profile;
+  try{base.future=fMerge(L.future,R.future,lu,ru);}catch(e){}
   /* 기기 전용 설정은 이 기기 것을 지킨다 */
   base.settings=Object.assign({},base.settings,{
     gClientId:(L.settings||{}).gClientId, gcalId:(L.settings||{}).gcalId,
@@ -5385,6 +5419,7 @@ function promiseMini(d){
           ${ct?`<div class="pline"><span class="pk">신호</span><span class="pcueTxt">${esc(ct)}</span></div>`:''}
           ${t.first?`<div class="pline"><span class="pk">첫 행동</span><span class="pcueTxt">${esc(t.first)}</span></div>`:''}
           <div class="pact"><button class="p3 ${done?'dn':(st?'st':'')}" onclick="cycleTask('${t.id}','${d}')">${done?'✓ 완료':(st?'◐ 착수함':'○ 아직')}</button>
+            <button class="btn ghost sm${t.fs?' fson':''}" onclick="toggleFS('${d}','${t.id}')" title="★ 미래의 나다운 행동">${t.fs?'★':'☆'}</button>
             <button class="btn ghost sm" onclick="go('day')">자세히</button></div>`
         :`<div class="pempty">비어 있습니다.</div>
           <div class="pact"><button class="btn ghost sm" onclick="go('day')">정하기 →</button></div>`}
@@ -5414,6 +5449,7 @@ function pSlotHtml(d,ty){
       <div class="pact">
         <button class="p3 ${done?'dn':(started?'st':'')}" onclick="cycleTask('${t.id}','${d}')"
           title="○ 아직 → ◐ 착수 → ✓ 완료">${done?'✓ 완료':(started?'◐ 착수함':'○ 아직')}</button>
+        <button class="btn ghost sm${t.fs?' fson':''}" onclick="toggleFS('${d}','${t.id}')" title="★ 미래의 나다운 행동">${t.fs?'★':'☆'}</button>
         <button class="btn ghost sm" onclick="openMemo('${d}','task','${t.id}')" title="마감일 · 핵심 성공 요인 · 메모">🎯</button>
         ${(ty==='end'&&!t.start)?`<button class="btn ghost sm" onclick="sendOneToSchedule('${d}','${t.id}')">🕘 시간표</button>`:''}
         <button class="btn ghost sm" onclick="clearPromise('${d}','${ty}','${t.id}')">해제</button>
@@ -6093,7 +6129,11 @@ function rockNextApply(){
 
 /* ── ④ 계보 — 이 과제가 어디서 내려왔는가 ── */
 function rockChain(t){
-  const sc=t&&t.src; if(!sc||sc.k!=='rock')return null;
+  const sc=t&&t.src; if(!sc)return null;
+  if(sc.k==='woop'){const w=(F().woops||[]).find(x=>x.id===sc.id);return ['🔭 WOOP · '+((w&&w.wish)||'(지워짐)')+(w&&w.obstacle?' — 장애물: '+w.obstacle:'')];}
+  if(sc.k==='prune')return ['🔭 내려놓기 목록 — 다음 행동'];
+  if(sc.k==='future')return ['🔭 주간 퓨처셀프 점검 — 다음 주에 끝낼 한 가지 ('+sc.ws+')'];
+  if(sc.k!=='rock')return null;
   const r=sc.rid?rockFind(sc.ws,sc.rid):null, out=[];
   const fr=r&&r.from;
   if(fr&&fr.k==='goal'){const g=((S.annual||{}).goals||[]).find(x=>x.id===fr.gid);
@@ -6739,6 +6779,373 @@ function ttsCard(){
         +'목소리는 기기에 설치된 것을 씁니다 — 안드로이드·윈도우에 한국어 음성이 없으면 설정에서 먼저 추가해 주세요.</p>'
       : '<div class="callout co-gold" style="margin-top:8px">이 브라우저에는 음성 합성기가 없습니다.</div>')
     +'</div>';}
+
+
+/* ============================================================
+   ㉕ 퓨처 셀프 — 3년 후의 나 · 내려놓기 목록 · WOOP · 주간 점검
+   ------------------------------------------------------------
+   벤저민 하디 『퓨처 셀프』의 '미래의 내가 되는 7단계'를 이미 있는 구조에
+   맞물려 넣는다. 새 화면을 늘리는 대신 다음 네 곳에 연결한다.
+     · 설계 모드(주말·회고일)에만 무거운 작업: 3년 후 자아 · 내려놓기 · WOOP
+     · 실행 모드(평일)에 보이는 것은 셋뿐: 선언문 한 줄 · ★ 증거 1탭 · 안 할 일 체크
+     · WOOP의 P(만약-그러면)는 기존 과제의 IF/THEN과 같은 구조 → 그대로 내려간다
+     · 주간 점검은 '격차'가 아니라 '증거(★)'를 세어, 목표 침식 루프를 막는다
+   데이터는 S.future 하나에 모은다(얕은 병합 대비 fFix 가 migrate 에서 채운다).
+   ============================================================ */
+const F_AREAS=[
+ ['identity','정체성','나는 어떤 사람으로 불리고 싶은가? 무엇을 기준으로 결정하는가?'],
+ ['day','하루','아침부터 저녁까지 그날의 장면은? 어디서, 무엇을, 어떤 리듬으로?'],
+ ['work','일','어떤 일에 시간을 가장 많이 쓰는가? 어떤 결과물을 내고 있는가?'],
+ ['rel','관계','누구와 함께 일하고 배우는가? 가족·동료와의 관계는 어떤가?'],
+ ['learn','배움·성장','무엇을 공부하고 있는가? 3년 전보다 무엇을 더 잘하게 되었는가?'],
+ ['body','몸과 마음','건강·휴식·마음 돌봄을 어떻게 하는가?'],
+ ['give','기여','내 일로 학생·동료·지역사회에 어떤 변화가 생겼는가?'],
+ ['not','하지 않는 것','3년 후의 나는 무엇을 더 이상 하지 않는가?']];
+const F_VERD=[['keep','유지','#12a594'],['less','축소','#c98a1a'],['deleg','위임','#2f6db3'],['stop','중단','#d1495b']];
+const F_SCORES=[['sim','지난주 일정은 3년 후 나의 일정을 얼마나 닮았나?'],['deep','깊은 작업 시간을 지켰나?'],
+  ['rest','회복·휴식 시간을 지켰나?'],['rel','소중한 관계에 시간을 썼나?'],['notdo','안 할 일 목록을 지켰나?']];
+const F_FIXED=[['deep','깊은 작업 블록'],['rest','회복·휴식'],['rel','관계의 시간']];
+function fBlank(){return {self:{date:'',areas:{},letter:'',decl:['','',''],updatedAt:''},
+  prune:{items:[],notdo:[],decline:'',judgedAt:''},woops:[],weekly:{},ui:{tab:'self',woop:''}};}
+function fFix(){
+  const b=fBlank(), f=Object.assign(b,S.future||{});
+  f.self=Object.assign({date:'',areas:{},letter:'',decl:['','',''],updatedAt:''},f.self||{});
+  if(!f.self.areas||typeof f.self.areas!=='object')f.self.areas={};
+  if(!Array.isArray(f.self.decl))f.self.decl=['','','']; while(f.self.decl.length<3)f.self.decl.push('');
+  f.prune=Object.assign({items:[],notdo:[],decline:'',judgedAt:''},f.prune||{});
+  if(!Array.isArray(f.prune.items))f.prune.items=[]; if(!Array.isArray(f.prune.notdo))f.prune.notdo=[];
+  f.prune.items.forEach(x=>{if(x&&!x.id)x.id=uid();}); f.prune.notdo.forEach(x=>{if(x&&!x.id)x.id=uid();});
+  if(!Array.isArray(f.woops))f.woops=[];
+  f.woops.forEach(w=>{if(!w)return; if(!w.id)w.id=uid(); w.plan=w.plan||{if:'',then:''}; if(!Array.isArray(w.asks))w.asks=[];
+    w.asks.forEach(a=>{if(a&&!a.id)a.id=uid();}); w.auto=w.auto||{easy:'',hard:'',commit:''};});
+  if(!f.weekly||typeof f.weekly!=='object')f.weekly={};
+  f.ui=Object.assign({tab:'self',woop:''},f.ui||{});
+  S.future=f; return f;}
+function F(){return S.future||fFix();}
+function fSelfSet(k,v){F().self[k]=v;F().self.updatedAt=new Date().toISOString();save();}
+function fArea(k,v){F().self.areas[k]=v;F().self.updatedAt=new Date().toISOString();save();}
+function fDecl(i,v){F().self.decl[i]=v;F().self.updatedAt=new Date().toISOString();save();}
+function fDecls(){return F().self.decl.map(x=>(x||'').trim()).filter(Boolean);}
+function fDday(){const t=F().self.date; if(!t)return ''; const n=dayDiff(today(),t); return n>0?'D-'+n:(n===0?'D-DAY':'');}
+function fDefaultDate(){const d=new Date(); d.setFullYear(d.getFullYear()+3); return fmt(d);}
+/* 실행 모드에 보이는 유일한 흔적 — 매일 한 문장씩 순환 */
+function fDeclBanner(d){const ds=fDecls(); if(!ds.length)return '';
+  const D=parseD(d), idx=Math.floor((D-new Date(D.getFullYear(),0,0))/864e5)%ds.length;
+  const dd=fDday();
+  return `<div class="fdecl no-print" onclick="go('future')" title="3년 후의 나 — 정체성 선언문 (누르면 열립니다)">
+    <span>🔭</span><b>${esc(ds[idx])}</b>${dd?`<span class="fdd">${dd}</span>`:''}</div>`;}
+
+/* ── ★ 증거 — 미래의 나다운 행동 (1탭) ── */
+function toggleFS(d,id){const t=findTask(d,id);if(!t)return;
+  if(t.fs){delete t.fs;delete t.fsAt;} else {t.fs=true;t.fsAt=taskHome(id,d);}
+  save(); repaintDay(d);}
+function fEvidence(from,to){const out=[];
+  Object.keys(S.days||{}).forEach(d=>{ if((from&&d<from)||(to&&d>to))return;
+    ((S.days[d]||{}).tasks||[]).forEach(t=>{if(t.fs&&t.text)out.push({d:d,t:t});});});
+  return out.sort((a,b)=>a.d.localeCompare(b.d));}
+
+/* ── 안 할 일 — 저녁 리추얼 '오늘 닫기'에 끼어드는 한 단계 ── */
+function fNotdoSteps(d,day){
+  const nd=F().prune.notdo.filter(x=>x&&x.text); if(!nd.length)return [];
+  const kept=day.notdo||[];
+  return [{q:'오늘, <u>안 할 일</u>을 지켰습니까?',
+    why:'3년 후의 내가 하지 않는 일을 지금부터 하지 않습니다. 지킨 것만 눌러 표시하세요 — 못 지킨 날의 이유는 대개 앞 칸의 협상 문장과 같은 뿌리입니다.',
+    bd:`<div class="rpick" style="flex-direction:column">${nd.map(x=>`<button class="${kept.indexOf(x.id)>=0?'on':''}" style="width:100%"
+          onclick="fToggleNotdo('${d}','${x.id}')">${kept.indexOf(x.id)>=0?'✓':'○'} ${esc(x.text)}</button>`).join('')}</div>
+        <div class="why" style="margin-top:8px">${kept.length}/${nd.length} 지킴 · 목록은 <b>🔭 3년 후의 나 → 내려놓기</b>에서 고칩니다.</div>
+        <button class="rbig" style="margin-top:16px" onclick="ritualNext()">다음 →</button>`}];}
+function fToggleNotdo(d,id){ensureDay(d);const a=S.days[d].notdo||(S.days[d].notdo=[]);
+  const i=a.indexOf(id);if(i>=0)a.splice(i,1);else a.push(id);save();
+  if(S.view==='checkin')vCheckin(document.getElementById('view'));}
+function fNotdoRate(n){n=n||14; const nd=F().prune.notdo.filter(x=>x&&x.text); if(!nd.length)return null;
+  let kept=0,opp=0,d=addDays(today(),-1);
+  for(let i=0;i<n;i++){const x=S.days[d]; if(x&&x.ci&&x.ci.pm){opp+=nd.length;kept+=(x.notdo||[]).filter(id=>nd.some(y=>y.id===id)).length;} d=addDays(d,-1);}
+  return opp?{kept,opp,pct:Math.round(kept/opp*100)}:null;}
+
+/* ── 주간 점검 데이터 ── */
+function fW(ws){const w=F().weekly; if(!w[ws])w[ws]={scores:{},fixed:{},obstacle:'',finish:'',note:''};
+  const x=w[ws]; x.scores=x.scores||{}; x.fixed=x.fixed||{}; return x;}
+function fWSet(ws,k,v){fW(ws)[k]=v;save();}
+function fScore(ws,k,v){fW(ws).scores[k]=parseInt(v,10);save(); if(S.view==='review')vReview(document.getElementById('view'));}
+function fScoreAvg(ws){const s=fW(ws).scores; const vs=F_SCORES.map(x=>s[x[0]]).filter(v=>v!=null&&!isNaN(v));
+  return vs.length?Math.round(vs.reduce((a,b)=>a+b,0)/vs.length*10)/10:null;}
+function fFixed(ws,k,f,v){const o=fW(ws).fixed; if(!o[k])o[k]={day:'',start:'',end:'',what:''}; o[k][f]=v; save();}
+async function fPushFixed(ws,toG){
+  const nw=addDays(ws,7), fx=fW(ws).fixed; let n=0,g=0;
+  for(const k of Object.keys(fx)){const o=fx[k]; if(o.day===''||o.day==null||!o.start||!o.end)continue;
+    const d=addDays(nw,parseInt(o.day,10)); const lab=(F_FIXED.find(x=>x[0]===k)||[k,k])[1];
+    const title=(o.what||'').trim()?o.what.trim():lab;
+    ensureDay(d); const arr=S.days[d].events;
+    if(arr.some(e=>e.fkey===k+'|'+ws))continue;
+    const ev={id:uid(),start:o.start,end:o.end,title:'🔭 '+title,role:'',fkey:k+'|'+ws,csf:'3년 후의 나의 일정 — '+lab};
+    arr.push(ev); n++;
+    if(toG&&gTokenValid()){try{const r=await gcalInsertRange(ev.title,d,o.start,o.end); if(r&&r.id){ev.gEventId=r.id;g++;}}catch(e){gReport('캘린더 등록 실패',e);}}
+  }
+  save(); toast(n?`다음 주 시간표에 ${n}개를 고정했습니다${g?' · 구글에도 '+g+'개':''}`:'고정할 시간이 없거나 이미 들어가 있습니다');}
+function fFinishToTask(ws){const w=fW(ws), v=(w.finish||'').trim(); if(!v){toast('끝낼 한 가지를 먼저 적어주세요');return;}
+  const nd=addDays(ws,7); ensureDay(nd);
+  if(S.days[nd].tasks.some(t=>t.text===v)){toast('이미 다음 주 월요일에 있습니다');return;}
+  const role=(S.profile.roles[0]||{}).id||'';
+  const t={id:uid(),text:v,priority:'A',role:role,impact:5,status:'todo',type:'end',due:addDays(ws,13),src:{k:'future',ws:ws}};
+  S.days[nd].tasks.push(t); S.days[nd].one=t.id; save();
+  toast(nd+' (월) «끝낼 것»으로 내렸습니다 — 마감 '+addDays(ws,13));}
+
+/* ── WOOP ── */
+function fWoopOf(gid){return F().woops.find(w=>w.goalId===gid)||null;}
+function fWoopNew(gid){const g=((S.annual||{}).goals||[]).find(x=>x.id===gid);
+  const w={id:uid(),goalId:gid||'',wish:g?g.text:'',outcome:'',obstacle:'',plan:{if:'',then:''},asks:[],auto:{easy:'',hard:'',commit:''},createdAt:today()};
+  F().woops.unshift(w); save(); return w;}
+function openWoop(gid){let w=gid?fWoopOf(gid):null; if(!w)w=fWoopNew(gid);
+  F().ui.tab='woop'; F().ui.woop=w.id; save(); go('future');}
+function fWoopSet(id,path,v){const w=F().woops.find(x=>x.id===id); if(!w)return;
+  const ks=path.split('.'); let o=w; for(let i=0;i<ks.length-1;i++)o=o[ks[i]]; o[ks[ks.length-1]]=v; save();}
+function fWoopDel(id){if(!confirm('이 WOOP 카드를 삭제할까요?'))return; F().woops=F().woops.filter(x=>x.id!==id); save(); vFuture(document.getElementById('view'));}
+function fWoopToggle(id){F().ui.woop=(F().ui.woop===id?'':id); save(); vFuture(document.getElementById('view'));}
+function fAskAdd(id){const w=F().woops.find(x=>x.id===id); if(!w)return; w.asks.push({id:uid(),who:'',what:'',when:''}); save(); vFuture(document.getElementById('view'));}
+function fAskSet(id,aid,f,v){const w=F().woops.find(x=>x.id===id); if(!w)return; const a=w.asks.find(x=>x.id===aid); if(a){a[f]=v;save();}}
+function fAskDel(id,aid){const w=F().woops.find(x=>x.id===id); if(!w)return; w.asks=w.asks.filter(x=>x.id!==aid); save(); vFuture(document.getElementById('view'));}
+function fAskToTask(id,aid){const w=F().woops.find(x=>x.id===id); if(!w)return; const a=w.asks.find(x=>x.id===aid); if(!a||!(a.who||a.what)){toast('누구에게 무엇을 요청할지 먼저 적어주세요');return;}
+  const d=a.when||today(); ensureDay(d); const role=(S.profile.roles[0]||{}).id||'';
+  S.days[d].tasks.push({id:uid(),text:'[요청] '+(a.who?a.who+'께 ':'')+(a.what||''),priority:'B',role:role,impact:4,status:'todo',type:'quick',
+    first:'메시지 첫 문장을 쓴다',src:{k:'woop',id:id}});
+  save(); toast(d+' «바로 할 것»으로 내렸습니다');}
+/* WOOP의 P = 과제의 IF/THEN. 그대로 «시작할 것»으로 내린다 */
+function fWoopToStart(id){const w=F().woops.find(x=>x.id===id); if(!w)return;
+  if(!(w.plan.then||'').trim()){toast('P(계획)의 «그러면 나는 …»을 먼저 적어주세요 — 그것이 첫 행동이 됩니다');return;}
+  const d=today(); ensureDay(d); const role=(S.profile.roles[0]||{}).id||'';
+  const t={id:uid(),text:(w.wish||'WOOP').slice(0,60),priority:'A',role:role,impact:4,status:'todo',type:'start',
+    first:w.plan.then.trim(),src:{k:'woop',id:id}};
+  if((w.plan.if||'').trim())t.cue='만약 '+w.plan.if.trim()+'(이)면';
+  S.days[d].tasks.push(t); save(); toast('오늘 «시작할 것»으로 내렸습니다 — 신호: '+(t.cue||'(직접 고르기)'));}
+function fAutoToHabit(id){const w=F().woops.find(x=>x.id===id); if(!w)return; const v=(w.auto.easy||'').trim();
+  if(!v){toast('«쉽게 만들 행동»을 먼저 적어주세요');return;}
+  if(S.habits.some(h=>h.name===v)){toast('이미 습관에 있습니다');return;}
+  S.habits.push({id:uid(),name:v,principle:'쉽게'}); save(); toast('습관 관리에 추가했습니다');}
+
+/* ── 내려놓기 목록 ── */
+function fPruneAdd(inp){const v=(inp.value||'').trim(); if(!v)return;
+  F().prune.items.push({id:uid(),text:v,hours:'',rel:'',verdict:'',next:'',date:''}); inp.value=''; save(); vFuture(document.getElementById('view'));}
+function fPruneSet(id,f,v){const x=F().prune.items.find(i=>i.id===id); if(!x)return; x[f]=v; F().prune.judgedAt=today(); save();
+  if(f==='verdict')vFuture(document.getElementById('view'));}
+function fPruneDel(id){F().prune.items=F().prune.items.filter(i=>i.id!==id); save(); vFuture(document.getElementById('view'));}
+function fPruneToTask(id){const x=F().prune.items.find(i=>i.id===id); if(!x||!(x.next||'').trim()){toast('다음 행동을 먼저 적어주세요');return;}
+  const d=x.date||today(); ensureDay(d); const role=(S.profile.roles[0]||{}).id||'';
+  S.days[d].tasks.push({id:uid(),text:x.next.trim(),priority:'B',role:role,impact:4,status:'todo',type:'quick',src:{k:'prune',id:id}});
+  save(); toast(d+' «바로 할 것»으로 내렸습니다');}
+function fNotdoAdd(inp){const v=(inp.value||'').trim(); if(!v)return; F().prune.notdo.push({id:uid(),text:v}); inp.value=''; save(); vFuture(document.getElementById('view'));}
+function fNotdoSet(id,v){const x=F().prune.notdo.find(i=>i.id===id); if(x){x.text=v;save();}}
+function fNotdoDel(id){F().prune.notdo=F().prune.notdo.filter(i=>i.id!==id); save(); vFuture(document.getElementById('view'));}
+function fPruneDue(){const j=F().prune.judgedAt; if(!j)return F().prune.items.length>0; return dayDiff(j,today())>=90;}
+
+/* ── 연간 계획으로 내려가는 재료 ── */
+function fChainItems(){const out=[], f=F();
+  fDecls().forEach(t=>out.push({tag:'3년 후의 나',color:'#c98a1a',t:t,btns:[{l:'→ 올해 목표로',f:`addGoalFrom(${JSON.stringify(t)},'')`}]}));
+  ['work','learn','give'].forEach(k=>{const v=(f.self.areas[k]||'').trim(); if(!v)return; const a=F_AREAS.find(x=>x[0]===k);
+    out.push({tag:'3년 후 · '+a[1],color:'#c98a1a',t:v.slice(0,90),btns:[{l:'→ 올해 목표로',f:`addGoalFrom(${JSON.stringify(v.slice(0,90))},'')`}]});});
+  return out;}
+
+/* ── 화면 ── */
+function fTab(t){F().ui.tab=t;save();vFuture(document.getElementById('view'));window.scrollTo(0,0);}
+function vFuture(v){
+  const f=F(), tab=f.ui.tab||'self';
+  v.innerHTML=`
+   <span class="step-badge">설계 · 『퓨처 셀프』 7단계</span>
+   <h2 class="vh">🔭 3년 후의 나</h2>
+   <p class="vsub">미래의 나와 연결될수록 지금 더 나은 선택을 합니다. 여기는 <b>설계 모드</b>에서 천천히 쓰고,
+     평일에는 선언문 한 줄 · ★ 증거 한 번 · 안 할 일 체크만 남깁니다. ${fDday()?`<b style="color:var(--brand-d)">${fDday()}</b>`:''}</p>
+   <div class="modeseg" style="margin-bottom:14px">
+     ${[['self','1 3년 후의 나'],['prune','2 내려놓기'],['woop','3 WOOP'],['week','4 주간 점검']]
+       .map(t=>`<button class="${tab===t[0]?'on':''}" onclick="fTab('${t[0]}')">${t[1]}</button>`).join('')}
+   </div>
+   <div id="fbody"></div>`;
+  ({self:fvSelf,prune:fvPrune,woop:fvWoop,week:fvWeek}[tab]||fvSelf)(document.getElementById('fbody'));}
+
+function fvSelf(el){const s=F().self;
+  el.innerHTML=`
+   <div class="callout co-gold"><div class="tag">1단계 · 현실에 맞는 목표를 명확하게</div>
+     3년은 다른 사람이 될 만큼 길고, 오늘 행동과 이어질 만큼 가깝습니다. 성과보다 <b>정체성</b>을, 설명보다 <b>장면</b>을 적으세요.
+     뇌는 먼 미래의 나를 '남'처럼 처리합니다(허시필드). 생생하게 그릴수록 그 사람이 '진짜 나'가 됩니다.</div>
+   <div class="card"><div class="grid2">
+     <label class="fld"><span class="lb">기준 날짜 (3년 후)</span>
+       <input type="date" value="${esc(s.date||'')}" onchange="fSelfSet('date',this.value);vFuture(document.getElementById('view'))">
+       ${!s.date?`<button class="btn ghost sm" style="margin-top:6px" onclick="fSelfSet('date','${fDefaultDate()}');vFuture(document.getElementById('view'))">오늘부터 3년 후로</button>`:''}</label>
+     <div class="hint" style="padding-top:22px">마지막 수정 ${s.updatedAt?new Date(s.updatedAt).toLocaleDateString('ko-KR'):'—'} · 학기·연 1회 다시 씁니다.
+       ${S.vision&&S.vision.scene?'<br>«3 비전»의 성취 시각화 장면과 겹쳐도 됩니다 — 그쪽은 역할별, 이곳은 사람 전체입니다.':''}</div>
+   </div></div>
+   <div class="card"><h3>3년 후 오늘, 나의 하루</h3>
+     ${F_AREAS.map(a=>`<label class="fld"><span class="lb">${a[1]} <span class="hint">— ${a[2]}</span></span>
+       <textarea style="min-height:54px" oninput="fArea('${a[0]}',this.value)">${esc(s.areas[a[0]]||'')}</textarea></label>`).join('')}
+   </div>
+   <div class="card co-brand" style="border-radius:15px"><div class="tag">3년 후의 나에게서 온 편지</div>
+     <p class="hint" style="margin:0 0 6px">3년 후의 내가 되어 지금의 나에게 씁니다 — «지금 너에게 꼭 말해 주고 싶은 것», «이것만은 계속해 줘서 고맙다».</p>
+     <textarea style="min-height:120px;font-size:14.5px" oninput="fSelfSet('letter',this.value)">${esc(s.letter||'')}</textarea></div>
+   <div class="card co-gold" style="border-radius:15px"><div class="tag">현재형 정체성 선언문 · 3단계 필요 → 열망 → 앎</div>
+     <p class="hint" style="margin:0 0 8px">«나는 ~한다»로 세 문장 이내. 매일 아침 일간 화면 맨 위에 <b>하루 한 문장씩</b> 올라옵니다. 확신은 선언이 아니라 ★ 증거가 쌓이며 생깁니다.</p>
+     ${[0,1,2].map(i=>`<input type="text" style="margin-bottom:6px;font-size:15px" placeholder="나는 …" value="${esc(s.decl[i]||'')}" oninput="fDecl(${i},this.value)">`).join('')}
+   </div>
+   <div class="card"><h3>점검</h3>
+     <div class="hint">· 성과보다 정체성과 일상의 장면이 먼저 보이는가?<br>· 남의 기대가 아니라 내가 원하는 모습인가?<br>
+       · 읽었을 때 설렘과 함께 약간의 두려움도 드는가? — 너무 쉬우면 현재의 나, 너무 막연하면 공상입니다.</div>
+     <div class="foot-nav"><button class="btn ghost" onclick="go('vision')">← 비전</button>
+       <span><button class="btn ghost" onclick="go('annual')">연간 계획으로 내리기 →</button>
+       <button class="btn" onclick="fTab('prune')">다음: 내려놓기 →</button></span></div>
+   </div>`;}
+
+function fvPrune(el){const p=F().prune, due=fPruneDue();
+  el.innerHTML=`
+   <div class="callout co-gold"><div class="tag">2단계 · 덜 중요한 목표를 제거하라</div>
+     좋은 일이 위대한 일을 가장 많이 방해합니다. 지금 맡은 일·모임·목표를 모두 적고, 3년 후의 나를 기준으로 하나씩 판정합니다.
+     «3년 후의 나라면 이 일을 지금 새로 시작하겠는가?»</div>
+   ${due&&p.items.length?`<div class="recover no-print"><h4>🗓 분기 재판정</h4><p>${p.judgedAt?'마지막 판정이 '+p.judgedAt+'입니다. ':''}한 분기에 한 번, 판정을 다시 내려 주세요 — 상황이 바뀌면 유지가 축소로, 축소가 중단으로 넘어갑니다.</p></div>`:''}
+   <div class="card ftab"><h3>지금 하고 있는 일 · 목표 <span class="hint">(${p.items.length}개)</span></h3>
+     <div class="tblwrap"><table class="log"><thead><tr><th>일·목표</th><th>주당 시간</th><th>관련성</th><th>판정</th><th>다음 행동 · 날짜</th><th class="no-print"></th></tr></thead>
+     <tbody>${p.items.map(x=>{const vd=F_VERD.find(v=>v[0]===x.verdict);
+       return `<tr style="${vd?'box-shadow:inset 4px 0 0 '+vd[2]:''}">
+         <td><input type="text" value="${esc(x.text)}" onchange="fPruneSet('${x.id}','text',this.value)"></td>
+         <td class="c"><input type="text" style="width:64px" placeholder="h" value="${esc(x.hours||'')}" onchange="fPruneSet('${x.id}','hours',this.value)"></td>
+         <td class="c"><select onchange="fPruneSet('${x.id}','rel',this.value)">${['','상','중','하'].map(r=>`<option value="${r}" ${x.rel===r?'selected':''}>${r||'—'}</option>`).join('')}</select></td>
+         <td class="c"><span class="fvd">${F_VERD.map(v=>`<button class="${x.verdict===v[0]?'on':''}" style="${x.verdict===v[0]?'background:'+v[2]+';border-color:'+v[2]:''}" onclick="fPruneSet('${x.id}','verdict','${x.verdict===v[0]?'':v[0]}')">${v[1]}</button>`).join('')}</span></td>
+         <td><div style="display:flex;gap:4px;flex-wrap:wrap"><input type="text" style="min-width:120px" placeholder="${x.verdict==='stop'?'누구에게 어떻게 알릴까':(x.verdict==='deleg'?'누구에게 넘길까':'무엇을 줄일까')}" value="${esc(x.next||'')}" onchange="fPruneSet('${x.id}','next',this.value)">
+           <input type="date" style="width:140px" value="${esc(x.date||'')}" onchange="fPruneSet('${x.id}','date',this.value)">
+           ${(x.next||'').trim()?`<button class="btn ghost sm" onclick="fPruneToTask('${x.id}')" title="바로 할 것으로 내리기">⚡</button>`:''}</div></td>
+         <td class="c no-print"><button class="del-x" onclick="fPruneDel('${x.id}')">✕</button></td></tr>`;}).join('')}</tbody></table></div>
+     <div class="addrow"><input type="text" placeholder="＋ 지금 하고 있는 일·모임·목표" onchange="fPruneAdd(this)" onkeydown="if(event.key==='Enter')this.blur()"></div>
+     <p class="hint" style="margin-top:8px">판정을 돕는 질문 — 그만두면 실제로 무엇이 무너지는가, 아니면 불편함뿐인가? 계속하는 이유가 미래의 나 때문인가, 남의 기대나 그만두는 어색함 때문인가?</p>
+   </div>
+   <div class="grid2">
+     <div class="card"><h3>나의 Not-to-do 목록 <span class="hint">(저녁 리추얼에 체크 항목으로 올라옵니다)</span></h3>
+       ${p.notdo.map(x=>`<div class="row-item"><input type="text" value="${esc(x.text)}" onchange="fNotdoSet('${x.id}',this.value)"><button class="del-x" onclick="fNotdoDel('${x.id}')">✕</button></div>`).join('')}
+       <div class="addrow"><input type="text" placeholder="＋ 예: 저녁 9시 이후 업무 메신저 확인하지 않기" onchange="fNotdoAdd(this)" onkeydown="if(event.key==='Enter')this.blur()"></div>
+       ${(()=>{const r=fNotdoRate(14);return r?`<p class="hint" style="margin-top:8px">최근 2주 지킴 <b>${r.pct}%</b> (${r.kept}/${r.opp})</p>`:'';})()}
+     </div>
+     <div class="card"><h3>정중히 거절하는 문장</h3>
+       <p class="hint" style="margin-top:-4px">중단·위임할 일에 실제로 쓸 문장을 미리 적어 둡니다.</p>
+       <textarea style="min-height:90px" oninput="F().prune.decline=this.value;save()">${esc(p.decline||'')}</textarea></div>
+   </div>
+   <div class="foot-nav"><button class="btn ghost" onclick="fTab('self')">← 3년 후의 나</button><button class="btn" onclick="fTab('woop')">다음: WOOP →</button></div>`;}
+
+function fvWoop(el){const f=F(), goals=((S.annual||{}).goals||[]).filter(g=>g.text&&!g.done);
+  const open=f.ui.woop;
+  el.innerHTML=`
+   <div class="callout co-gold"><div class="tag">3단계 → 4·5단계 · 소망 → 장애물 → 계획</div>
+     장밋빛 상상만 하면 실행 에너지가 떨어집니다(외팅겐). 원하는 결과와 <b>내 안의 장애물</b>을 함께 떠올리고
+     «만약 ~이면 나는 ~한다»를 세웁니다. 그 P가 그대로 일간 «시작할 것»의 <b>IF/THEN</b>이 됩니다.</div>
+   <div class="card"><div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+     <select id="fwgoal" style="max-width:320px"><option value="">(목표와 연결 없이)</option>${goals.map(g=>`<option value="${g.id}">${esc(g.text)}</option>`).join('')}</select>
+     <button class="btn sm" onclick="openWoop(document.getElementById('fwgoal').value)">＋ WOOP 카드 만들기</button>
+     <span class="hint">연간 계획의 목표 옆 <b>WOOP</b> 단추로도 만들 수 있습니다. 3개월 안에 진전시킬 목표 하나씩.</span></div></div>
+   ${f.woops.length?f.woops.map(w=>fWoopCard(w,w.id===open)).join(''):'<p class="hint">아직 WOOP 카드가 없습니다.</p>'}
+   <div class="foot-nav"><button class="btn ghost" onclick="fTab('prune')">← 내려놓기</button><button class="btn" onclick="fTab('week')">다음: 주간 점검 →</button></div>`;}
+function fWoopCard(w,open){const g=((S.annual||{}).goals||[]).find(x=>x.id===w.goalId);
+  const head=`<div style="display:flex;gap:8px;align-items:baseline;flex-wrap:wrap;cursor:pointer" onclick="fWoopToggle('${w.id}')">
+      <b style="font-size:14px">${esc(w.wish||'(소망을 적어주세요)')}</b>
+      ${g?`<span class="tag" style="margin:0;background:var(--brand)">${esc(g.text.slice(0,24))}</span>`:''}
+      <span class="hint" style="margin-left:auto">${w.plan.then?'IF/THEN ✓':'계획 미완'} · ${open?'▴':'▾'}</span></div>`;
+  if(!open)return `<div class="fwoop">${head}</div>`;
+  const s=(p)=>`fWoopSet('${w.id}','${p}',this.value)`;
+  return `<div class="fwoop open">${head}
+    <div class="fgrid" style="margin-top:10px">
+      <label class="fld"><span class="lb">W 소망 <span class="hint">— 3개월 안에, 도전적이지만 가능한 것 (한 문장)</span></span><input type="text" value="${esc(w.wish)}" onchange="${s('wish')}"></label>
+      <label class="fld"><span class="lb">O 결과 <span class="hint">— 이루었을 때 가장 좋은 것. 1분간 떠올린 뒤</span></span><input type="text" value="${esc(w.outcome)}" onchange="${s('outcome')}"></label>
+      <label class="fld"><span class="lb">O 장애물 <span class="hint">— 내 안의 가장 큰 장애물 (습관·감정·생각)</span></span><input type="text" value="${esc(w.obstacle)}" onchange="${s('obstacle')}"></label>
+      <div class="fld"><span class="lb">P 계획 <span class="hint">— 그대로 IF/THEN이 됩니다</span></span>
+        <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap"><span class="hint">만약</span><input type="text" style="flex:1;min-width:120px" placeholder="${esc(w.obstacle||'장애물')} 이(가) 나타나" value="${esc(w.plan.if)}" onchange="${s('plan.if')}">
+        <span class="hint">이면 나는</span><input type="text" style="flex:1;min-width:140px" placeholder="3분 안에 끝나는 행동" value="${esc(w.plan.then)}" onchange="${s('plan.then')}"></div></div>
+    </div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin:4px 0 10px">
+      <button class="btn sm" onclick="fWoopToStart('${w.id}')">▶ 오늘 «시작할 것»으로 내리기</button>
+      <span class="hint" style="align-self:center">신호=IF · 첫 행동=THEN 으로 들어갑니다. 내려간 과제는 «어디서 내려왔는가»에 이 카드가 표시됩니다.</span></div>
+    <h4 style="font-size:13px;margin:8px 0 4px">4단계 · 요청할 사람 <span class="hint">— 막연한 도움이 아니라 기한·분량이 있는 요청</span></h4>
+    ${w.asks.map(a=>`<div class="row-item">
+      <input type="text" style="max-width:130px" placeholder="누구에게" value="${esc(a.who)}" onchange="fAskSet('${w.id}','${a.id}','who',this.value)">
+      <input type="text" placeholder="무엇을 정확히 (기한·분량)" value="${esc(a.what)}" onchange="fAskSet('${w.id}','${a.id}','what',this.value)">
+      <input type="date" style="max-width:150px" value="${esc(a.when)}" onchange="fAskSet('${w.id}','${a.id}','when',this.value)">
+      <button class="btn ghost sm" style="flex:none" onclick="fAskToTask('${w.id}','${a.id}')" title="그 날 «바로 할 것»으로">⚡</button>
+      <button class="del-x" onclick="fAskDel('${w.id}','${a.id}')">✕</button></div>`).join('')}
+    <button class="btn ghost sm" onclick="fAskAdd('${w.id}')">＋ 요청 추가</button>
+    <h4 style="font-size:13px;margin:12px 0 4px">5단계 · 자동화·강제 장치 <span class="hint">— 의지 대신 환경</span></h4>
+    <div class="fgrid">
+      <label class="fld"><span class="lb">쉽게 만들 행동</span><input type="text" placeholder="예: 전날 밤 원고 파일 열어 두기" value="${esc(w.auto.easy)}" onchange="${s('auto.easy')}"></label>
+      <label class="fld"><span class="lb">어렵게 만들 행동</span><input type="text" placeholder="예: 업무 시간 휴대폰 알림 끄기" value="${esc(w.auto.hard)}" onchange="${s('auto.hard')}"></label>
+      <label class="fld" style="grid-column:1/-1"><span class="lb">되돌리기 어려운 약속 (공개 선언 · 비용 선지불 · 동료와의 마감)</span><input type="text" value="${esc(w.auto.commit)}" onchange="${s('auto.commit')}"></label>
+    </div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:space-between">
+      <button class="btn ghost sm" onclick="fAutoToHabit('${w.id}')">🌱 «쉽게 만들 행동»을 습관으로</button>
+      <button class="btn ghost sm" style="color:var(--del)" onclick="fWoopDel('${w.id}')">카드 삭제</button></div>
+  </div>`;}
+
+function fvWeek(el){const ws=weekStart(today());
+  el.innerHTML=`
+   <div class="callout co-gold"><div class="tag">6·7단계 · 일정 관리 · 공격적으로 완수</div>
+     주간 점검은 <b>주간 회고</b> 화면 안에 들어 있습니다 — 회고일에 자동으로 올라오고, 거기서 ★ 증거·일정 닮음 점수·다음 주 고정 시간을 다룹니다.</div>
+   <div class="card">${fWeekReviewCard(ws)}</div>
+   <div class="foot-nav"><button class="btn ghost" onclick="fTab('woop')">← WOOP</button><button class="btn" onclick="go('review')">🔁 주간 회고로 →</button></div>`;}
+
+/* ── 주간 회고에 끼워 넣는 카드 ── */
+function fWeekReviewCard(ws){
+  const f=F(), w=fW(ws), ev=fEvidence(ws,addDays(ws,6)), prev=fEvidence(addDays(ws,-7),addDays(ws,-1));
+  const ds=fDecls(), avg=fScoreAvg(ws), pavg=fScoreAvg(addDays(ws,-7));
+  const nw=addDays(ws,7);
+  if(!ds.length&&!f.woops.length&&!f.prune.notdo.length)
+    return `<div class="card"><h3>🔭 주간 퓨처셀프 점검</h3><p class="hint" style="margin-top:-4px">«🔭 3년 후의 나»를 먼저 쓰면 여기서 ★ 증거·일정 닮음 점수·다음 주 고정 시간을 점검합니다.</p>
+      <button class="btn ghost sm" onclick="go('future')">3년 후의 나 쓰기 →</button></div>`;
+  return `<div class="card"><h3>🔭 주간 퓨처셀프 점검 <span class="hint">(격차가 아니라 성취를 잽니다)</span></h3>
+    ${ds.length?`<div class="callout co-gold" style="margin:0 0 12px">${ds.map(x=>'<div>🔭 '+esc(x)+'</div>').join('')}</div>`:''}
+    <h4 style="font-size:13px;margin:0 0 4px">① 미래의 나다운 행동 — 증거 <b>${ev.length}</b>건 <span class="hint">(지난주 ${prev.length}건)</span></h4>
+    ${ev.length?ev.map(x=>`<div class="memoline"><span class="mt">${x.d.slice(5)} (${wd(x.d)})</span><span class="mh" style="border-color:#c98a1a">★</span><span class="mm">${esc(x.t.text)}${x.t.status==='done'?' <b style="color:var(--done)">✓</b>':''}</span></div>`).join('')
+      :'<p class="hint">과제 줄의 <b>★</b> 를 누르면 여기에 쌓입니다. 끝내지 못했어도 미래의 나다운 행동이면 증거입니다.</p>'}
+    <h4 style="font-size:13px;margin:14px 0 4px">② 일정 점검 <span class="hint">0~5점 · 평균 <b>${avg==null?'—':avg}</b>${pavg!=null?' (지난주 '+pavg+')':''}</span></h4>
+    ${F_SCORES.map(x=>`<div class="fscore"><span class="q">${x[1]}</span>
+      <select onchange="fScore('${ws}','${x[0]}',this.value)"><option value="">—</option>${[0,1,2,3,4,5].map(n=>`<option value="${n}" ${w.scores[x[0]]===n?'selected':''}>${n}</option>`).join('')}</select></div>`).join('')}
+    ${f.woops.length?`<h4 style="font-size:13px;margin:14px 0 4px">③ WOOP 장애물 <span class="hint">— 실제로 나타났나? 실행 의도를 고칠 필요가 있나?</span></h4>
+      <div class="hint" style="margin-bottom:4px">${f.woops.slice(0,4).map(x=>'· '+esc(x.wish||'')+(x.obstacle?' — <i>'+esc(x.obstacle)+'</i>':'')).join('<br>')}</div>
+      <textarea rows="2" placeholder="예: '피곤하면 휴대폰부터'가 3번 나왔다 → THEN을 '타이머 5분만 켠다'로 줄임" oninput="fWSet('${ws}','obstacle',this.value)">${esc(w.obstacle||'')}</textarea>`:''}
+    <h4 style="font-size:13px;margin:14px 0 4px">④ 다음 주 고정 시간 <span class="hint">— 달력에 먼저 놓고 나머지를 채웁니다 (${nw} ~ ${addDays(nw,6)})</span></h4>
+    ${F_FIXED.map(k=>{const o=w.fixed[k[0]]||{};return `<div class="row-item" style="align-items:center">
+      <span style="flex:none;width:96px;font-weight:700;font-size:13px">${k[1]}</span>
+      <select style="max-width:90px" onchange="fFixed('${ws}','${k[0]}','day',this.value)"><option value="">요일</option>${['월','화','수','목','금','토','일'].map((d,i)=>`<option value="${i}" ${String(o.day)===String(i)?'selected':''}>${d}</option>`).join('')}</select>
+      <input type="time" class="tmin" style="max-width:110px" value="${esc(o.start||'')}" onchange="fFixed('${ws}','${k[0]}','start',this.value)">
+      <input type="time" class="tmin" style="max-width:110px" value="${esc(o.end||'')}" onchange="fFixed('${ws}','${k[0]}','end',this.value)">
+      <input type="text" placeholder="무엇을" value="${esc(o.what||'')}" onchange="fFixed('${ws}','${k[0]}','what',this.value)"></div>`;}).join('')}
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:4px">
+      <button class="btn sm" onclick="fPushFixed('${ws}',false)">🕘 다음 주 시간표에 고정</button>
+      ${gTokenValid()?`<button class="btn ghost sm" onclick="fPushFixed('${ws}',true)">☁ 구글 캘린더에도</button>`:'<span class="hint" style="align-self:center">구글 연동 로그인 후 캘린더에도 보낼 수 있습니다</span>'}</div>
+    <h4 style="font-size:13px;margin:14px 0 4px">⑤ 다음 주에 끝낼(완벽하지 않아도 내놓을) 한 가지</h4>
+    <div class="row-item"><input type="text" value="${esc(w.finish||'')}" placeholder="80%여도 내놓고 피드백을 받습니다" onchange="fWSet('${ws}','finish',this.value)">
+      <button class="btn ghost sm" style="flex:none" onclick="fFinishToTask('${ws}')">→ 월요일 «끝낼 것»으로</button></div>
+    <label class="fld" style="margin-top:8px"><span class="lb">3년 후의 나에게 한 줄</span><input type="text" value="${esc(w.note||'')}" onchange="fWSet('${ws}','note',this.value)"></label>
+  </div>`;}
+
+/* ── 성찰·통계 — 출발점 대비 누적 증거 ── */
+function fEvidenceCard(){
+  const f=F(); if(!fDecls().length&&!fEvidence().length)return '';
+  const cw=weekStart(today()), wks=[]; for(let k=7;k>=0;k--)wks.push(addDays(cw,-7*k));
+  const cnt=wks.map(w=>fEvidence(w,addDays(w,6)).length);
+  let cum=0; const cums=cnt.map(c=>cum+=c);
+  const total=fEvidence().length, mx=Math.max(1,...cums);
+  const sc=wks.map(w=>fScoreAvg(w));
+  const nd=fNotdoRate(14);
+  return `<div class="card"><h3>🔭 미래의 나 — 누적 증거 <span class="hint">(격차가 아니라 출발점에서 얼마나 왔는가)</span></h3>
+    <div class="stat" style="margin-bottom:12px">
+      <div class="s"><div class="n">${total}</div><div class="l">★ 누적 증거</div></div>
+      <div class="s"><div class="n">${cnt[cnt.length-1]}</div><div class="l">이번 주 증거</div></div>
+      <div class="s"><div class="n">${sc[sc.length-1]==null?'—':sc[sc.length-1]}</div><div class="l">이번 주 일정 닮음 (0~5)</div></div>
+      ${nd?`<div class="s"><div class="n">${nd.pct}%</div><div class="l">안 할 일 지킴 (2주)</div></div>`:''}
+    </div>
+    <div class="spark">${cums.map((c,i)=>`<div class="sk" title="${wks[i]} · 누적 ${c}건 (이번 주 +${cnt[i]})"><i style="height:${Math.max(2,Math.round(c/mx*100))}%;background:linear-gradient(180deg,#c98a1a,#a8681a)"></i></div>`).join('')}</div>
+    <div class="sparkl">${wks.map((w,i)=>`<span>${i===7?'이번 주':(7-i)+'주 전'}<br><b>${cums[i]}</b>${sc[i]!=null?'<br><span style="color:var(--brand-d)">'+sc[i]+'</span>':''}</span>`).join('')}</div>
+    <p class="hint" style="margin-top:8px">막대는 누적 증거, 아래 보라 숫자는 그 주의 일정 닮음 평균입니다. 목표와의 거리를 재면 목표를 낮추게 되고, 쌓인 증거를 보면 확신(앎)이 자랍니다.</p>
+  </div>`;}
+
+/* ── 기기 간 병합 ── */
+function fMerge(L,R,lu,ru){
+  if(!L)return R; if(!R)return L;
+  const base=JSON.parse(JSON.stringify(lu>=ru?L:R));
+  base.prune=Object.assign({},base.prune||{},{items:mergeArr((L.prune||{}).items,(R.prune||{}).items,lu,ru),notdo:mergeArr((L.prune||{}).notdo,(R.prune||{}).notdo,lu,ru)});
+  base.woops=mergeArr(L.woops,R.woops,lu,ru);
+  base.weekly=mergeDict(L.weekly,R.weekly,lu,ru);
+  base.ui=L.ui||base.ui;
+  return base;}
 
 /* ============ INIT ============ */
 (function init(){const had=load();if(!S.view)S.view='dash';
