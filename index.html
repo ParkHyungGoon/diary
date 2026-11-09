@@ -4409,6 +4409,7 @@ function kBridgeApply(items, src){
 function kBridgeFetch(){
   const url=kBridgeUrl(); if(!url){toast('학급수업관리 Pro 배포 URL을 먼저 넣어 주세요');return;}
   const st=document.getElementById('kbStatus'); if(st)st.textContent='⏳ 학급수업관리 Pro에서 읽는 중…';
+  kBridgeSendGroups(false);
   const cb='__kb'+Date.now(); let done=false;
   const sc=document.createElement('script');
   const finish=(ok,msg)=>{ if(done)return; done=true; clearTimeout(tm); sc.remove(); delete window[cb];
@@ -4426,7 +4427,27 @@ function kBridgeImportFile(e){
       if(!items.length)throw new Error('empty'); kBridgeApply(items,'파일'); }
     catch(err){ alert('연동 파일이 아닙니다. 학급수업관리 Pro의 「📓 다이어리 연동 파일」을 선택해 주세요.'); } };
   r.readAsText(f); e.target.value='';}
+function kBridgeSendGroups(show){
+  const k=K(); const url=kBridgeUrl(); if(!url){ if(show)toast('학급수업관리 Pro 배포 URL을 먼저 넣어 주세요'); return; }
+  const groups=kGroups(); if(!groups.length){ if(show)toast('시간표에 반·강좌가 없습니다'); return; }
+  const img=new Image(); img.onload=img.onerror=()=>{ if(show)toast('반·강좌명 '+groups.length+'개를 학급수업관리 Pro에 보냈습니다 — 그쪽 앱을 새로 열면 자동 연결됩니다'); };
+  img.src=url+'?action=groups&token='+encodeURIComponent(k.bridge.token||'')+'&payload='+encodeURIComponent(JSON.stringify(groups))+'&_='+Date.now();
+  k.bridge.groupsSentAt=Date.now(); save();}
+function kBridgePushAll(){
+  const k=K(); const url=kBridgeUrl(); if(!url){toast('학급수업관리 Pro 배포 URL을 먼저 넣어 주세요');return;}
+  const items=[]; Object.keys(k.logs||{}).forEach(key=>{ const l=k.logs[key]||{}; if(!(l.prog||l.note||l.absent))return;
+    const p=key.split('|'); if(p.length<3)return; items.push({g:p[0],date:p[1],p:+p[2]||0,prog:l.prog||'',note:l.note||'',absent:l.absent||'',done:!!l.done}); });
+  if(!items.length){toast('보낼 차시 기록이 없습니다');return;}
+  kBridgeSendGroups(false);
+  const st=document.getElementById('kbStatus'); let i=0, sent=0; const chunks=[]; let cur=[];
+  items.forEach(it=>{ const test=cur.concat([it]); if(encodeURIComponent(JSON.stringify(test)).length>6000&&cur.length){chunks.push(cur);cur=[it];} else cur=test; }); if(cur.length)chunks.push(cur);
+  const next=()=>{ if(i>=chunks.length){ const m='⬆ 차시 기록 '+sent+'건을 학급수업관리 Pro로 보냈습니다 — 그쪽 ⚙️ 설정의 [📓 다이어리 메모 가져오기]를 누르세요'; if(st)st.textContent=m; toast(m); return; }
+    const c=chunks[i++]; if(st)st.textContent='⏳ 보내는 중 '+(sent+c.length)+'/'+items.length;
+    const img=new Image(); img.onload=img.onerror=()=>{ sent+=c.length; setTimeout(next,400); };
+    img.src=url+'?action=notes&token='+encodeURIComponent(k.bridge.token||'')+'&payload='+encodeURIComponent(JSON.stringify(c))+'&_='+Date.now(); };
+  next();}
 function kBridgePush(key){
+  { const kb=K().bridge; if(kb.url && (!kb.groupsSentAt || Date.now()-kb.groupsSentAt>86400000)) kBridgeSendGroups(false); }
   const k=K(); if(!k.bridge.url||k.bridge.push===false)return;
   const x=kFind(key); if(!x)return; const l=kLog(key);
   const payload={g:x.g,date:x.date,p:x.p,prog:l.prog||'',note:l.note||'',absent:l.absent||'',done:!!l.done};
@@ -4792,6 +4813,8 @@ function kvSetup(el){
        <label class="fld" style="flex:1;min-width:160px"><span class="lb">연동 토큰 (선택 · 학급수업관리 ⚙️ 설정과 같은 값)</span>
          <input type="text" id="kbTok" value="${esc(k.bridge.token||'')}" placeholder="비워 두면 토큰 없이 연결" onchange="K().bridge.token=this.value.trim();save()"></label>
        <button class="btn" onclick="kBridgeFetch()">⬇ 지금 가져오기</button>
+       <button class="btn ghost" onclick="kBridgeSendGroups(true)" title="이 다이어리의 반·강좌명 목록을 학급수업관리 Pro에 알려, 학급과 자동으로 연결되게 합니다">⬆ 반·강좌명 보내기</button>
+       <button class="btn ghost" onclick="kBridgePushAll()" title="지금까지 적어 둔 모든 차시 기록(진도·수업 방법·결시)을 학급수업관리 Pro로 한 번에 보냅니다">⬆ 모든 차시 기록 보내기</button>
        <button class="btn ghost" onclick="document.getElementById('kbimp').click()">📂 연동 파일(JSON) 가져오기</button>
        <input type="file" id="kbimp" accept="application/json" style="display:none" onchange="kBridgeImportFile(event)">
      </div>
