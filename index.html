@@ -4257,10 +4257,11 @@ const KPERIODS=[['09:00','09:50'],['10:00','10:50'],['11:00','11:50'],['12:00','
 function kBlank(){return{on:false,importedAt:'',
   term:{name:'',start:'',end:''},
   periods:KPERIODS.map((x,i)=>({p:i+1,s:x[0],e:x[1]})),
-  tt:[],colors:{},off:[],swap:[],moves:[],logs:{},ui:{g:'',tab:'today'}};}
+  tt:[],colors:{},off:[],swap:[],moves:[],logs:{},ui:{g:'',tab:'today'},
+  bridge:{url:'',token:'',push:true,overwrite:false,last:'',lastN:0}};}
 function kFix(){
   const b=kBlank(); const k=Object.assign(b,S.klass||{});
-  k.term=Object.assign(b.term,k.term||{}); k.ui=Object.assign(b.ui,k.ui||{});
+  k.term=Object.assign(b.term,k.term||{}); k.ui=Object.assign(b.ui,k.ui||{}); k.bridge=Object.assign(b.bridge,k.bridge||{});
   if(!Array.isArray(k.periods)||!k.periods.length)k.periods=b.periods;
   k.periods=k.periods.map((p,i)=>({p:i+1,s:p.s||'09:00',e:p.e||'09:50'}));
   ['tt','off','swap','moves'].forEach(f=>{if(!Array.isArray(k[f]))k[f]=[];});
@@ -4380,6 +4381,57 @@ function openLesson(key){
    «한 번 고르면 한 번에 들어가는» 방식으로 만들었습니다.
    ============================================================ */
 let KPICK={key:'',mode:'over',f:{prog:true,note:true,absent:false},q:''};
+/* ── 🔗 학급수업관리 Pro 연동 ───────────────────────────────── */
+function kBridgeUrl(){ return (K().bridge.url||'').trim().replace(/\?.*$/,''); }
+function kBridgeApply(items, src){
+  const k=K(), ow=!!k.bridge.overwrite; let n=0, miss=[];
+  (items||[]).forEach(it=>{
+    const g=(it.g||it.cls||'').trim(), d=(it.date||'').slice(0,10), p=+it.p||0;
+    if(!g||!d) return;
+    let x=null;
+    if(p) x=kFind(g+'|'+d+'|'+p);
+    if(!x){ const cands=kLessons(g).filter(z=>z.date===d); if(cands.length){ x=cands.find(z=>!(k.logs[z.key]||{}).prog)||cands[0]; } }
+    if(!x){ miss.push(g+' '+d); return; }
+    const l=kLog(x.key); let changed=false;
+    const prog=(it.topic||'')+((it.plan_total>0)?` [과정 ${it.plan_done}/${it.plan_total}]`:'');
+    if(prog.trim()&&(ow||!l.prog)){ l.prog=prog.trim(); changed=true; }
+    if(it.note&&(ow||!l.note)){ l.note=it.note; changed=true; }
+    if(it.absent&&(ow||!l.absent)){ l.absent=it.absent; changed=true; }
+    if(it.part&&(ow||!l.part)){ l.part=it.part; changed=true; }
+    if(!l.done){ l.done=true; l.at=l.at||d; changed=true; }
+    if(changed) n++;
+  });
+  k.bridge.last=new Date().toLocaleString('ko-KR')+(src?' ('+src+')':''); k.bridge.lastN=n;
+  save(); render();
+  const missTxt = miss.length? ` · 차시를 못 찾은 수업 ${miss.length}건(반·강좌명/교시 확인)`:'';
+  toast(`학급수업관리 Pro에서 ${n}건을 차시 기록에 반영했습니다${missTxt}`);
+  return n;}
+function kBridgeFetch(){
+  const url=kBridgeUrl(); if(!url){toast('학급수업관리 Pro 배포 URL을 먼저 넣어 주세요');return;}
+  const st=document.getElementById('kbStatus'); if(st)st.textContent='⏳ 학급수업관리 Pro에서 읽는 중…';
+  const cb='__kb'+Date.now(); let done=false;
+  const sc=document.createElement('script');
+  const finish=(ok,msg)=>{ if(done)return; done=true; clearTimeout(tm); sc.remove(); delete window[cb];
+    if(!ok){ if(st)st.innerHTML='❌ '+msg; toast(msg); } };
+  window[cb]=data=>{ if(data&&data.error==='token'){finish(false,'연동 토큰이 맞지 않습니다');return;}
+    done=true; clearTimeout(tm); sc.remove(); delete window[cb];
+    kBridgeApply((data&&data.items)||[], '자동'); };
+  const tm=setTimeout(()=>finish(false,'응답이 없습니다 — 학교 계정 로그인이 필요하거나 URL이 다릅니다. 📓 연동 파일(JSON)로 가져와 주세요'),12000);
+  sc.onerror=()=>finish(false,'불러오지 못했습니다 — 학교 계정으로 로그인된 브라우저인지, URL이 …/exec로 끝나는지 확인해 주세요. 📓 연동 파일(JSON)로도 가져올 수 있습니다');
+  sc.src=url+'?action=lessons&callback='+cb+'&token='+encodeURIComponent(K().bridge.token||'')+'&_='+Date.now();
+  document.body.appendChild(sc);}
+function kBridgeImportFile(e){
+  const f=e.target.files[0]; if(!f)return; const r=new FileReader();
+  r.onload=()=>{ try{ const j=JSON.parse(r.result); const items=Array.isArray(j)?j:(j.items||[]);
+      if(!items.length)throw new Error('empty'); kBridgeApply(items,'파일'); }
+    catch(err){ alert('연동 파일이 아닙니다. 학급수업관리 Pro의 「📓 다이어리 연동 파일」을 선택해 주세요.'); } };
+  r.readAsText(f); e.target.value='';}
+function kBridgePush(key){
+  const k=K(); if(!k.bridge.url||k.bridge.push===false)return;
+  const x=kFind(key); if(!x)return; const l=kLog(key);
+  const payload={g:x.g,date:x.date,p:x.p,prog:l.prog||'',note:l.note||'',absent:l.absent||'',done:!!l.done};
+  const img=new Image();
+  img.src=kBridgeUrl()+'?action=note&token='+encodeURIComponent(k.bridge.token||'')+'&payload='+encodeURIComponent(JSON.stringify(payload))+'&_='+Date.now();}
 function kAfter(){
   if(S.view==='day'){renderSchedule(S.ui.day);vDay(document.getElementById('view'));}
   else if(S.view==='checkin'){vCheckin(document.getElementById('view'));}
@@ -4547,6 +4599,7 @@ function kSaveLesson(key,toggle){
   if(toggle){l.done=!l.done; if(l.done&&!l.at)l.at=today();}
   else if(!l.done&&(l.prog||l.note)){l.done=true;l.at=today();}   /* 적었으면 한 것이다 */
   save(); closeModal(); toast('차시 기록을 저장했습니다');
+  kBridgePush(key);
   kAfter();}
 
 /* ── 화면: 수업 기록 (오늘 / 반별 / 설정 탭) ── */
@@ -4729,6 +4782,26 @@ function kvSetup(el){
        <select id="kswu" style="max-width:140px">${[1,2,3,4,5].map(d=>`<option value="${d}">${KDOW[d]}요일 시간표</option>`).join('')}</select>
        <input type="text" id="kswt" placeholder="사유" style="flex:1;min-width:150px" onkeydown="if(event.key==='Enter')kAddSwap()">
        <button class="btn sm" onclick="kAddSwap()">추가</button></div>
+   </div>
+   <div class="card" id="kbridge"><h3>🔗 학급수업관리 Pro 연동</h3>
+     <p class="hint" style="margin-top:-4px">좌석표·참여도를 기록하는 <b>학급수업관리 Pro</b>의 수업별 <b>차시 주제 → 진도</b>, <b>수업 방법·특이사항</b>, <b>결시·비고</b>, 교수학습과정 진행률을 이 다이어리의 차시 기록에 채웁니다.
+       반대로 여기서 적은 차시 기록은 저장할 때 학급수업관리 Pro로 보내집니다. 두 앱은 <b>반·강좌명 + 날짜 + 교시</b>로 같은 수업을 찾습니다.</p>
+     <label class="fld"><span class="lb">학급수업관리 Pro 배포 URL (…/exec)</span>
+       <input type="text" id="kbUrl" value="${esc(k.bridge.url||'')}" placeholder="https://script.google.com/a/macros/…/exec" onchange="K().bridge.url=this.value.trim();save()"></label>
+     <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end">
+       <label class="fld" style="flex:1;min-width:160px"><span class="lb">연동 토큰 (선택 · 학급수업관리 ⚙️ 설정과 같은 값)</span>
+         <input type="text" id="kbTok" value="${esc(k.bridge.token||'')}" placeholder="비워 두면 토큰 없이 연결" onchange="K().bridge.token=this.value.trim();save()"></label>
+       <button class="btn" onclick="kBridgeFetch()">⬇ 지금 가져오기</button>
+       <button class="btn ghost" onclick="document.getElementById('kbimp').click()">📂 연동 파일(JSON) 가져오기</button>
+       <input type="file" id="kbimp" accept="application/json" style="display:none" onchange="kBridgeImportFile(event)">
+     </div>
+     <div style="display:flex;gap:16px;flex-wrap:wrap;margin-top:8px">
+       <label style="font-size:13px;font-weight:600"><input type="checkbox" ${k.bridge.push!==false?'checked':''} onchange="K().bridge.push=this.checked;save()" style="width:auto"> 차시 기록을 저장할 때 학급수업관리 Pro로도 보내기</label>
+       <label style="font-size:13px;font-weight:600"><input type="checkbox" ${k.bridge.overwrite?'checked':''} onchange="K().bridge.overwrite=this.checked;save()" style="width:auto"> 가져올 때 이미 적은 내용도 덮어쓰기</label>
+     </div>
+     <div id="kbStatus" class="hint" style="margin-top:6px">${k.bridge.last?('마지막 가져오기: '+esc(k.bridge.last)+' · '+k.bridge.lastN+'건 반영'):'아직 가져온 적 없음'}</div>
+     <p class="hint" style="margin-top:6px">이 다이어리의 반·강좌명: <b>${kGroups().map(esc).join(' · ')||'(시간표 없음)'}</b> — 학급수업관리 Pro ⚙️ 설정의 「다이어리 반·강좌명」을 이 이름과 같게 맞추세요.<br>
+       [⬇ 지금 가져오기]가 로그인 때문에 막히면 학급수업관리 Pro 🏠 학급 목록의 <b>📓 다이어리 연동 파일</b>을 내려받아 [📂 연동 파일 가져오기]로 넣으면 됩니다.</p>
    </div>
    <div class="card"><h3>수업차시누가기록 파일과 주고받기</h3>
      <p class="hint" style="margin-top:-4px">따로 쓰시던 <b>수업차시누가기록</b> 웹앱의 백업(JSON)을 그대로 가져올 수 있습니다.
